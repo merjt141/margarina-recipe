@@ -1,0 +1,83 @@
+{
+	"$schema": "./CWC_manifest_Schema.json",
+	"mver": "1.2.0",
+	"control": {
+		"identity": {
+			"name": "RecipeController",
+			"version": "1.0",
+			"displayname": "Recipe Control Web App",
+			"icon": "./assets/logo.png",
+			"type": "guid://3A0572C8-1FC9-4181-985E-5512D2AD61F7",
+			"start": "./control/index.html"
+		},
+		"metadata": {
+			"author": "JYSControlAutomation",
+			"keywords": ["Recipe", "WebApplication"]
+		},
+		"contracts": {
+			"api": {
+				"methods": {
+					"PopulateRecipes": {
+						"parameters": {
+							"jsonString": {
+								"type": "string"
+							}
+						},
+						"description": "Build recipe combo box"
+					},
+					"PopulateDetail": {
+						"parameters": {
+							"jsonString": {
+								"type": "string"
+							}
+						},
+						"description": "Populate recipe data"
+					},
+					"QueryResponse": {
+						"parameters": {
+							"jsonString": {
+								"type": "string"
+							}
+						}
+					},
+					"PLCResponse": {
+						"parameters": {
+							"jsonString": {
+								"type": "string"
+							}
+						}
+					}
+				},
+				"events": {
+					"NewSelection": {
+						"arguments":{
+							"ComboIndex":{
+								"type":"string"
+							}
+						},
+						"description": "Ejecutar cuando se selecciona nueva opción"
+					},
+					"executeQuery": {
+						"arguments": {
+							"queryString": {
+								"type": "string"
+							}
+						}
+					},
+					"writePLC": {
+						"arguments": {
+							"writeCommand":{
+								"type": "string"
+							}
+						}
+					}
+				},
+				"properties": {
+				}
+			}
+		},
+		"types": {
+			
+		}
+	}	
+}

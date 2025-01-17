@@ -1,0 +1,18 @@
+{
+    "compilerOptions": {
+      "module": "ESNext",
+      "target": "ES5",              // Target older JavaScript version (optional)
+      "moduleResolution": "Node",
+      "outDir": "control/dist",   // Output compiled files to a specific folder
+      "esModuleInterop": true,
+      "allowJs": true,              // Allow JavaScript files to be included
+      "strict": true                // Enable strict type checking
+    },
+    "include": [
+      "control/ts/**/*.ts"                 // Include all TypeScript files in the "src" folder
+    ],
+    "exclude": [
+        "./node_modules",
+        "./control/dist"
+    ]
+}

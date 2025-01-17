@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transferir Receta a Controlador</title>
+</head>
+<body>
+    <button onclick="cmdTransferirClick(1)">
+        <img src="../images/icons8-save-50.png" alt="Icon" class="button-right">
+        Linea 1
+    </button>
+    <button onclick="cmdTransferirClick(2)">
+        <img src="../images/icons8-save-50.png" alt="Icon" class="button-right">
+        Linea 2
+    </button>
+    <button onclick="cmdTransferirClick(3)">
+        <img src="../images/icons8-save-50.png" alt="Icon" class="button-right">
+        Linea 3
+    </button>
+    <button onclick="cmdTransferirClick(4)">
+        <img src="../images/icons8-save-50.png" alt="Icon" class="button-right">
+        Linea 4
+    </button>
+    <button onclick="cmdTransferirClick(5)">
+        <img src="../images/icons8-save-50.png" alt="Icon" class="button-right">
+        Linea 5
+    </button>
+</body>
+<script>
+    function cmdTransferirClick(line) {
+        window.opener.cwcAbrir.cmdTransferirAction(line);
+    }
+</script>
+</html>

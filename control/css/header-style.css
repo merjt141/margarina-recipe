@@ -1,0 +1,44 @@
+.top-bar {
+    grid-column: span 2;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    background: #f1f1f1;
+    border: 1px solid #ccc;
+    width: 980px;
+}
+
+.top-bar table {
+    width: 100%;
+    border: none;
+    table-layout: fixed;
+}
+
+.top-bar td {
+    width: 50%;
+    padding: 0 10px;
+    display: flex;
+    align-items: center;
+}
+
+.top-bar tr {
+    display: flex;
+}
+
+.recipe-selector label {
+    margin-right: 10px;
+}
+
+.recipe-selector select {
+    font-size: 11pt;
+    flex-grow: 1;
+    width: auto;
+}
+
+.right-title {
+    font-weight: bold;
+    font-style: italic;
+    justify-content: center;
+}
+

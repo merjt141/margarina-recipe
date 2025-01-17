@@ -1,0 +1,74 @@
+.form-section {
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+}
+.form-section h3 {
+    margin: 0px;
+    margin-bottom: 5px;
+    background-color: #f4f4f4;
+    padding: 5px 5px 5px 10px;
+    border-bottom: 0px solid #ccc;
+    font-weight: bold;
+    color: blue;
+    font-size: 10pt;
+    font-style: italic;
+}
+.form-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: px 0;
+    border: 0px;
+    table-layout: fixed;
+    font-size: 8pt;
+}
+.form-table tr {
+    display: flex;
+    align-items: center;
+}
+.form-table th {
+    padding: 0px 8px 0px 8px;
+    text-align: left;
+    flex: 1;
+}
+.form-table td {
+    padding: 4px;
+    text-align: left;
+    margin: 0px 10px;
+    flex: 1;
+}
+.inner-table td:nth-child(1) {
+    padding: 0px;
+    margin: 0px 10px 0px 0px;
+}
+.inner-table td:nth-child(2) {
+    padding: 0px;
+    margin: 0px 0px 0px 0px;
+}
+td div {
+    display: flex;
+    margin-bottom: 5px;
+    align-items: center;
+}
+.vertical-align div {
+    flex-direction: column;
+}
+.vertical-align div label {
+    margin-bottom: 2px;
+}
+td div input {
+    width: 100px;
+    margin-left: auto;
+}
+.vertical-align div input {
+    margin: auto;
+}
+.button-row {
+    text-align: center;
+    margin-top: 20px;
+}
+button {
+    padding: 10px 20px;
+    font-size: 1em;
+    margin: 5px;
+    cursor: pointer;
+}

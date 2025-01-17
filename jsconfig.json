@@ -1,0 +1,8 @@
+{
+  "compilerOptions": {
+  },
+  "include": [
+    "**/*.js",    // Include all JS files
+    "**/*.html"   // Include all HTML files as well
+    ]
+}

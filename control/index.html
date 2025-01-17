@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+	<meta charset='utf-8'>
+	<title>Formulario de Recetas</title>
+	<script src='./dist/webcc.min.js' type="text/javascript"></script>
+	<script src="./dist/jquery-3.6.3.js" type="text/javascript"></script>
+    <script src="./dist/script.js" type="module"></script>
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./css/header-style.css">
+    <link rel="stylesheet" href="./css/body-style.css">
+    <link rel="stylesheet" href="./css/parametros-ipsa.css">
+    <link rel="stylesheet" href="./css/button-banner.css">
+</head>
+
+<body class="bg-light">
+    <div class="container">
+        <div class="top-bar">
+            <table>
+                <tbody>
+                    <tr>
+                        <td class="recipe-selector">
+                            <label for="recipes">Receta:</label>
+                            <select id="cbRecipes">
+                                <option id="P01" value="1">Receta 01</option>
+                                <option id="P02" value="2">Receta 02</option>
+                                <option id="P03" value="3">Receta 03</option>
+                            </select>
+                        </td>
+                        <td class="right-title">
+                            <label>Receta perteneciente a Planta IPSA</label>
+                        </td>
+                    </tr>
+                </tbody>
+             </table>
+        </div>
+
+        <div class="left-contnt">
+
+            <!-- PANEL DE CONTROL IZQUIERDA -->
+            <div class="tab">
+                <div class="tab-buttons">
+                    <table>
+                        <tr>
+                            <td><button onclick="cwcAbrir.cmdShowTabClick('tab1')">INGREDIENTES TMG</button></td>
+                            <td><button onclick="cwcAbrir.cmdShowTabClick('tab2')">INGREDIENTES BALANZA / EMULSION</button></td>
+                            <td><button onclick="cwcAbrir.cmdShowTabClick('tab3')">PARÁMETROS IPSA</button></td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- INGREDIENTES TMG TAB -->
+                <div id="tab1" class="tab-content active">
+                    <table id="hotIngredientsTable" class="ingredient-table">
+                        <thead>
+                            <tr>
+                                <th>Ingrediente Caliente</th>
+                                <th>Cantidad</th>
+                                <th>Unidad</th>
+                                <th>Descripción Ingrediente</th>
+                                <th>Comentario</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="input-row" id="row1">
+                                <td><input type="text" id="h11" disabled></td>
+                                <td><input type="number" id="h12" disabled></td>
+                                <td><input type="text" id="h13" disabled></td>
+                                <td><input type="text" id="h14" disabled></td>
+                                <td><input type="text" id="h15" disabled></td>
+                            </tr>
+                            <tr class="input-row" id="row2">
+                                <td><input type="text" id="h21" disabled></td>
+                                <td><input type="number" id="h22" disabled></td>
+                                <td><input type="text" id="h23" disabled></td>
+                                <td><input type="text" id="h24" disabled></td>
+                                <td><input type="text" id="h25" disabled></td>
+                            </tr>
+                            <tr class="input-row" id="row3">
+                                <td><input type="text" id="h31" disabled></td>
+                                <td><input type="number" id="h32" disabled></td>
+                                <td><input type="text" id="h33" disabled></td>
+                                <td><input type="text" id="h34" disabled></td>
+                                <td><input type="text" id="h35" disabled></td>
+                            </tr>
+                            <tr class="input-row" id="row4">
+                                <td><input type="text" id="h41" disabled></td>
+                                <td><input type="number" id="h42" disabled></td>
+                                <td><input type="text" id="h43" disabled></td>
+                                <td><input type="text" id="h44" disabled></td>
+                                <td><input type="text" id="h45" disabled></td>
+                            </tr>
+                            <tr class="input-row" id="row5">
+                                <td><input type="text" id="h51" disabled></td>
+                                <td><input type="number" id="h52" disabled></td>
+                                <td><input type="text" id="h53" disabled></td>
+                                <td><input type="text" id="h54" disabled></td>
+                                <td><input type="text" id="h55" disabled></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <table id="coldIngredientsTable" class="ingredient-table">
+                        <thead>
+                            <tr>
+                                <th>Ingrediente Frío</th>
+                                <th>Cantidad</th>
+                                <th>Unidad</th>
+                                <th>Descripción Ingrediente</th>
+                                <th>Comentario</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="input-row" id="row1">
+                                <td><input type="text" id="c11" disabled></td>
+                                <td><input type="number" id="c12" disabled></td>
+                                <td><input type="text" id="c13" disabled></td>
+                                <td><input type="text" id="c14" disabled></td>
+                                <td><input type="text" id="c15" disabled></td>
+                            </tr>
+                            <tr class="input-row" id="row2">
+                                <td><input type="text" id="c21" disabled></td>
+                                <td><input type="number" id="c22" disabled></td>
+                                <td><input type="text" id="c23" disabled></td>
+                                <td><input type="text" id="c24" disabled></td>
+                                <td><input type="text" id="c25" disabled></td>
+                            </tr>
+                            <tr class="input-row" id="row3">
+                                <td><input type="text" id="c31" disabled></td>
+                                <td><input type="number" id="c32" disabled></td>
+                                <td><input type="text" id="c33" disabled></td>
+                                <td><input type="text" id="c34" disabled></td>
+                                <td><input type="text" id="c35" disabled></td>
+                            </tr>
+                            <tr class="input-row" id="row4">
+                                <td><input type="text" id="c41" disabled></td>
+                                <td><input type="number" id="c42" disabled></td>
+                                <td><input type="text" id="c43" disabled></td>
+                                <td><input type="text" id="c44" disabled></td>
+                                <td><input type="text" id="c45" disabled></td>
+                            </tr>
+                            <tr class="input-row" id="row5">
+                                <td><input type="text" id="c51" disabled></td>
+                                <td><input type="number" id="c52" disabled></td>
+                                <td><input type="text" id="c53" disabled></td>
+                                <td><input type="text" id="c54" disabled></td>
+                                <td><input type="text" id="c55" disabled></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="tab-content-button">
+                        <thead>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div>
+                                        <label for="sumatmg" style="margin-left: auto; font-weight: bold">Total</label>
+                                        <input type="text" style="margin: 0px 0px 0px 10px;;" id="sumatmg" disabled>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>
+                                        <button type="button" onclick="cwcAbrir.cmdModificarClick()" id="button-modify-tmg">
+                                            <img src="./images/wrench.png" alt="Icon" class="button-wrench">
+                                            Modificar Receta</button>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>
+                                        <button type="button" onclick="cwcAbrir.cmdActualizarClick()">
+                                            <img src="./images/refresh.png" alt="Icon" class="button-wrench">
+                                            Actualizar Receta</button>                                        
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- INGREDIENTES BALANZA TAB -->
+                <div id="tab2" class="tab-content">
+                    <table id="ingredientsTable" class="ingredient-table">
+                        <thead>
+                            <tr>
+                                <th>Ingrediente</th>
+                                <th>Cantidad</th>
+                                <th>Unidad</th>
+                                <th>Descripción Ingrediente</th>
+                                <th>Comentario</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="input-row" id="row1">
+                                <td><input type="text" id="i11" disabled></td>
+                                <td><input type="number" id="i12" disabled></td>
+                                <td><input type="text" id="i13" disabled></td>
+                                <td><input type="text" id="i14" disabled></td>
+                                <td><input type="text" id="i15" disabled></td>
+                            </tr>
+                            <tr class="input-row" id="row2">
+                                <td><input type="text" id="i21" disabled></td>
+                                <td><input type="number" id="i22" disabled></td>
+                                <td><input type="text" id="i23" disabled></td>
+                                <td><input type="text" id="i24" disabled></td>
+                                <td><input type="text" id="i25" disabled></td>
+                            </tr>
+                            <tr class="input-row" id="row3">
+                                <td><input type="text" id="i31" disabled></td>
+                                <td><input type="number" id="i32" disabled></td>
+                                <td><input type="text" id="i33" disabled></td>
+                                <td><input type="text" id="i34" disabled></td>
+                                <td><input type="text" id="i35" disabled></td>
+                            </tr>
+                            <tr class="input-row" id="row4">
+                                <td><input type="text" id="i41" disabled></td>
+                                <td><input type="number" id="i42" disabled></td>
+                                <td><input type="text" id="i43" disabled></td>
+                                <td><input type="text" id="i44" disabled></td>
+                                <td><input type="text" id="i45" disabled></td>
+                            </tr>
+                            <tr class="input-row" id="row5">
+                                <td><input type="text" id="i51" disabled></td>
+                                <td><input type="number" id="i52" disabled></td>
+                                <td><input type="text" id="i53" disabled></td>
+                                <td><input type="text" id="i54" disabled></td>
+                                <td><input type="text" id="i55" disabled></td>
+                            </tr>
+                            <tr class="input-row" id="row6">
+                                <td><input type="text" id="i61" disabled></td>
+                                <td><input type="number" id="i62" disabled></td>
+                                <td><input type="text" id="i63" disabled></td>
+                                <td><input type="text" id="i64" disabled></td>
+                                <td><input type="text" id="i65" disabled></td>
+                            </tr>
+                            <tr class="input-row" id="row7">
+                                <td><input type="text" id="i71" disabled></td>
+                                <td><input type="number" id="i72" disabled></td>
+                                <td><input type="text" id="i73" disabled></td>
+                                <td><input type="text" id="i74" disabled></td>
+                                <td><input type="text" id="i75" disabled></td>
+                            </tr>
+                            <tr class="input-row" id="row8">
+                                <td><input type="text" id="i81" disabled></td>
+                                <td><input type="number" id="i82" disabled></td>
+                                <td><input type="text" id="i83" disabled></td>
+                                <td><input type="text" id="i84" disabled></td>
+                                <td><input type="text" id="i85" disabled></td>
+                            </tr>
+                            <tr class="input-row" id="row9">
+                                <td><input type="text" id="i91" disabled></td>
+                                <td><input type="number" id="i92" disabled></td>
+                                <td><input type="text" id="i93" disabled></td>
+                                <td><input type="text" id="i94" disabled></td>
+                                <td><input type="text" id="i95" disabled></td>
+                            </tr>
+                            <tr class="input-row" id="row10">
+                                <td><input type="text" id="i101" disabled></td>
+                                <td><input type="number" id="i102" disabled></td>
+                                <td><input type="text" id="i103" disabled></td>
+                                <td><input type="text" id="i104" disabled></td>
+                                <td><input type="text" id="i105" disabled></td>
+                            </tr>
+                            <tr class="input-row" id="row11">
+                                <td><input type="text" id="i111" disabled></td>
+                                <td><input type="number" id="i112" disabled></td>
+                                <td><input type="text" id="i113" disabled></td>
+                                <td><input type="text" id="i114" disabled></td>
+                                <td><input type="text" id="i115" disabled></td>
+                            </tr>
+                            <tr class="input-row" id="row12">
+                                <td><input type="text" id="i121" disabled></td>
+                                <td><input type="number" id="i122" disabled></td>
+                                <td><input type="text" id="i123" disabled></td>
+                                <td><input type="text" id="i124" disabled></td>
+                                <td><input type="text" id="i125" disabled></td>
+                            </tr>
+                            <tr class="input-row" id="row13">
+                                <td><input type="text" id="i131" disabled></td>
+                                <td><input type="number" id="i132" disabled></td>
+                                <td><input type="text" id="i133" disabled></td>
+                                <td><input type="text" id="i134" disabled></td>
+                                <td><input type="text" id="i135" disabled></td>
+                            </tr>
+                            <tr class="input-row" id="row14">
+                                <td><input type="text" id="i141" disabled></td>
+                                <td><input type="number" id="i142" disabled></td>
+                                <td><input type="text" id="i143" disabled></td>
+                                <td><input type="text" id="i144" disabled></td>
+                                <td><input type="text" id="i145" disabled></td>
+                            </tr>
+                            <tr class="input-row" id="row15">
+                                <td><input type="text" id="i151" disabled></td>
+                                <td><input type="number" id="i152" disabled></td>
+                                <td><input type="text" id="i153" disabled></td>
+                                <td><input type="text" id="i154" disabled></td>
+                                <td><input type="text" id="i155" disabled></td>
+                            </tr>
+                            <tr class="input-row" id="row16">
+                                <td><input type="text" id="i161" disabled></td>
+                                <td><input type="number" id="i162" disabled></td>
+                                <td><input type="text" id="i163" disabled></td>
+                                <td><input type="text" id="i164" disabled></td>
+                                <td><input type="text" id="i165" disabled></td>
+                            </tr>
+                            <tr class="input-row" id="row17">
+                                <td><input type="text" id="i171" disabled></td>
+                                <td><input type="number" id="i172" disabled></td>
+                                <td><input type="text" id="i173" disabled></td>
+                                <td><input type="text" id="i174" disabled></td>
+                                <td><input type="text" id="i175" disabled></td>
+                            </tr>
+                            <tr class="input-row" id="row18-extra">
+                                <th><label for="itmg" style="font-weight: bold;">TMG</label></th>
+                                <th><label for="icantidad" style="font-weight: bold;">Cantidad</label></th>
+                                <th><label for="iunidad" style="font-weight: bold;">Unidad</label></th>
+                                <th><label for="idescripcion" style="font-weight: bold;">Descripción Ingrediente</label></th>
+                                <th></th>
+                            </tr>
+                            <tr class="input-row" id="row19-extra">
+                                <td><input type="text" id="itmg" disabled></td>
+                                <td><input type="number" id="icantidad" disabled></td>
+                                <td><input type="text" id="iunidad" disabled></td>
+                                <td><input type="text" id="idescripcion" disabled></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="tab-content-button">
+                        <thead>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div>
+                                        <label for="sumabalanza" style="margin-left: auto; font-weight: bold">Total</label>
+                                        <input type="text" style="margin: 0px 0px 0px 10px;;" id="sumabalanza" disabled>
+                                    </div>                                    
+                                </td>
+                                <td>
+                                    <div>
+                                        <button type="button" onclick="cwcAbrir.cmdModificarClick()" id="button-modify-balanza">
+                                            <img src="./images/wrench.png" alt="Icon" class="button-wrench">
+                                            Modificar Receta</button>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>
+                                        <button type="button" onclick="cwcAbrir.cmdActualizarClick()">
+                                            <img src="./images/refresh.png" alt="Icon" class="button-wrench">
+                                            Actualizar Receta</button>                                        
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>                    
+                </div>
+
+                <!-- PARÁMETROS IPSA TAB -->
+                <div id="tab3" class="tab-content">
+                    
+                    <form>
+                        <!-- Tanque TGD -->
+                        <div class="form-section">
+                            <h3>Tanque TGD</h3>
+                            <table class="form-table">
+                                <tr>
+                                    <th>Controlador de Temperatura</th>
+                                    <th>Controlador de Agitador</th>
+                                    <th></th>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div>
+                                            <label for="ipsa6">Set Point (°C):</label>
+                                            <input type="text" id="ipsa6" name="tgd-temp" disabled>   
+                                        </div>
+                                        <div>
+                                            <label for="ipsa9">Banda Muerta:</label>
+                                            <input type="text" id="ipsa9" name="tgd-deadband" disabled>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <label for="ipsa10">Set Point (Nivel):</label>
+                                            <input type="text" id="ipsa10" name="tgd-agitator-level" disabled>
+                                        </div>
+                                        <div>
+                                            <label for="ipsa11">Banda Muerta:</label>
+                                            <input type="text" id="ipsa11" name="tgd-agitator-deadband" disabled>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <label for="ipsa23">Retardo Nivel Bajo:</label>
+                                            <input type="text" id="ipsa23" name="tgd-delay" disabled>
+                                        </div>
+                                        <div>
+                                            <label for="ipsa7">Tiempo homog:</label>
+                                            <input type="text" id="ipsa7" name="tgd-homogenization" disabled>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                
+                        <!-- Tanque TMG -->
+                        <div class="form-section">
+                            <h3>Tanque TMG</h3>
+                            <table class="form-table">
+                                <tr>
+                                    <td>
+                                        <div>
+                                            <label for="ipsa1">Set Point Temp Nivel Medio (°C):</label>
+                                            <input type="text" id="ipsa1" name="tmg-temp-mid" disabled>
+                                        </div>
+                                        <div>
+                                            <label for="ipsa2">Set Point Temp Nivel Alto (°C):</label>
+                                            <input type="text" id="ipsa2" name="tmg-temp-high" disabled>                                            
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <label for="ipsa21">Retardo Nivel Bajo:</label>
+                                            <input type="text" id="ipsa21" name="tmg-low-delay" disabled>                               
+                                        </div>
+                                        <div>
+                                            <label for="ipsa3">Tiempo homog lecitina (min):</label>
+                                            <input type="text" id="ipsa3" name="tmg-lec-homo" disabled>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <label for="ipsa4">Tiempo homog monoglic (min):</label>
+                                            <input type="text" id="ipsa4" name="tmg-mono-homo" disabled>
+                                        </div>
+                                        <div>
+                                            <label for="ipsa5">Tiempo homog final (min):</label>
+                                            <input type="text" id="ipsa5" name="tmg-final-homo" disabled>
+                                        </div>
+                                        
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <label for="ipsa22">Tiempo Soplado:</label>
+                                            <input type="text" id="ipsa22" name="tmg-blow" disabled>                         
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                
+                        <!-- Tanque RT -->
+                        <div class="form-section">
+                            <h3>Tanque RT</h3>
+                            <table class="form-table">
+                                <tr>
+                                    <table class="form-table vertical-align">
+                                        <tr>
+                                            <td>
+                                                <div>
+                                                    <label for="ipsa16">Nivel Carga Max:</label>
+                                                    <input type="text" id="ipsa16" name="rt-max-level" disabled>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div>
+                                                    <label for="ipsa17">Nivel Carga Min:</label>
+                                                    <input type="text" id="ipsa17" name="rt-min-level" disabled>
+                                                </div>                                                
+                                            </td>
+                                            <td>
+                                                <div>
+                                                    <label for="ipsa18">Nivel Petición:</label>
+                                                    <input type="text" id="ipsa18" name="rt-request-level" disabled>                                                                                         
+                                                </div>                                             
+                                            </td>
+                                            <td>
+                                                <div>
+                                                    <label for="ipsa26">Retorno Nivel Bajo:</label>
+                                                    <input type="text" id="ipsa26" name="rt-return-low" disabled>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div>
+                                                    <label for="ipsa20">Set Point Temperatura:</label>
+                                                    <input type="text" id="ipsa20" name="rt-temp-set" disabled>                                          
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </tr>
+                                <tr>
+                                    <table class="form-table">
+                                        <tr>
+                                            <th>Agitador 1</th>
+                                            <th>Agitador 2 (Válido para Linea 1)</th>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <table class="form-table inner-table">
+                                                    <tr>
+                                                        <td>
+                                                            <div>
+                                                                <label for="ipsa14">Set Point (Nivel):</label>
+                                                                <input type="text" id="ipsa14" name="rt-agitator1" disabled>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div>
+                                                                <label for="ipsa15">Banda Muerta:</label>
+                                                                <input type="text" id="ipsa15" name="rt-agitator1-deadband" disabled>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                            <td>
+                                                <table class="form-table inner-table">
+                                                    <tr>
+                                                        <td>
+                                                            <div>
+                                                                <label for="ipsa29">Set Point (Nivel):</label>
+                                                                <input type="text" id="ipsa29" name="rt-agitator2" disabled>
+                                                            </div>                                                            
+                                                        </td>
+                                                        <td>
+                                                            <div>
+                                                                <label for="ipsa30">Banda Muerta:</label>
+                                                                <input type="text" id="ipsa30" name="rt-agitator2-deadband" disabled>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </tr>
+                            </table>
+                        </div>
+                
+                        <!-- Tanque TPB -->
+                        <div class="form-section">
+                            <h3>Tanque TPB</h3>
+                            <table class="form-table">
+                                <tr>
+                                    <table class="form-table vertical-align">
+                                        <tr>
+                                            <td>
+                                                <div>
+                                                    <label for="ipsa8">Tiempo homog final (min):</label>
+                                                    <input type="text" id="ipsa8" name="tpb-final-homo" disabled>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div>
+                                                    <label for="ipsa25">Tiempo Soplado:</label>
+                                                    <input type="text" id="ipsa25" name="tpb-blow" disabled>
+                                                </div>                                                
+                                            </td>
+                                            <td>
+                                                <div>
+                                                    <label for="ipsa24">Retardo Nivel Bajo:</label>
+                                                    <input type="text" id="ipsa24" name="tpb-low-delay" disabled>                                                                
+                                                </div>                                             
+                                            </td>
+                                            <td>
+                                                <div>
+                                                    <label for="ipsa19">Set Point Temperatura:</label>
+                                                    <input type="text" id="ipsa19" name="tpb-temp-set" disabled>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </tr>
+                                <tr>
+                                    <table class="form-table">
+                                        <tr>
+                                            <th>Agitador 1</th>
+                                            <th>Agitador 2 (Válido para Linea 1)</th>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <table class="form-table inner-table">
+                                                    <tr>
+                                                        <td>
+                                                            <div>
+                                                                <label for="ipsa12">Set Point (Peso):</label>
+                                                                <input type="text" id="ipsa12" name="tpb-agitator1" disabled>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div>
+                                                                <label for="ipsa13">Banda Muerta:</label>
+                                                                <input type="text" id="ipsa13" name="tpb-agitator1-deadband" disabled>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                            <td>
+                                                <table class="form-table inner-table">
+                                                    <tr>
+                                                        <td>
+                                                            <div>
+                                                                <label for="ipsa27">Set Point (Peso):</label>
+                                                                <input type="text" id="ipsa27" name="tpb-agitator2" disabled>
+                                                            </div>                                                            
+                                                        </td>
+                                                        <td>
+                                                            <div>
+                                                                <label for="ipsa28">Banda Muerta:</label>
+                                                                <input type="text" id="ipsa28" name="tpb-agitator2-deadband" disabled>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </tr>
+                            </table>
+                        </div>
+                    </form>
+                    <table class="tab-content-button">
+                        <thead>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td></td>
+                                <td>
+                                    <div>
+                                        <button type="button" onclick="cwcAbrir.cmdModificarClick()" id="button-modify-ipsa">
+                                            <img src="./images/wrench.png" alt="Icon" class="button-wrench">
+                                            Modificar Receta</button>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>
+                                        <button type="button" onclick="cwcAbrir.cmdActualizarClick()">
+                                            <img src="./images/refresh.png" alt="Icon" class="button-wrench">
+                                            Actualizar Receta</button>                                        
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="right-content">
+            <div style="display: flex; flex-direction: column; align-items: center; font-size: 10pt;">
+                <label for="idCodeRecipe" style="width: 120px; text-align: center; margin-bottom: 5px; font-weight: bold;">Código de Receta</label>
+                <input type="text" id="idCodeRecipe" style="width: 100px; font-weight: bold; text-align: center;" name="recipe-code" disabled>
+            </div>
+            <button onclick="cwcAbrir.cmdGuardarClick()">
+                <img src="./images/icons8-save-50.png" alt="Icon" class="button-right">
+                Guardar
+            </button>
+            <button onclick="cwcAbrir.cmdComoClick()">
+                <img src="./images/icons8-save-as-50.png" alt="Icon" class="button-right">
+                Guardar Como
+            </button>
+            <button onclick="cwcAbrir.cmdEliminarClick()">
+                <img src="./images/icons8-delete-50.png" alt="Icon" class="button-right">
+                Eliminar
+            </button>
+            <button onclick="cwcAbrir.cmdTransferirClick()">
+                <img src="./images/icons8-write-64.png" alt="Icon" class="button-right">
+                Transferir
+            </button>
+            <button onclick="cwcAbrir.cmdImprimirClick()">
+                <img src="./images/icons8-print-50.png" alt="Icon" class="button-right">
+                Imprimir
+            </button>
+            <button onclick="cwcAbrir.cmdSalirClick()">
+                <img src="./images/icons8-exit-door-64.png" alt="Icon" class="button-right">
+                Salir
+            </button>
+        </div>
+    </div>
+</body>
+</html>
