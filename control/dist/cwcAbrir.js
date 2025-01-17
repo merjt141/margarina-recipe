@@ -1,12 +1,13 @@
 import { WebCCSimulator } from "./simulation.js";
 import { ComboBoxRecipe, PLCAgent, SQLAgent } from "./objects.js";
-import { validateInputElements } from "./utilities.js";
+import * as Library from "./modules/utilities.js";
 var CWCAbrir = /** @class */ (function () {
     function CWCAbrir() {
         this.ingredientsHeadArray = ["x_ingred", "n_valor", "x_unidad", "x_comen1", "x_comen2"];
         this.recipeData = "";
         this.recipeJsonData = [[], [], [], [], []];
-        this.numberFields = [];
+        this.ingredientsDOM = [[], []];
+        this.parametersDOM = [];
         this.editionDisabled = true;
         this.recipeInputList = {
             editable: {
@@ -19,7 +20,9 @@ var CWCAbrir = /** @class */ (function () {
                 tmg: [],
                 balanza: [],
                 ipsa: [],
-            }
+            },
+            resume: [["idCodeRecipe", "sumatmg"],
+                ["itmg", "icantidad", "iunidad", "idescripcion", "sumabalanza"]]
         };
         this.buildInputList();
         this.sqlAgent = new SQLAgent();
@@ -118,7 +121,8 @@ var CWCAbrir = /** @class */ (function () {
         this.clearInputFields();
         this.recipeData = jsonString;
         var data = JSON.parse(this.recipeData);
-        var sumaTMG = 0;
+        this.ingredientsDOM = [[], []];
+        this.parametersDOM = [];
         document.getElementById("idCodeRecipe").value = data[0][0].c_receta;
         // Hot ingredients
         data[0].forEach(function (item, i) {
@@ -126,8 +130,7 @@ var CWCAbrir = /** @class */ (function () {
                 var dynamicKey = element;
                 document.getElementById("h".concat(i + 1).concat(j + 1)).value = item[dynamicKey] || "";
             });
-            _this.numberFields.push(document.getElementById("h".concat(i + 1, "2")));
-            sumaTMG += Number(item.n_valor);
+            _this.ingredientsDOM[0].push(document.getElementById("h".concat(i + 1, "2")));
         });
         // Cold ingredients
         data[1].forEach(function (item, i) {
@@ -135,28 +138,24 @@ var CWCAbrir = /** @class */ (function () {
                 var dynamicKey = element;
                 document.getElementById("c".concat(i + 1).concat(j + 1)).value = item[dynamicKey] || "";
             });
-            _this.numberFields.push(document.getElementById("c".concat(i + 1, "2")));
-            sumaTMG += Number(item.n_valor);
+            _this.ingredientsDOM[0].push(document.getElementById("c".concat(i + 1, "2")));
         });
-        document.getElementById("sumatmg").value = sumaTMG.toString();
         // Ingredients
-        var sumaBalanza = 0;
         data[2].forEach(function (item, i) {
             _this.ingredientsHeadArray.forEach(function (element, j) {
                 var dynamicKey = element;
                 document.getElementById("i".concat(i + 1).concat(j + 1)).value = item[dynamicKey] || "";
             });
-            _this.numberFields.push(document.getElementById("i".concat(i + 1, "2")));
-            sumaBalanza += Number(item.n_valor);
+            _this.ingredientsDOM[1].push(document.getElementById("i".concat(i + 1, "2")));
         });
-        document.getElementById("icantidad").value = sumaBalanza.toString();
         // IPSA parameters
         data[3].forEach(function (item, i) {
             var inputLabel = document.getElementById("ipsa".concat(i + 1));
             item.n_valor == "" ? inputLabel.value = "0" : inputLabel.value = item.n_valor;
             //inputLabel.value = item.n_valor;
-            _this.numberFields.push(document.getElementById("ipsa".concat(i + 1)));
+            _this.parametersDOM.push(document.getElementById("ipsa".concat(i + 1)));
         });
+        Library.refrescoSuma(this);
     };
     CWCAbrir.prototype.tagDatabaseWrite = function (line) {
         var apiJson = {
@@ -221,7 +220,13 @@ var CWCAbrir = /** @class */ (function () {
             alert("No se seleccionó receta");
             return;
         }
-        if (!validateInputElements(this.numberFields)) {
+        if (!Library.validateInputElements(this.ingredientsDOM[0])) {
+            return;
+        }
+        if (!Library.validateInputElements(this.ingredientsDOM[1])) {
+            return;
+        }
+        if (!Library.validateInputElements(this.parametersDOM)) {
             return;
         }
         var originalData = JSON.parse(this.recipeData);

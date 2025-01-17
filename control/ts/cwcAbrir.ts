@@ -1,16 +1,17 @@
 import { WebCCSimulator } from "./simulation.js"
 import { ComboBoxRecipe, PLCAgent, SQLAgent } from "./objects.js";
-import { IngredientTable, RecipeInputList } from "./utilities.js";
-import { validateInputElements } from "./utilities.js";
+import * as Library from "./modules/utilities.js";
 
 export class CWCAbrir {
     recipeData: string;                 // Recipe data obtained through WinCC query
-    recipeJsonData: IngredientTable[][];
+    recipeJsonData: Library.IngredientTable[][];
     ingredientsHeadArray = ["x_ingred", "n_valor", "x_unidad", "x_comen1", "x_comen2"];
-    numberFields: HTMLInputElement[];
+    
+    ingredientsDOM: HTMLInputElement[][];
+    parametersDOM: HTMLInputElement[];
 
     editionDisabled: boolean;
-    recipeInputList: RecipeInputList;
+    recipeInputList: Library.RecipeInputList;
 
     sqlAgent: SQLAgent;                 // SQL Sever agent for query control
     plcAgent: PLCAgent;                 // PLC Agent for write tags value
@@ -23,8 +24,11 @@ export class CWCAbrir {
     constructor() {
         this.recipeData = "";
         this.recipeJsonData = [[],[],[],[],[]];
-        this.numberFields = [];
 
+
+        this.ingredientsDOM = [[],[]];
+        this.parametersDOM = [];
+        
         this.editionDisabled = true;
         this.recipeInputList = {
             editable: {
@@ -37,7 +41,9 @@ export class CWCAbrir {
                 tmg: [],
                 balanza: [],
                 ipsa: [],
-            }
+            },
+            resume: [["idCodeRecipe","sumatmg"],
+            ["itmg","icantidad","iunidad","idescripcion","sumabalanza"]]
         };
         this.buildInputList();
 
@@ -53,11 +59,11 @@ export class CWCAbrir {
     sqlQueryResponseHandler(response: string) {
         let packet = JSON.parse(response);
 
-        if (packet.action == "table") {
+        if (packet.action == "selectTable") {
             this.recipeJsonData = [[],[],[],[],[]];
 
-            let data = JSON.parse(JSON.stringify(packet.data)) as IngredientTable[];
-            data.forEach((item: IngredientTable, index: number) => {
+            let data = JSON.parse(JSON.stringify(packet.data)) as Library.IngredientTable[];
+            data.forEach((item: Library.IngredientTable, index: number) => {
                 this.recipeJsonData[Number(item.t_ingred)-1].push(item);
             })
 
@@ -65,8 +71,12 @@ export class CWCAbrir {
             this.writeRecipeData(this.recipeData);
         }
 
-        if (packet.action == "update") {
+        if (packet.action == "updateTable") {
             console.log("Received update SQL confirmation");
+        }
+
+        if (packet.action == "selectCombo") {
+            console.log("Received select combo");
         }
 
     }
@@ -141,46 +151,44 @@ export class CWCAbrir {
     writeRecipeData(jsonString: string) {
         this.clearInputFields();
         this.recipeData = jsonString;
-        const data = JSON.parse(this.recipeData) as IngredientTable[][];
-        let sumaTMG = 0;
+        const data = JSON.parse(this.recipeData) as Library.IngredientTable[][];
+
+        this.ingredientsDOM = [[],[]];
+        this.parametersDOM = [];
+        
         (document.getElementById("idCodeRecipe") as HTMLInputElement).value = data[0][0].c_receta;
         // Hot ingredients
-        data[0].forEach((item: IngredientTable, i: number) => {
+        data[0].forEach((item: Library.IngredientTable, i: number) => {
             this.ingredientsHeadArray.forEach((element: string, j: number) => {
-                const dynamicKey: keyof IngredientTable = element as keyof IngredientTable;
+                const dynamicKey: keyof Library.IngredientTable = element as keyof Library.IngredientTable;
                 (document.getElementById(`h${i + 1}${j + 1}`) as HTMLInputElement).value = item[dynamicKey] || "";
             });
-            this.numberFields.push(document.getElementById(`h${i + 1}2`) as HTMLInputElement);
-            sumaTMG += Number(item.n_valor);
+            this.ingredientsDOM[0].push(document.getElementById(`h${i + 1}2`) as HTMLInputElement);
         });
         // Cold ingredients
-        data[1].forEach((item: IngredientTable, i: number) => {
+        data[1].forEach((item: Library.IngredientTable, i: number) => {
             this.ingredientsHeadArray.forEach((element: string, j: number) => {
-                const dynamicKey: keyof IngredientTable = element as keyof IngredientTable;
+                const dynamicKey: keyof Library.IngredientTable = element as keyof Library.IngredientTable;
                 (document.getElementById(`c${i + 1}${j + 1}`) as HTMLInputElement).value = item[dynamicKey] || "";
             });
-            this.numberFields.push(document.getElementById(`c${i + 1}2`) as HTMLInputElement);
-            sumaTMG += Number(item.n_valor);
+            this.ingredientsDOM[0].push(document.getElementById(`c${i + 1}2`) as HTMLInputElement);
         });
-        (document.getElementById("sumatmg") as HTMLInputElement).value = sumaTMG.toString();
         // Ingredients
-        let sumaBalanza = 0;
-        data[2].forEach((item: IngredientTable, i: number) => {
+        data[2].forEach((item: Library.IngredientTable, i: number) => {
             this.ingredientsHeadArray.forEach((element: string, j: number) => {
-                const dynamicKey: keyof IngredientTable = element as keyof IngredientTable;
+                const dynamicKey: keyof Library.IngredientTable = element as keyof Library.IngredientTable;
                 (document.getElementById(`i${i + 1}${j + 1}`) as HTMLInputElement).value = item[dynamicKey] || "";
             });
-            this.numberFields.push(document.getElementById(`i${i + 1}2`) as HTMLInputElement);
-            sumaBalanza += Number(item.n_valor);
+            this.ingredientsDOM[1].push(document.getElementById(`i${i + 1}2`) as HTMLInputElement);
         });
-        (document.getElementById("icantidad") as HTMLInputElement).value = sumaBalanza.toString();
         // IPSA parameters
-        data[3].forEach((item: IngredientTable, i:number) => {
+        data[3].forEach((item: Library.IngredientTable, i:number) => {
             const inputLabel = document.getElementById(`ipsa${i + 1}`) as HTMLInputElement;
             item.n_valor == "" ? inputLabel.value = "0" : inputLabel.value = item.n_valor;
             //inputLabel.value = item.n_valor;
-            this.numberFields.push(document.getElementById(`ipsa${i + 1}`) as HTMLInputElement);
+            this.parametersDOM.push(document.getElementById(`ipsa${i + 1}`) as HTMLInputElement);
         });
+        Library.refrescoSuma(this);
     }
 
     tagDatabaseWrite(line: number) {
@@ -191,7 +199,7 @@ export class CWCAbrir {
         let originalData = JSON.parse(this.recipeData);
 
         apiJson.data.pop();
-        let hSize = originalData[0] as IngredientTable[];
+        let hSize = originalData[0] as Library.IngredientTable[];
         for ( let i = 0; i < hSize.length; i++) {
             let n_value = document.getElementById(`h${i + 1}2`) as HTMLInputElement;
             let x_comen1 = document.getElementById(`h${i + 1}4`) as HTMLInputElement;
@@ -207,7 +215,7 @@ export class CWCAbrir {
             }
             apiJson.data.push(tagData);
         }
-        let cSize = originalData[1] as IngredientTable[];
+        let cSize = originalData[1] as Library.IngredientTable[];
         for ( let i = 0; i < cSize.length; i++) {
             let n_value = document.getElementById(`c${i + 1}2`) as HTMLInputElement;
             let x_comen1 = document.getElementById(`c${i + 1}4`) as HTMLInputElement;
@@ -223,7 +231,7 @@ export class CWCAbrir {
             }
             apiJson.data.push(tagData);
         }
-        let iSize = originalData[2] as IngredientTable[];
+        let iSize = originalData[2] as Library.IngredientTable[];
         for ( let i = 0; i < iSize.length; i++) {
             let n_value = document.getElementById(`i${i + 1}2`) as HTMLInputElement;
             let x_comen1 = document.getElementById(`i${i + 1}4`) as HTMLInputElement;
@@ -239,7 +247,7 @@ export class CWCAbrir {
             }
             apiJson.data.push(tagData);
         }
-        this.plcAgent.write(this, JSON.stringify(apiJson));
+        this.plcAgent.write(this, JSON.stringify(apiJson), "writeRecipe");
     }
 
     cmdGuardarClickEvent() {
@@ -249,43 +257,49 @@ export class CWCAbrir {
             return;
         }
         
-        if (!validateInputElements(this.numberFields)) {
+        if (!Library.validateInputElements(this.ingredientsDOM[0])) {
+            return;
+        }
+        if (!Library.validateInputElements(this.ingredientsDOM[1])) {
+            return;
+        }
+        if (!Library.validateInputElements(this.parametersDOM)) {
             return;
         }
     
         let originalData = JSON.parse(this.recipeData);
 
-        let hSize = originalData[0] as IngredientTable[];
+        let hSize = originalData[0] as Library.IngredientTable[];
         for (let i = 0; i < hSize.length; i++) {
             let n_value = document.getElementById(`h${i + 1}2`) as HTMLInputElement;
             let x_comen1 = document.getElementById(`h${i + 1}4`) as HTMLInputElement;
             let x_comen2 = document.getElementById(`h${i + 1}5`) as HTMLInputElement;
             let queryString = `Use ENV_MARG; update DETALLE_RECETA set n_valor = ${n_value.value}, x_comen1 = '${x_comen1.value}', x_comen2 = '${x_comen2.value}' where c_receta = '${recipeId}' and c_ingred = '${hSize[i]["c_ingred"]}';`
-            this.sqlAgent.execute(this, queryString);
+            this.sqlAgent.execute(this, queryString, "updateTable");
         }
-        let cSize = originalData[1] as IngredientTable[];
+        let cSize = originalData[1] as Library.IngredientTable[];
         for (let i = 0; i < cSize.length; i++) {
             let n_value = document.getElementById(`c${i + 1}2`) as HTMLInputElement;
             let x_comen1 = document.getElementById(`c${i + 1}4`) as HTMLInputElement;
             let x_comen2 = document.getElementById(`c${i + 1}5`) as HTMLInputElement;
             let queryString = `Use ENV_MARG; update DETALLE_RECETA set n_valor = ${n_value.value}, x_comen1 = '${x_comen1.value}', x_comen2 = '${x_comen2.value}' where c_receta = '${recipeId}' and c_ingred = '${cSize[i]["c_ingred"]}';`
-            this.sqlAgent.execute(this, queryString);
+            this.sqlAgent.execute(this, queryString, "updateTable");
         }
-        let iSize = originalData[2] as IngredientTable[];
+        let iSize = originalData[2] as Library.IngredientTable[];
         for (let i = 0; i < iSize.length; i++) {
             let n_value = document.getElementById(`i${i + 1}2`) as HTMLInputElement;
             let x_comen1 = document.getElementById(`i${i + 1}4`) as HTMLInputElement;
             let x_comen2 = document.getElementById(`i${i + 1}5`) as HTMLInputElement;
             let queryString = `Use ENV_MARG; update DETALLE_RECETA set n_valor = ${n_value.value}, x_comen1 = '${x_comen1.value}', x_comen2 = '${x_comen2.value}' where c_receta = '${recipeId}' and c_ingred = '${iSize[i]["c_ingred"]}';`
-            this.sqlAgent.execute(this, queryString);
+            this.sqlAgent.execute(this, queryString, "updateTable");
         }
-        let ipsaSize = originalData[3] as IngredientTable[];
+        let ipsaSize = originalData[3] as Library.IngredientTable[];
         for (let i = 0; i < ipsaSize.length; i++) {
             let n_value = document.getElementById(`ipsa${i + 1}`) as HTMLInputElement;
             let value: any;
             n_value.value == "0" ? value = null : value = n_value.value;
             let queryString = `Use ENV_MARG; update DETALLE_RECETA set n_valor = ${value} where c_receta = '${recipeId}' and c_ingred = '${ipsaSize[i]["c_ingred"]}';`
-            this.sqlAgent.execute(this, queryString);
+            this.sqlAgent.execute(this, queryString, "updateTable");
         }
     }
 

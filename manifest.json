@@ -61,12 +61,18 @@
 						"arguments": {
 							"queryString": {
 								"type": "string"
+							},
+							"action": {
+								"type": "string"
 							}
 						}
 					},
 					"writePLC": {
 						"arguments": {
 							"writeCommand":{
+								"type": "string"
+							},
+							"action": {
 								"type": "string"
 							}
 						}

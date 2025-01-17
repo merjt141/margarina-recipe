@@ -38,7 +38,7 @@ export class ComboBoxRecipe {
         queryString += `from RECETA r inner join DETALLE_RECETA d on r.c_receta = d.c_receta inner join INGREDIENTES i on d.c_ingred = i.c_ingred `;
         queryString += `where r.c_receta = '${selectedBox}';`;
 
-        this.object.sqlAgent.execute(this.object, queryString);
+        this.object.sqlAgent.execute(this.object, queryString, "selectTable");
     }
 }
 
@@ -47,11 +47,11 @@ export class SQLAgent {
 
     }
 
-    execute(object:CWCAbrir, queryString: string) {
+    execute(object:CWCAbrir, queryString: string, action: string) {
         console.log(queryString);
 
         try {
-            WebCC.Events.fire('executeQuery', queryString);
+            WebCC.Events.fire('executeQuery', queryString, action);
         } catch (error) {
             console.log("Not access to WebCC API: Go Simulation");
             object.webCCSimulator.executeQuery(queryString);
@@ -68,11 +68,11 @@ export class PLCAgent {
 
     }
 
-    write(object:CWCAbrir, writeCommand: string) {
+    write(object:CWCAbrir, writeCommand: string, action: string) {
         console.log(writeCommand);
 
         try {
-            WebCC.Events.fire('writePLC', writeCommand);
+            WebCC.Events.fire('writePLC', writeCommand, action);
         } catch (error) {
             console.log("Not access to WebCC API");
             object.webCCSimulator.writePLC(writeCommand);
