@@ -40,6 +40,9 @@ var CWCAbrir = /** @class */ (function () {
             this.recipeData = JSON.stringify(this.recipeJsonData);
             this.writeRecipeData(this.recipeData);
         }
+        if (packet.action == "update") {
+            console.log("Received update SQL confirmation");
+        }
     };
     CWCAbrir.prototype.plcWriteResponseHandler = function (response) {
     };
@@ -281,7 +284,7 @@ var CWCAbrir = /** @class */ (function () {
     CWCAbrir.prototype.cmdEliminarClick = function () {
     };
     CWCAbrir.prototype.cmdTransferirClick = function () {
-        window.open("./views/tansfer.html", "PopopWindow", "width=600,height=400,scrollbars=yes,resizable=yes");
+        var win = window.open("./views/tansfer.html", "PopopWindow", "width=600,height=240,scrollbars=no,resizable=no");
     };
     CWCAbrir.prototype.cmdImprimirClick = function () {
     };

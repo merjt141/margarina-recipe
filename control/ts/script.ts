@@ -17,6 +17,7 @@ function initializeWebApp() {
     window.cwcAbrir = cwcAbrir;
 }
 
+// WebCC of Custom Web Control declaration for WinCC Unified
 WebCC.start(function(result: any){
     if(result){
         console.log('connected successfully');

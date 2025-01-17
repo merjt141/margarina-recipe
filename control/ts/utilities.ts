@@ -1,4 +1,5 @@
 export const ingredientsPropArray = ["x_ingred", "n_valor"];
+
 export interface RecipeInputList {
     editable: {
         tmg: string[],

@@ -65,6 +65,10 @@ export class CWCAbrir {
             this.writeRecipeData(this.recipeData);
         }
 
+        if (packet.action == "update") {
+            console.log("Received update SQL confirmation");
+        }
+
     }
 
     plcWriteResponseHandler(response: string) {
@@ -320,7 +324,7 @@ export class CWCAbrir {
     }
 
     cmdTransferirClick() {
-        window.open("./views/tansfer.html", "PopopWindow", "width=600,height=400,scrollbars=yes,resizable=yes");
+        const win = window.open("./views/tansfer.html", "PopopWindow", "width=600,height=240,scrollbars=no,resizable=no");
     }
 
     cmdImprimirClick() {
