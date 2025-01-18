@@ -1,10 +1,11 @@
 import { WebCCSimulator } from "./simulation.js"
-import { ComboBoxRecipe, PLCAgent, SQLAgent } from "./objects.js";
 import * as Library from "./modules/utilities.js";
 
-export class CWCAbrir {
+export class CWCAbrir implements Library.SQLObject, Library.PLCObject {
     recipeData: string;                 // Recipe data obtained through WinCC query
     recipeJsonData: Library.IngredientTable[][];
+    recipeList: string;
+
     ingredientsHeadArray = ["x_ingred", "n_valor", "x_unidad", "x_comen1", "x_comen2"];
     
     ingredientsDOM: HTMLInputElement[][];
@@ -13,17 +14,18 @@ export class CWCAbrir {
     editionDisabled: boolean;
     recipeInputList: Library.RecipeInputList;
 
-    sqlAgent: SQLAgent;                 // SQL Sever agent for query control
-    plcAgent: PLCAgent;                 // PLC Agent for write tags value
-    recipeComboBox: ComboBoxRecipe;     // ComboBox object instance for recipe app 
+    sqlAgent: Library.SQLAgent;                 // SQL Sever agent for query control
+    plcAgent: Library.PLCAgent;                 // PLC Agent for write tags value
+    recipeComboBox: Library.ComboBoxRecipe;     // ComboBox object instance for recipe app 
 
-    webCCSimulator: WebCCSimulator;
+    webCCSimulator: WebCCSimulator;             // For simulation in developer environment
 
-    copsa: boolean;
+    copsa: boolean;                             // Area of production
 
     constructor() {
         this.recipeData = "";
         this.recipeJsonData = [[],[],[],[],[]];
+        this.recipeList = "";
 
 
         this.ingredientsDOM = [[],[]];
@@ -45,40 +47,38 @@ export class CWCAbrir {
             resume: [["idCodeRecipe","sumatmg"],
             ["itmg","icantidad","iunidad","idescripcion","sumabalanza"]]
         };
-        this.buildInputList();
 
-        this.sqlAgent = new SQLAgent();
-        this.plcAgent = new PLCAgent();
-        this.recipeComboBox = new ComboBoxRecipe("cbRecipes", this);
+        this.sqlAgent = new Library.SQLAgent();
+        this.plcAgent = new Library.PLCAgent();
+        this.recipeComboBox = new Library.ComboBoxRecipe("cbRecipes", this);
 
         this.webCCSimulator = new WebCCSimulator(this);
 
         this.copsa = false;
+
+        this.buildInputList();
+        Library.listaCodigos(this.copsa, this);
     }
 
     sqlQueryResponseHandler(response: string) {
         let packet = JSON.parse(response);
-
-        if (packet.action == "selectTable") {
-            this.recipeJsonData = [[],[],[],[],[]];
-
-            let data = JSON.parse(JSON.stringify(packet.data)) as Library.IngredientTable[];
-            data.forEach((item: Library.IngredientTable, index: number) => {
-                this.recipeJsonData[Number(item.t_ingred)-1].push(item);
-            })
-
-            this.recipeData = JSON.stringify(this.recipeJsonData);
-            this.writeRecipeData(this.recipeData);
+        switch(packet.action) {
+            case "selectCombo":
+                Library.listaCodigosCallback(packet.data, this);
+                break;
+            case "selectTable":
+                this.recipeJsonData = [[],[],[],[],[]];
+                let data = JSON.parse(JSON.stringify(packet.data)) as Library.IngredientTable[];
+                data.forEach((item: Library.IngredientTable, index: number) => {
+                    this.recipeJsonData[Number(item.t_ingred)-1].push(item);
+                })
+                this.recipeData = JSON.stringify(this.recipeJsonData);
+                this.writeRecipeData(this.recipeData);
+                break;
+            case "updateTable":
+                console.log("Received update SQL confirmation");
+                break;
         }
-
-        if (packet.action == "updateTable") {
-            console.log("Received update SQL confirmation");
-        }
-
-        if (packet.action == "selectCombo") {
-            console.log("Received select combo");
-        }
-
     }
 
     plcWriteResponseHandler(response: string) {

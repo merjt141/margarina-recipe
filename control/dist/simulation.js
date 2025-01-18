@@ -1,7 +1,7 @@
 var WebCCSimulator = /** @class */ (function () {
     function WebCCSimulator(object) {
         this.jsonString1 = JSON.stringify({
-            action: "table",
+            action: "selectTable",
             data: [
                 { "c_receta": "P01", "x_receta": "P. HOJALDRE 2 Kg.", "n_valor": "1", "x_comen1": "GRINDSTED PS 404", "x_comen2": "", "c_ingred": "P02", "x_ingred": "Emulsif. Caliente1 TMG", "x_unidad": "%", "t_ingred": "1" },
                 { "c_receta": "P01", "x_receta": "P. HOJALDRE 2 Kg.", "n_valor": "0.8", "x_comen1": "LECITINA DE SOYA", "x_comen2": "", "c_ingred": "P23", "x_ingred": "Emulsif. Frío1 TMG", "x_unidad": "%", "t_ingred": "2" },
@@ -42,7 +42,7 @@ var WebCCSimulator = /** @class */ (function () {
             ]
         });
         this.jsonString2 = JSON.stringify({
-            action: "table",
+            action: "selectTable",
             data: [
                 { "c_receta": "P01", "x_receta": "P. HOJALDRE 2 Kg.", "n_valor": "1.1", "x_comen1": "GRINDSTED PS 404", "x_comen2": "", "c_ingred": "P02", "x_ingred": "Emulsif. Caliente1 TMG", "x_unidad": "%", "t_ingred": "1" },
                 { "c_receta": "P01", "x_receta": "P. HOJALDRE 2 Kg.", "n_valor": "0.8", "x_comen1": "LECITINA DE SOYA", "x_comen2": "", "c_ingred": "P23", "x_ingred": "Emulsif. Frío1 TMG", "x_unidad": "%", "t_ingred": "2" },
@@ -83,7 +83,7 @@ var WebCCSimulator = /** @class */ (function () {
             ]
         });
         this.jsonString3 = JSON.stringify({
-            action: "table",
+            action: "selectTable",
             data: [
                 { "c_receta": "P01", "x_receta": "P. HOJALDRE 2 Kg.", "n_valor": "1.1", "x_comen1": "GRINDSTED PS 404", "x_comen2": "", "c_ingred": "P02", "x_ingred": "Emulsif. Caliente1 TMG", "x_unidad": "%", "t_ingred": "1" },
                 { "c_receta": "P01", "x_receta": "P. HOJALDRE 2 Kg.", "n_valor": "1.8", "x_comen1": "LECITINA DE SOYA", "x_comen2": "", "c_ingred": "P23", "x_ingred": "Emulsif. Frío1 TMG", "x_unidad": "%", "t_ingred": "2" },
@@ -124,24 +124,41 @@ var WebCCSimulator = /** @class */ (function () {
                 { "c_receta": "P01", "x_receta": "P. HOJALDRE 2 Kg.", "n_valor": "0.05", "x_comen1": "", "": "", "c_ingred": "R30", "x_ingred": "", "x_unidad": "%", "t_ingred": "4" },
             ]
         });
+        this.comboList = {
+            action: "selectCombo",
+            data: [
+                { "c_receta": "P01", "x_receta": "P. HOJALDRE 2 Kg." },
+                { "c_receta": "P02", "x_receta": "M. PRIMOR" },
+                { "c_receta": "P03", "x_receta": "MARGARINA DEL." },
+                { "c_receta": "P04", "x_receta": "1/2 MANT. ORGANICA" },
+            ]
+        };
         this.object = object;
     }
-    WebCCSimulator.prototype.executeQuery = function (jsonString) {
-        var a = document.getElementById("cbRecipes");
-        var b = a.options[a.selectedIndex].id;
-        var sendString = "";
-        switch (b) {
-            case "P01":
-                sendString = this.jsonString1;
+    WebCCSimulator.prototype.executeQuery = function (jsonString, action) {
+        switch (action) {
+            case "selectTable":
+                var a = document.getElementById("cbRecipes");
+                var b = a.options[a.selectedIndex].id;
+                var sendString = "";
+                switch (b) {
+                    case "P01":
+                        sendString = this.jsonString1;
+                        break;
+                    case "P02":
+                        sendString = this.jsonString2;
+                        break;
+                    case "P03":
+                        sendString = this.jsonString3;
+                        break;
+                }
+                this.object.sqlAgent.response(this.object, sendString);
                 break;
-            case "P02":
-                sendString = this.jsonString2;
+            case "selectCombo":
+                this.object.sqlAgent.response(this.object, JSON.stringify(this.comboList));
                 break;
-            case "P03":
-                sendString = this.jsonString3;
-                break;
+            case "updateTable":
         }
-        this.object.sqlAgent.response(this.object, sendString);
     };
     WebCCSimulator.prototype.writePLC = function (writeCommand) {
         console.log(writeCommand);

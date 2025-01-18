@@ -1,11 +1,11 @@
 import { WebCCSimulator } from "./simulation.js";
-import { ComboBoxRecipe, PLCAgent, SQLAgent } from "./objects.js";
 import * as Library from "./modules/utilities.js";
 var CWCAbrir = /** @class */ (function () {
     function CWCAbrir() {
         this.ingredientsHeadArray = ["x_ingred", "n_valor", "x_unidad", "x_comen1", "x_comen2"];
         this.recipeData = "";
         this.recipeJsonData = [[], [], [], [], []];
+        this.recipeList = "";
         this.ingredientsDOM = [[], []];
         this.parametersDOM = [];
         this.editionDisabled = true;
@@ -24,27 +24,33 @@ var CWCAbrir = /** @class */ (function () {
             resume: [["idCodeRecipe", "sumatmg"],
                 ["itmg", "icantidad", "iunidad", "idescripcion", "sumabalanza"]]
         };
-        this.buildInputList();
-        this.sqlAgent = new SQLAgent();
-        this.plcAgent = new PLCAgent();
-        this.recipeComboBox = new ComboBoxRecipe("cbRecipes", this);
+        this.sqlAgent = new Library.SQLAgent();
+        this.plcAgent = new Library.PLCAgent();
+        this.recipeComboBox = new Library.ComboBoxRecipe("cbRecipes", this);
         this.webCCSimulator = new WebCCSimulator(this);
         this.copsa = false;
+        this.buildInputList();
+        Library.listaCodigos(this.copsa, this);
     }
     CWCAbrir.prototype.sqlQueryResponseHandler = function (response) {
         var _this = this;
         var packet = JSON.parse(response);
-        if (packet.action == "table") {
-            this.recipeJsonData = [[], [], [], [], []];
-            var data = JSON.parse(JSON.stringify(packet.data));
-            data.forEach(function (item, index) {
-                _this.recipeJsonData[Number(item.t_ingred) - 1].push(item);
-            });
-            this.recipeData = JSON.stringify(this.recipeJsonData);
-            this.writeRecipeData(this.recipeData);
-        }
-        if (packet.action == "update") {
-            console.log("Received update SQL confirmation");
+        switch (packet.action) {
+            case "selectCombo":
+                Library.listaCodigosCallback(packet.data, this);
+                break;
+            case "selectTable":
+                this.recipeJsonData = [[], [], [], [], []];
+                var data = JSON.parse(JSON.stringify(packet.data));
+                data.forEach(function (item, index) {
+                    _this.recipeJsonData[Number(item.t_ingred) - 1].push(item);
+                });
+                this.recipeData = JSON.stringify(this.recipeJsonData);
+                this.writeRecipeData(this.recipeData);
+                break;
+            case "updateTable":
+                console.log("Received update SQL confirmation");
+                break;
         }
     };
     CWCAbrir.prototype.plcWriteResponseHandler = function (response) {
@@ -212,7 +218,7 @@ var CWCAbrir = /** @class */ (function () {
             };
             apiJson.data.push(tagData);
         }
-        this.plcAgent.write(this, JSON.stringify(apiJson));
+        this.plcAgent.write(this, JSON.stringify(apiJson), "writeRecipe");
     };
     CWCAbrir.prototype.cmdGuardarClickEvent = function () {
         var recipeId = this.recipeComboBox.domObject.options[this.recipeComboBox.domObject.selectedIndex].id;
@@ -236,7 +242,7 @@ var CWCAbrir = /** @class */ (function () {
             var x_comen1 = document.getElementById("h".concat(i + 1, "4"));
             var x_comen2 = document.getElementById("h".concat(i + 1, "5"));
             var queryString = "Use ENV_MARG; update DETALLE_RECETA set n_valor = ".concat(n_value.value, ", x_comen1 = '").concat(x_comen1.value, "', x_comen2 = '").concat(x_comen2.value, "' where c_receta = '").concat(recipeId, "' and c_ingred = '").concat(hSize[i]["c_ingred"], "';");
-            this.sqlAgent.execute(this, queryString);
+            this.sqlAgent.execute(this, queryString, "updateTable");
         }
         var cSize = originalData[1];
         for (var i = 0; i < cSize.length; i++) {
@@ -244,7 +250,7 @@ var CWCAbrir = /** @class */ (function () {
             var x_comen1 = document.getElementById("c".concat(i + 1, "4"));
             var x_comen2 = document.getElementById("c".concat(i + 1, "5"));
             var queryString = "Use ENV_MARG; update DETALLE_RECETA set n_valor = ".concat(n_value.value, ", x_comen1 = '").concat(x_comen1.value, "', x_comen2 = '").concat(x_comen2.value, "' where c_receta = '").concat(recipeId, "' and c_ingred = '").concat(cSize[i]["c_ingred"], "';");
-            this.sqlAgent.execute(this, queryString);
+            this.sqlAgent.execute(this, queryString, "updateTable");
         }
         var iSize = originalData[2];
         for (var i = 0; i < iSize.length; i++) {
@@ -252,7 +258,7 @@ var CWCAbrir = /** @class */ (function () {
             var x_comen1 = document.getElementById("i".concat(i + 1, "4"));
             var x_comen2 = document.getElementById("i".concat(i + 1, "5"));
             var queryString = "Use ENV_MARG; update DETALLE_RECETA set n_valor = ".concat(n_value.value, ", x_comen1 = '").concat(x_comen1.value, "', x_comen2 = '").concat(x_comen2.value, "' where c_receta = '").concat(recipeId, "' and c_ingred = '").concat(iSize[i]["c_ingred"], "';");
-            this.sqlAgent.execute(this, queryString);
+            this.sqlAgent.execute(this, queryString, "updateTable");
         }
         var ipsaSize = originalData[3];
         for (var i = 0; i < ipsaSize.length; i++) {
@@ -260,7 +266,7 @@ var CWCAbrir = /** @class */ (function () {
             var value = void 0;
             n_value.value == "0" ? value = null : value = n_value.value;
             var queryString = "Use ENV_MARG; update DETALLE_RECETA set n_valor = ".concat(value, " where c_receta = '").concat(recipeId, "' and c_ingred = '").concat(ipsaSize[i]["c_ingred"], "';");
-            this.sqlAgent.execute(this, queryString);
+            this.sqlAgent.execute(this, queryString, "updateTable");
         }
     };
     /**

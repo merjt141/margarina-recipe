@@ -1,5 +1,6 @@
 export const ingredientsPropArray = ["x_ingred", "n_valor"];
 import { CWCAbrir } from "../cwcAbrir.js"
+import { WebCCSimulator } from "../simulation.js";
 
 export interface RecipeInputList {
     editable: {
@@ -30,6 +31,119 @@ export interface RecipeData {
     parameters: string[],
 }
 
+export interface IngredientTable {
+    c_receta: string,
+    x_receta: string,
+    n_valor: string,
+    x_comen1: string,
+    x_comen2: string,
+    c_ingred: string,
+    x_ingred: string,
+    x_unidad: string,
+    t_ingred: string,
+}
+
+export interface RecipeTable {
+    c_receta: string,
+    x_receta: string,
+}
+
+export interface SQLObject {
+    sqlAgent: SQLAgent;
+    webCCSimulator: WebCCSimulator;
+    sqlQueryResponseHandler: (response: string) => void;
+}
+
+export interface PLCObject {
+    plcAgent: PLCAgent;
+    webCCSimulator: WebCCSimulator;
+    plcWriteResponseHandler: (response: string) => void;
+}
+
+export class ComboBoxRecipe {
+    domObject: HTMLSelectElement;
+    object: SQLObject;
+
+    constructor(domId: string, object: SQLObject) {
+        this.domObject = document.getElementById(domId) as HTMLSelectElement;
+        this.object = object;
+
+        this.domObject.addEventListener('change', () => {
+            this.select();
+        })
+    }
+
+    /**
+     * Update combo box data
+     * @param {string} data 
+     */
+    update(data: string) {
+        const obj = JSON.parse(typeof(data) == "string" ? data : JSON.stringify(data));
+        this.domObject.textContent = '';
+        for (let i = 0; i < obj.length; i++){
+            let option = document.createElement("option") as HTMLOptionElement;
+            option.id = obj[i].c_receta;
+            option.innerHTML = obj[i].x_receta;
+            this.domObject.appendChild(option);
+        }
+    }
+
+    /**
+     * Select element from combo box
+     */
+    select() {
+        let selectedBox = this.domObject.options[this.domObject.selectedIndex].id;
+
+        let queryString = `Use ENV_MARG; select r.c_receta, r.x_receta, d.n_valor, d.x_comen1, d.x_comen2, i.c_ingred, i.x_ingred, i.x_unidad, i.t_ingred `;
+        queryString += `from RECETA r inner join DETALLE_RECETA d on r.c_receta = d.c_receta inner join INGREDIENTES i on d.c_ingred = i.c_ingred `;
+        queryString += `where r.c_receta = '${selectedBox}';`;
+
+        this.object.sqlAgent.execute(this.object, queryString, "selectTable");
+    }
+}
+
+export class SQLAgent {
+    constructor() {
+
+    }
+
+    execute(object:SQLObject, queryString: string, action: string) {
+        console.log(queryString);
+
+        try {
+            WebCC.Events.fire('executeQuery', queryString, action);
+        } catch (error) {
+            console.log("Not access to WebCC API: Go Simulation");
+            object.webCCSimulator.executeQuery(queryString, action);
+        }
+    }
+
+    response(object: SQLObject, response: string) {
+        object.sqlQueryResponseHandler(response);
+    }
+}
+
+export class PLCAgent {
+    constructor() {
+
+    }
+
+    write(object:PLCObject, writeCommand: string, action: string) {
+        console.log(writeCommand);
+
+        try {
+            WebCC.Events.fire('writePLC', writeCommand, action);
+        } catch (error) {
+            console.log("Not access to WebCC API");
+            object.webCCSimulator.writePLC(writeCommand);
+        }
+    }
+
+    response(object: PLCObject, response: string) {
+        object.plcWriteResponseHandler(response);
+    }
+}
+
 let DataTable: RecipeData = {
     tmg: {
         value: new Array(10),
@@ -45,18 +159,6 @@ let DataTable: RecipeData = {
 }
 
 let MemoryData: RecipeData[] = [{...DataTable}, {...DataTable}];
-
-export interface IngredientTable {
-    c_receta: string;
-    x_receta: string;
-    n_valor: string;
-    x_comen1: string;
-    x_comen2: string;
-    c_ingred: string;
-    x_ingred: string;
-    x_unidad: string;
-    t_ingred: string;
-}
 
 /**
  * Validate values in input fields
@@ -135,7 +237,7 @@ export function saveTemporalData(index: number) {
 }
 
 /**
- * 
+ * Check if values of memory are the same
  * @returns Check if values of memory are the same
  */
 export function sonIguales() {
@@ -172,6 +274,10 @@ export function parametrosTanquesOk() {
     return true;
 }
 
+/**
+ * Check if values of Ingreidents are ok
+ * @param object Custom Web Control Abrir
+ */
 export function valoresOk(object: CWCAbrir) {
     object.ingredientsDOM[1].forEach((item: HTMLInputElement, index: number) => {
         let value = item.value;
@@ -189,11 +295,12 @@ export function valoresOk(object: CWCAbrir) {
     });
 }
 
-export function listaCodigos(planta: boolean, object: CWCAbrir) {
-    let queryString: string = `Use ENV_MARG; select * from RECETA where left(c_receta, 1) = '${planta ? 'C' : 'P'}' order by c_receta;`;
+
+export function listaCodigos(planta: boolean, object: SQLObject) {
+    let queryString: string = `Use ENV_MARG; select x_receta, c_receta from RECETA where left(c_receta, 1) = '${planta ? 'C' : 'P'}' order by c_receta;`;
     object.sqlAgent.execute(object, queryString, "selectCombo");
 }
 
-export function listaCodigosCallback() {
-    
+export function listaCodigosCallback(jsonString: string, object: CWCAbrir) {
+    object.recipeComboBox.update(jsonString);
 }
