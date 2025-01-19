@@ -1,10 +1,6 @@
-import { CWCAbrir } from './cwcAbrir.js';
+import { CWCAbrir } from './model/abrir/cwcAbrir.js';
 
 let cwcAbrir: CWCAbrir;
-
-$(document).ready(function() {
-    initializeWebApp();
-})
 
 /**
  * Initialize web application
@@ -48,3 +44,10 @@ WebCC.start(function(result: any){
 },
 [],
 10000);
+
+/**
+ * Call initializeWebApp to run the project
+ */
+$(document).ready(function() {
+    initializeWebApp();
+})

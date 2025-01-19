@@ -1,5 +1,5 @@
-var WebCCSimulator = /** @class */ (function () {
-    function WebCCSimulator(object) {
+export class WebCCSimulator {
+    constructor(object) {
         this.jsonString1 = JSON.stringify({
             action: "selectTable",
             data: [
@@ -135,12 +135,12 @@ var WebCCSimulator = /** @class */ (function () {
         };
         this.object = object;
     }
-    WebCCSimulator.prototype.executeQuery = function (jsonString, action) {
+    executeQuery(jsonString, action) {
         switch (action) {
             case "selectTable":
-                var a = document.getElementById("cbRecipes");
-                var b = a.options[a.selectedIndex].id;
-                var sendString = "";
+                let a = document.getElementById("cbRecipes");
+                let b = a.options[a.selectedIndex].id;
+                let sendString = "";
                 switch (b) {
                     case "P01":
                         sendString = this.jsonString1;
@@ -159,29 +159,27 @@ var WebCCSimulator = /** @class */ (function () {
                 break;
             case "updateTable":
         }
-    };
-    WebCCSimulator.prototype.writePLC = function (writeCommand) {
+    }
+    writePLC(writeCommand) {
         console.log(writeCommand);
-        var writeData = JSON.parse(writeCommand);
-        var action = writeData.action;
-        var data = writeData.data;
-        var tableTagSet = [];
-        for (var i in data) {
-            var dataItem = data[i];
+        let writeData = JSON.parse(writeCommand);
+        let action = writeData.action;
+        let data = writeData.data;
+        let tableTagSet = [];
+        for (let i in data) {
+            let dataItem = data[i];
             tableTagSet.push(dataItem.name);
         }
         //let tagSet = Tags.CreateTagSet(tableTagSet);
         console.log(tableTagSet);
-        for (var i in data) {
-            var dataItem = data[i];
-            var type = dataItem.name.slice(2, 3);
-            var value = void 0;
+        for (let i in data) {
+            let dataItem = data[i];
+            let type = dataItem.name.slice(2, 3);
+            let value;
             value = (type == "_") ? dataItem.value.toString() : Number(dataItem.value);
             console.log(value);
             //tagSet(dataItem.name).Value = value;
         }
         //tagSet.Write();
-    };
-    return WebCCSimulator;
-}());
-export { WebCCSimulator };
+    }
+}

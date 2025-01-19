@@ -1,4 +1,4 @@
-import { CWCAbrir } from "./cwcAbrir";
+import { CWCAbrir } from "../abrir/cwcAbrir.js";
 
 export class WebCCSimulator {
 

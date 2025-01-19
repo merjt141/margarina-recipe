@@ -1,5 +1,5 @@
-import { WebCCSimulator } from "./simulation.js"
-import * as Library from "./modules/utilities.js";
+import { WebCCSimulator } from "../simulation/simulation.js"
+import * as Library from "../../modules/utilities.js";
 
 export class CWCAbrir implements Library.SQLObject, Library.PLCObject {
     recipeData: string;                 // Recipe data obtained through WinCC query
@@ -338,7 +338,7 @@ export class CWCAbrir implements Library.SQLObject, Library.PLCObject {
     }
 
     cmdTransferirClick() {
-        const win = window.open("./views/tansfer.html", "PopopWindow", "width=600,height=240,scrollbars=no,resizable=no");
+        const win = window.open("./modules/tansfer.html", "PopopWindow", "width=600,height=240,scrollbars=no,resizable=no");
     }
 
     cmdImprimirClick() {
