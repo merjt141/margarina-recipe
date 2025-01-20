@@ -1,3 +1,4 @@
+import { data } from "jquery";
 import { CWCAbrir } from "../abrir/cwcAbrir.js";
 
 export class WebCCSimulator {
@@ -170,6 +171,29 @@ export class WebCCSimulator {
                 this.object.sqlAgent.response(this.object, JSON.stringify(this.comboList));
                 break;
             case "updateTable":
+                break;
+            case "duplicadoPeek":
+                let responseDuplicadoPeek = {
+                    action: "duplicadoPeek",
+                    data: [/**
+                        {
+                        c_receta: "P01",
+                        x_receta: "Nueva receta",
+                        }*/
+                ],
+                };
+                this.object.sqlAgent.response(this.object, JSON.stringify(responseDuplicadoPeek));
+                break;
+            case "selectComboPeek":
+                let responseComboPeek = {
+                    action: "selectComboPeek",
+                    data: [{
+                        c_receta: "P15",
+                        x_receta: "Nueva Receta"
+                    }],
+                };
+                this.object.sqlAgent.response(this.object, JSON.stringify(responseComboPeek));
+                break;
         }
     }
 

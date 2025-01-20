@@ -9,11 +9,6 @@ export interface RecipeInputList {
         ipsa: string[],
         buttons: string[],
     },
-    noneditable: {
-        tmg: string[],
-        balanza: string[],
-        ipsa: string[],
-    },
     resume: string[][]
 }
 
@@ -62,11 +57,13 @@ export interface PLCObject {
 
 export class ComboBoxRecipe {
     domObject: HTMLSelectElement;
-    object: SQLObject;
+    object: CWCAbrir;
+    selectedIndex: string;
 
-    constructor(domId: string, object: SQLObject) {
+    constructor(domId: string, object: CWCAbrir) {
         this.domObject = document.getElementById(domId) as HTMLSelectElement;
         this.object = object;
+        this.selectedIndex = "";
 
         this.domObject.addEventListener('change', () => {
             this.select();
@@ -91,14 +88,20 @@ export class ComboBoxRecipe {
     /**
      * Select element from combo box
      */
-    select() {
-        let selectedBox = this.domObject.options[this.domObject.selectedIndex].id;
+    async select() {
+        this.selectedIndex = this.domObject.options[this.domObject.selectedIndex].id;
 
         let queryString = `Use ENV_MARG; select r.c_receta, r.x_receta, d.n_valor, d.x_comen1, d.x_comen2, i.c_ingred, i.x_ingred, i.x_unidad, i.t_ingred `;
         queryString += `from RECETA r inner join DETALLE_RECETA d on r.c_receta = d.c_receta inner join INGREDIENTES i on d.c_ingred = i.c_ingred `;
-        queryString += `where r.c_receta = '${selectedBox}';`;
+        queryString += `where r.c_receta = '${this.selectedIndex}' order by c_ingred;`;
 
         this.object.sqlAgent.execute(this.object, queryString, "selectTable");
+        let pid: any[] = this.object.pid[1];
+        await waitPID(pid);
+        pid[0] = false;
+        let data = JSON.stringify(pid[1]);
+        pid[1] = "";
+        this.object.writeRecipeData(data);
     }
 }
 
@@ -158,7 +161,10 @@ let DataTable: RecipeData = {
     parameters: new Array(30)
 }
 
-let MemoryData: RecipeData[] = [{...DataTable}, {...DataTable}];
+let MemoryData: RecipeData[] = [JSON.parse(JSON.stringify(DataTable)), 
+    JSON.parse(JSON.stringify(DataTable))];
+
+let MenorCodigo: number = 1;
 
 /**
  * Validate values in input fields
@@ -248,7 +254,7 @@ export function sonIguales() {
  * Check parameters value
  * @returns Parameters value are ok
  */
-export function parametrosTanquesOk() {
+export function parametrosTanquesOk(): boolean {
     for (let i = 1; i <= 8; i++) {
         let value = getInputElement(`ipsa${i}`).value;
         if (isNaN(Number(value)) || value == "") {
@@ -278,7 +284,7 @@ export function parametrosTanquesOk() {
  * Check if values of Ingreidents are ok
  * @param object Custom Web Control Abrir
  */
-export function valoresOk(object: CWCAbrir) {
+export function valoresOk(object: CWCAbrir): boolean {
     object.ingredientsDOM[1].forEach((item: HTMLInputElement, index: number) => {
         let value = item.value;
         if (isNaN(Number(value)) || value == "") {
@@ -291,16 +297,74 @@ export function valoresOk(object: CWCAbrir) {
             console.log(`El valor del ingrediente ${ingredient} debe ser mayor a cero`);
             return false;
         }
-        return true;
+    });
+    return true;
+}
+
+export async function waitPID(pid: any[]): Promise<void> {
+    return new Promise<void>((resolve) => {
+        const checkInterval = setInterval(() => {
+            if (pid[0]) {
+                clearInterval(checkInterval);
+                resolve();
+            }
+        }, 100);
     });
 }
 
-
-export function listaCodigos(planta: boolean, object: SQLObject) {
+export async function listaCodigos(planta: boolean, object: CWCAbrir, pid: any[]) {
     let queryString: string = `Use ENV_MARG; select x_receta, c_receta from RECETA where left(c_receta, 1) = '${planta ? 'C' : 'P'}' order by c_receta;`;
     object.sqlAgent.execute(object, queryString, "selectCombo");
+
+    await waitPID(pid);
+    pid[0] = false;
+    let data = JSON.stringify(pid[1]);
+    pid[1] = "";
+
+    object.recipeComboBox.update(data);
 }
 
-export function listaCodigosCallback(jsonString: string, object: CWCAbrir) {
-    object.recipeComboBox.update(jsonString);
+export async function buscaNuevoCodigo(planta: boolean, object: SQLObject, pid: any[]) {
+    let queryString: string = `Use ENV_MARG; select top(1) x_receta, c_receta from RECETA where left(c_receta, 1) = '${planta ? 'C' : 'P'}' order by c_receta desc;`;
+    object.sqlAgent.execute(object, queryString, "selectComboPeek");
+
+    await waitPID(pid);
+    pid[0] = false;
+    let data = JSON.stringify(pid[1]);
+    pid[1] = "";
+
+    let dataJson = JSON.parse(data);
+    if (Boolean(dataJson[0])) {
+        let code = dataJson[0].c_receta;
+        return Number(code.slice(1,3)) + 1;
+    }
+    return MenorCodigo;
+}
+
+export async function nombreDuplicado(planta: boolean, name: string, object: SQLObject, pid: any[]) {
+    let queryString: string = `Use ENV_MARG; select * from RECETA where left(c_receta, 1) = '${planta ? 'C' : 'P'}' and x_receta = '${name}' order by c_receta;`;
+    object.sqlAgent.execute(object, queryString, "duplicadoPeek");
+
+    await waitPID(pid);
+    pid[0] = false;
+    let data = JSON.stringify(pid[1]);
+    pid[1] = "";
+
+    let dataJson = JSON.parse(data);
+    if (Boolean(dataJson[0])) {
+        return true;
+    }
+    return false;
+}
+
+export function message(son: boolean, msg: string, titulo: string, icono: number, modo: number) {
+
+}
+
+export function darFormato() {
+    
+}
+
+export function menu() {
+
 }

@@ -4,6 +4,7 @@
 <head>
 	<meta charset='utf-8'>
 	<title>Formulario de Recetas</title>
+    <link rel="icon" href="./favicon.ico" type="image/x-icon">
 	<script src='../dist/webcc.min.js' type="text/javascript"></script>
 	<script src="../dist/jquery-3.6.3.js" type="text/javascript"></script>
     <script src="../dist/scripts/app.js" type="module"></script>
@@ -164,14 +165,16 @@
                                     <div>
                                         <button type="button" onclick="cwcAbrir.cmdModificarClick()" id="button-modify-tmg">
                                             <img src="../src/assets/images/wrench.png" alt="Icon" class="button-wrench">
-                                            Modificar Receta</button>
+                                            Modificar Receta
+                                        </button>
                                     </div>
                                 </td>
                                 <td>
                                     <div>
                                         <button type="button" onclick="cwcAbrir.cmdActualizarClick()">
                                             <img src="../src/assets/images/refresh.png" alt="Icon" class="button-wrench">
-                                            Actualizar Receta</button>                                        
+                                            Actualizar Receta
+                                        </button>                                        
                                     </div>
                                 </td>
                             </tr>
@@ -342,14 +345,16 @@
                                     <div>
                                         <button type="button" onclick="cwcAbrir.cmdModificarClick()" id="button-modify-balanza">
                                             <img src="../src/assets/images/wrench.png" alt="Icon" class="button-wrench">
-                                            Modificar Receta</button>
+                                            Modificar Receta
+                                        </button>
                                     </div>
                                 </td>
                                 <td>
                                     <div>
                                         <button type="button" onclick="cwcAbrir.cmdActualizarClick()">
                                             <img src="../src/assets/images/refresh.png" alt="Icon" class="button-wrench">
-                                            Actualizar Receta</button>                                        
+                                            Actualizar Receta
+                                        </button>                                        
                                     </div>
                                 </td>
                             </tr>
@@ -374,31 +379,31 @@
                                     <td>
                                         <div>
                                             <label for="ipsa6">Set Point (°C):</label>
-                                            <input type="text" id="ipsa6" name="tgd-temp" disabled>   
+                                            <input type="number" id="ipsa6" name="tgd-temp" disabled>   
                                         </div>
                                         <div>
                                             <label for="ipsa9">Banda Muerta:</label>
-                                            <input type="text" id="ipsa9" name="tgd-deadband" disabled>
+                                            <input type="number" id="ipsa9" name="tgd-deadband" disabled>
                                         </div>
                                     </td>
                                     <td>
                                         <div>
                                             <label for="ipsa10">Set Point (Nivel):</label>
-                                            <input type="text" id="ipsa10" name="tgd-agitator-level" disabled>
+                                            <input type="number" id="ipsa10" name="tgd-agitator-level" disabled>
                                         </div>
                                         <div>
                                             <label for="ipsa11">Banda Muerta:</label>
-                                            <input type="text" id="ipsa11" name="tgd-agitator-deadband" disabled>
+                                            <input type="number" id="ipsa11" name="tgd-agitator-deadband" disabled>
                                         </div>
                                     </td>
                                     <td>
                                         <div>
                                             <label for="ipsa23">Retardo Nivel Bajo:</label>
-                                            <input type="text" id="ipsa23" name="tgd-delay" disabled>
+                                            <input type="number" id="ipsa23" name="tgd-delay" disabled>
                                         </div>
                                         <div>
                                             <label for="ipsa7">Tiempo homog:</label>
-                                            <input type="text" id="ipsa7" name="tgd-homogenization" disabled>
+                                            <input type="number" id="ipsa7" name="tgd-homogenization" disabled>
                                         </div>
                                     </td>
                                 </tr>
@@ -413,38 +418,38 @@
                                     <td>
                                         <div>
                                             <label for="ipsa1">Set Point Temp Nivel Medio (°C):</label>
-                                            <input type="text" id="ipsa1" name="tmg-temp-mid" disabled>
+                                            <input type="number" id="ipsa1" name="tmg-temp-mid" disabled>
                                         </div>
                                         <div>
                                             <label for="ipsa2">Set Point Temp Nivel Alto (°C):</label>
-                                            <input type="text" id="ipsa2" name="tmg-temp-high" disabled>                                            
+                                            <input type="number" id="ipsa2" name="tmg-temp-high" disabled>                                            
                                         </div>
                                     </td>
                                     <td>
                                         <div>
                                             <label for="ipsa21">Retardo Nivel Bajo:</label>
-                                            <input type="text" id="ipsa21" name="tmg-low-delay" disabled>                               
+                                            <input type="number" id="ipsa21" name="tmg-low-delay" disabled>                               
                                         </div>
                                         <div>
                                             <label for="ipsa3">Tiempo homog lecitina (min):</label>
-                                            <input type="text" id="ipsa3" name="tmg-lec-homo" disabled>
+                                            <input type="number" id="ipsa3" name="tmg-lec-homo" disabled>
                                         </div>
                                     </td>
                                     <td>
                                         <div>
                                             <label for="ipsa4">Tiempo homog monoglic (min):</label>
-                                            <input type="text" id="ipsa4" name="tmg-mono-homo" disabled>
+                                            <input type="number" id="ipsa4" name="tmg-mono-homo" disabled>
                                         </div>
                                         <div>
                                             <label for="ipsa5">Tiempo homog final (min):</label>
-                                            <input type="text" id="ipsa5" name="tmg-final-homo" disabled>
+                                            <input type="number" id="ipsa5" name="tmg-final-homo" disabled>
                                         </div>
                                         
                                     </td>
                                     <td>
                                         <div>
                                             <label for="ipsa22">Tiempo Soplado:</label>
-                                            <input type="text" id="ipsa22" name="tmg-blow" disabled>                         
+                                            <input type="number" id="ipsa22" name="tmg-blow" disabled>                         
                                         </div>
                                     </td>
                                 </tr>
@@ -461,31 +466,31 @@
                                             <td>
                                                 <div>
                                                     <label for="ipsa16">Nivel Carga Max:</label>
-                                                    <input type="text" id="ipsa16" name="rt-max-level" disabled>
+                                                    <input type="number" id="ipsa16" name="rt-max-level" disabled>
                                                 </div>
                                             </td>
                                             <td>
                                                 <div>
                                                     <label for="ipsa17">Nivel Carga Min:</label>
-                                                    <input type="text" id="ipsa17" name="rt-min-level" disabled>
+                                                    <input type="number" id="ipsa17" name="rt-min-level" disabled>
                                                 </div>                                                
                                             </td>
                                             <td>
                                                 <div>
                                                     <label for="ipsa18">Nivel Petición:</label>
-                                                    <input type="text" id="ipsa18" name="rt-request-level" disabled>                                                                                         
+                                                    <input type="number" id="ipsa18" name="rt-request-level" disabled>                                                                                         
                                                 </div>                                             
                                             </td>
                                             <td>
                                                 <div>
                                                     <label for="ipsa26">Retorno Nivel Bajo:</label>
-                                                    <input type="text" id="ipsa26" name="rt-return-low" disabled>
+                                                    <input type="number" id="ipsa26" name="rt-return-low" disabled>
                                                 </div>
                                             </td>
                                             <td>
                                                 <div>
                                                     <label for="ipsa20">Set Point Temperatura:</label>
-                                                    <input type="text" id="ipsa20" name="rt-temp-set" disabled>                                          
+                                                    <input type="number" id="ipsa20" name="rt-temp-set" disabled>                                          
                                                 </div>
                                             </td>
                                         </tr>
@@ -504,13 +509,13 @@
                                                         <td>
                                                             <div>
                                                                 <label for="ipsa14">Set Point (Nivel):</label>
-                                                                <input type="text" id="ipsa14" name="rt-agitator1" disabled>
+                                                                <input type="number" id="ipsa14" name="rt-agitator1" disabled>
                                                             </div>
                                                         </td>
                                                         <td>
                                                             <div>
                                                                 <label for="ipsa15">Banda Muerta:</label>
-                                                                <input type="text" id="ipsa15" name="rt-agitator1-deadband" disabled>
+                                                                <input type="number" id="ipsa15" name="rt-agitator1-deadband" disabled>
                                                             </div>
                                                         </td>
                                                     </tr>
@@ -522,13 +527,13 @@
                                                         <td>
                                                             <div>
                                                                 <label for="ipsa29">Set Point (Nivel):</label>
-                                                                <input type="text" id="ipsa29" name="rt-agitator2" disabled>
+                                                                <input type="number" id="ipsa29" name="rt-agitator2" disabled>
                                                             </div>                                                            
                                                         </td>
                                                         <td>
                                                             <div>
                                                                 <label for="ipsa30">Banda Muerta:</label>
-                                                                <input type="text" id="ipsa30" name="rt-agitator2-deadband" disabled>
+                                                                <input type="number" id="ipsa30" name="rt-agitator2-deadband" disabled>
                                                             </div>
                                                         </td>
                                                     </tr>
@@ -550,25 +555,25 @@
                                             <td>
                                                 <div>
                                                     <label for="ipsa8">Tiempo homog final (min):</label>
-                                                    <input type="text" id="ipsa8" name="tpb-final-homo" disabled>
+                                                    <input type="number" id="ipsa8" name="tpb-final-homo" disabled>
                                                 </div>
                                             </td>
                                             <td>
                                                 <div>
                                                     <label for="ipsa25">Tiempo Soplado:</label>
-                                                    <input type="text" id="ipsa25" name="tpb-blow" disabled>
+                                                    <input type="number" id="ipsa25" name="tpb-blow" disabled>
                                                 </div>                                                
                                             </td>
                                             <td>
                                                 <div>
                                                     <label for="ipsa24">Retardo Nivel Bajo:</label>
-                                                    <input type="text" id="ipsa24" name="tpb-low-delay" disabled>                                                                
+                                                    <input type="number" id="ipsa24" name="tpb-low-delay" disabled>                                                                
                                                 </div>                                             
                                             </td>
                                             <td>
                                                 <div>
                                                     <label for="ipsa19">Set Point Temperatura:</label>
-                                                    <input type="text" id="ipsa19" name="tpb-temp-set" disabled>
+                                                    <input type="number" id="ipsa19" name="tpb-temp-set" disabled>
                                                 </div>
                                             </td>
                                         </tr>
@@ -587,13 +592,13 @@
                                                         <td>
                                                             <div>
                                                                 <label for="ipsa12">Set Point (Peso):</label>
-                                                                <input type="text" id="ipsa12" name="tpb-agitator1" disabled>
+                                                                <input type="number" id="ipsa12" name="tpb-agitator1" disabled>
                                                             </div>
                                                         </td>
                                                         <td>
                                                             <div>
                                                                 <label for="ipsa13">Banda Muerta:</label>
-                                                                <input type="text" id="ipsa13" name="tpb-agitator1-deadband" disabled>
+                                                                <input type="number" id="ipsa13" name="tpb-agitator1-deadband" disabled>
                                                             </div>
                                                         </td>
                                                     </tr>
@@ -605,13 +610,13 @@
                                                         <td>
                                                             <div>
                                                                 <label for="ipsa27">Set Point (Peso):</label>
-                                                                <input type="text" id="ipsa27" name="tpb-agitator2" disabled>
+                                                                <input type="number" id="ipsa27" name="tpb-agitator2" disabled>
                                                             </div>                                                            
                                                         </td>
                                                         <td>
                                                             <div>
                                                                 <label for="ipsa28">Banda Muerta:</label>
-                                                                <input type="text" id="ipsa28" name="tpb-agitator2-deadband" disabled>
+                                                                <input type="number" id="ipsa28" name="tpb-agitator2-deadband" disabled>
                                                             </div>
                                                         </td>
                                                     </tr>
@@ -633,14 +638,16 @@
                                     <div>
                                         <button type="button" onclick="cwcAbrir.cmdModificarClick()" id="button-modify-ipsa">
                                             <img src="../src/assets/images/wrench.png" alt="Icon" class="button-wrench">
-                                            Modificar Receta</button>
+                                            Modificar Receta
+                                        </button>
                                     </div>
                                 </td>
                                 <td>
                                     <div>
                                         <button type="button" onclick="cwcAbrir.cmdActualizarClick()">
                                             <img src="../src/assets/images/refresh.png" alt="Icon" class="button-wrench">
-                                            Actualizar Receta</button>                                        
+                                            Actualizar Receta
+                                        </button>                                        
                                     </div>
                                 </td>
                             </tr>
@@ -655,27 +662,27 @@
                 <label for="idCodeRecipe" style="width: 120px; text-align: center; margin-bottom: 5px; font-weight: bold;">Código de Receta</label>
                 <input type="text" id="idCodeRecipe" style="width: 100px; font-weight: bold; text-align: center;" name="recipe-code" disabled>
             </div>
-            <button onclick="cwcAbrir.cmdGuardarClick()">
+            <button id="b11" onclick="cwcAbrir.cmdGuardarClick()">
                 <img src="../src/assets/images/icons8-save-50.png" alt="Icon" class="button-right">
                 Guardar
             </button>
-            <button onclick="cwcAbrir.cmdComoClick()">
+            <button id="b12" onclick="cwcAbrir.cmdComoClick()">
                 <img src="../src/assets/images/icons8-save-as-50.png" alt="Icon" class="button-right">
                 Guardar Como
             </button>
-            <button onclick="cwcAbrir.cmdEliminarClick()">
+            <button id="b13" onclick="cwcAbrir.cmdEliminarClick()">
                 <img src="../src/assets/images/icons8-delete-50.png" alt="Icon" class="button-right">
                 Eliminar
             </button>
-            <button onclick="cwcAbrir.cmdTransferirClick()">
+            <button id="b14" onclick="cwcAbrir.cmdTransferirClick()">
                 <img src="../src/assets/images/icons8-write-64.png" alt="Icon" class="button-right">
                 Transferir
             </button>
-            <button onclick="cwcAbrir.cmdImprimirClick()">
+            <button id="b15" onclick="cwcAbrir.cmdImprimirClick()">
                 <img src="../src/assets/images/icons8-print-50.png" alt="Icon" class="button-right">
                 Imprimir
             </button>
-            <button onclick="cwcAbrir.cmdSalirClick()">
+            <button id="b16" onclick="cwcAbrir.cmdSalirClick()">
                 <img src="../src/assets/images/icons8-exit-door-64.png" alt="Icon" class="button-right">
                 Salir
             </button>

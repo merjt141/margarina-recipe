@@ -26,9 +26,6 @@ WebCC.start(function(result: any){
         PopulateRecipes: function(jsonString: string) {
             cwcAbrir.recipeComboBox.update(jsonString);
         },
-        PopulateDetail: function(jsonString: string) {
-            cwcAbrir.writeRecipeData(jsonString);
-        },
         QueryResponse: function(jsonString: string) {
             cwcAbrir.sqlAgent.response(cwcAbrir, jsonString);
         },
