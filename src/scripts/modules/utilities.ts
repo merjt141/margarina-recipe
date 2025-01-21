@@ -79,7 +79,7 @@ export class ComboBoxRecipe {
         this.domObject.textContent = '';
         for (let i = 0; i < obj.length; i++){
             let option = document.createElement("option") as HTMLOptionElement;
-            option.id = obj[i].c_receta;
+            option.value = obj[i].c_receta;
             option.innerHTML = obj[i].x_receta;
             this.domObject.appendChild(option);
         }
@@ -89,7 +89,7 @@ export class ComboBoxRecipe {
      * Select element from combo box
      */
     async select() {
-        this.selectedIndex = this.domObject.options[this.domObject.selectedIndex].id;
+        this.selectedIndex = this.domObject.value;
 
         let queryString = `Use ENV_MARG; select r.c_receta, r.x_receta, d.n_valor, d.x_comen1, d.x_comen2, i.c_ingred, i.x_ingred, i.x_unidad, i.t_ingred `;
         queryString += `from RECETA r inner join DETALLE_RECETA d on r.c_receta = d.c_receta inner join INGREDIENTES i on d.c_ingred = i.c_ingred `;

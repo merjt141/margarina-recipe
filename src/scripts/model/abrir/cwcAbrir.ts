@@ -112,6 +112,7 @@ export class CWCAbrir implements Library.SQLObject, Library.PLCObject {
         }
 
         await Library.listaCodigos(this.copsa, this, this.pid[0]);
+        this.recipeComboBox.select();
     }
 
     enableInputs(editionDisabled: boolean) {
@@ -267,7 +268,7 @@ export class CWCAbrir implements Library.SQLObject, Library.PLCObject {
     }
 
     cmdGuardarClickEvent() {
-        let recipeId = this.recipeComboBox.domObject.options[this.recipeComboBox.domObject.selectedIndex].id;
+        let recipeId = this.recipeComboBox.selectedIndex;
         if (!recipeId) {
             alert("No se seleccionó receta");
             return;
@@ -400,38 +401,55 @@ export class CWCAbrir implements Library.SQLObject, Library.PLCObject {
             field += "0";
         }
 
-        let code: string = field + value.toString();
+        let c_receta: string = field + value.toString();
         
-        let queryString = `Use ENV_MARG; insert into RECETA(c_receta, x_receta) values('${code}', '${name}');`;
+        let queryString = `Use ENV_MARG; insert into RECETA(c_receta, x_receta) values('${c_receta}', '${name}');`;
         
         this.sqlAgent.execute(this, queryString, "insertReceta");
 
+        let insertString = `Use ENV_MARG; insert into DETALLE_RECETA(c_receta, c_ingred, n_valor, x_comen1, x_comen2) values `;
         this.recipeJsonData[0].forEach((item: Library.IngredientTable, index: number) => {
             let c_ingred = item.c_ingred;
             let n_valor = Library.getInputElement(`h${index + 1}2`).value;
             let x_comen1 = Library.getInputElement(`h${index + 1}4`).value;
             let x_comen2 = Library.getInputElement(`h${index + 1}5`).value;
-            let queryString = `Use ENV_MARG; insert into DETALLE_RECETA(c_receta, c_ingred, n_valor, x_comen1, x_comen2) values
-            ('${code}', '${c_ingred}', '${n_valor}', '${x_comen1}','${x_comen2}');`;
-            this.sqlAgent.execute(this, queryString, "insertDetalle");
+            insertString += `('${c_receta}', '${c_ingred}', '${n_valor}', '${x_comen1}','${x_comen2}'), `;
         });
         this.recipeJsonData[1].forEach((item: Library.IngredientTable, index: number) => {
             let c_ingred = item.c_ingred;
             let n_valor = Library.getInputElement(`c${index + 1}2`).value;
             let x_comen1 = Library.getInputElement(`c${index + 1}4`).value;
             let x_comen2 = Library.getInputElement(`c${index + 1}5`).value;
-            let queryString = `Use ENV_MARG; insert into DETALLE_RECETA(c_receta, c_ingred, n_valor, x_comen1, x_comen2) values
-            ('${code}', '${c_ingred}', '${n_valor}', '${x_comen1}','${x_comen2}');`;
-            this.sqlAgent.execute(this, queryString, "insertDetalle");
+            insertString += `('${c_receta}', '${c_ingred}', '${n_valor}', '${x_comen1}','${x_comen2}'), `;
         });
         this.recipeJsonData[2].forEach((item: Library.IngredientTable, index: number) => {
             let c_ingred = item.c_ingred;
             let n_valor = Library.getInputElement(`i${index + 1}2`).value;
             let x_comen1 = Library.getInputElement(`i${index + 1}4`).value;
             let x_comen2 = Library.getInputElement(`i${index + 1}5`).value;
-            let queryString = `Use ENV_MARG; insert into DETALLE_RECETA(c_receta, c_ingred, n_valor, x_comen1, x_comen2) values
-            ('${code}', '${c_ingred}', '${n_valor}', '${x_comen1}','${x_comen2}');`;
-            this.sqlAgent.execute(this, queryString, "insertDetalle");
+            insertString += `('${c_receta}', '${c_ingred}', '${n_valor}', '${x_comen1}','${x_comen2}'), `;
         });
+
+        if (!this.copsa) {
+            for (let i = 1; i <= 30; i++) {
+                let c_ingred =  i < 10 ? `R0${i}` : `R${i}`;
+                let n_valor = Library.getInputElement(`ipsa${i}`).value;
+                if (n_valor == "") {
+                    insertString += `('${c_receta}', '${c_ingred}', null, null, null), `;
+                } else {
+                    insertString += `('${c_receta}', '${c_ingred}', '${n_valor}', null, null), `;
+                }
+            }
+        }
+
+        insertString = insertString.slice(0, -2);
+        insertString += `;`;
+        this.sqlAgent.execute(this, insertString, "insertDetalle");
+
+        console.log("Receta guardada con éxito");
+        this.clearInputFields();
+        await Library.listaCodigos(this.copsa, this, this.pid[0]);
+        this.recipeComboBox.domObject.value = c_receta;
+        this.recipeComboBox.select();
     }
 }
