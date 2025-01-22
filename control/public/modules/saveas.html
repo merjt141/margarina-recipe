@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transferir Receta a Controlador</title>
+    <link rel="stylesheet" href="../../src/styles/saveas/transfer-style.css">
+</head>
+<body>
+    <p>Nueva Receta</p>
+    <label for="save-as">Guardar Como:</label>
+    <input type="text" id="save-as" name="save-as-form">
+    <button onclick="cmdComoClick()">
+        <img src="../src/assets/images/icons8-print-50.png" alt="Icon">
+        Aceptar
+    </button>
+    <button>
+        <img src="../src/assets/images/icons8-print-50.png" alt="Icon">
+        Aceptar
+    </button>
+</body>
+<script>
+    function cmdComoClick() {
+        let saveName = document.getElementById("save-as").value.trim();
+        window.opener.cwcAbrir.cmdComoAction(saveName);
+    }
+</script>
+</html>

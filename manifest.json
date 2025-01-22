@@ -1,14 +1,14 @@
 {
-	"$schema": "./dist/CWC_manifest_Schema.json",
+	"$schema": "./control/dist/CWC_manifest_Schema.json",
 	"mver": "1.2.0",
 	"control": {
 		"identity": {
 			"name": "RecipeController",
 			"version": "1.0",
 			"displayname": "Recipe Control Web App",
-			"icon": "./public/favicon.ico",
+			"icon": "./control/public/favicon.ico",
 			"type": "guid://3A0572C8-1FC9-4181-985E-5512D2AD61F7",
-			"start": "./public/index.html"
+			"start": "./control/index.html"
 		},
 		"metadata": {
 			"author": "JYSControlAutomation",

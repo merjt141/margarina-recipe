@@ -4,18 +4,18 @@
       "module": "ESNext",
       "strict": true,               // Enables strict type-checking options
       "esModuleInterop": true,      // Allows for ES6-style imports from CommonJS modules
-      "outDir": "./dist",           // Output folder for compiled JS files
-      "rootDir": "./src",           // Folder containing your TypeScript files
+      "outDir": "./control/dist",           // Output folder for compiled JS files
+      "rootDir": "./control/src",           // Folder containing your TypeScript files
       "skipLibCheck": true,         // Skip type checking of declaration files
       "forceConsistentCasingInFileNames": true,
       "moduleResolution": "Node",
       "allowJs": true,              // Allow JavaScript files to be included
     },
     "include": [
-      "./src/**/*.ts"                 // Include all TypeScript files in the "src" folder
+      "./control/src/**/*.ts"                 // Include all TypeScript files in the "src" folder
     ],
     "exclude": [
         "./node_modules",
-        "./dist"
+        "./control/dist"
     ]
 }
