@@ -33,7 +33,9 @@ export class CWCAbrir {
         this.copsa = false;
         this.skipMessage = false;
         this.refreshCalculation = false;
-        this.pid = [[false, ""], [false, ""], [false, ""], [false, ""], [false, ""]];
+        this.pid = [[false, ""], [false, ""], [false, ""], [false, ""], [false, ""], [false, ""], [false, ""], [false, ""]];
+        this.formTransfer = null;
+        this.formSaveAs = null;
         this.buildInputList();
     }
     sqlQueryResponseHandler(response) {
@@ -62,6 +64,10 @@ export class CWCAbrir {
             case "insertReceta":
                 break;
             case "insertDetalle":
+                break;
+            case "deleteRecipe":
+                this.pid[7][1] = "";
+                this.pid[7][1] = true;
                 break;
         }
     }
@@ -137,7 +143,7 @@ export class CWCAbrir {
         const data = this.recipeJsonData;
         this.ingredientsDOM = [[], []];
         this.parametersDOM = [];
-        document.getElementById("idCodeRecipe").value = data[0][0].c_receta;
+        document.getElementById("idCodeRecipe").value = this.recipeComboBox.domObject.value;
         // Hot ingredients
         data[0].forEach((item, i) => {
             this.ingredientsHeadArray.forEach((element, j) => {
@@ -169,68 +175,10 @@ export class CWCAbrir {
         data[3].forEach((item, i) => {
             const inputLabel = document.getElementById(`ipsa${i + 1}`);
             item.n_valor == "" ? inputLabel.value = "" : inputLabel.value = item.n_valor;
-            //inputLabel.value = item.n_valor;
             this.parametersDOM.push(document.getElementById(`ipsa${i + 1}`));
         });
         Library.refrescoSuma(this);
         Library.saveTemporalData(1);
-    }
-    tagDatabaseWrite(line) {
-        let apiJson = {
-            action: "write",
-            data: [{}],
-        };
-        let originalData = this.recipeJsonData;
-        apiJson.data.pop();
-        let hSize = originalData[0];
-        for (let i = 0; i < hSize.length; i++) {
-            let n_value = document.getElementById(`h${i + 1}2`);
-            let x_comen1 = document.getElementById(`h${i + 1}4`);
-            let c_ingred = Number(hSize[i].c_ingred.slice(1));
-            let tagData = {
-                name: "L" + line.toString() + "_NOMBRE_P" + c_ingred,
-                value: x_comen1.value,
-            };
-            apiJson.data.push(tagData);
-            tagData = {
-                name: "L" + line.toString() + "P" + c_ingred,
-                value: n_value.value,
-            };
-            apiJson.data.push(tagData);
-        }
-        let cSize = originalData[1];
-        for (let i = 0; i < cSize.length; i++) {
-            let n_value = document.getElementById(`c${i + 1}2`);
-            let x_comen1 = document.getElementById(`c${i + 1}4`);
-            let c_ingred = Number(cSize[i].c_ingred.slice(1));
-            let tagData = {
-                name: "L" + line.toString() + "_NOMBRE_P" + c_ingred,
-                value: x_comen1.value,
-            };
-            apiJson.data.push(tagData);
-            tagData = {
-                name: "L" + line.toString() + "P" + c_ingred,
-                value: n_value.value,
-            };
-            apiJson.data.push(tagData);
-        }
-        let iSize = originalData[2];
-        for (let i = 0; i < iSize.length; i++) {
-            let n_value = document.getElementById(`i${i + 1}2`);
-            let x_comen1 = document.getElementById(`i${i + 1}4`);
-            let c_ingred = Number(iSize[i].c_ingred.slice(1));
-            let tagData = {
-                name: "L" + line.toString() + "_NOMBRE_P" + c_ingred,
-                value: x_comen1.value,
-            };
-            apiJson.data.push(tagData);
-            tagData = {
-                name: "L" + line.toString() + "P" + c_ingred,
-                value: n_value.value,
-            };
-            apiJson.data.push(tagData);
-        }
-        this.plcAgent.write(this, JSON.stringify(apiJson), "writeRecipe");
     }
     cmdGuardarClickEvent() {
         let recipeId = this.recipeComboBox.selectedIndex;
@@ -316,19 +264,116 @@ export class CWCAbrir {
                 return;
             }
         }
-        const win = window.open("./public/modules/saveas.html", "PopopWindow", "width=600,height=240,scrollbars=no,resizable=no");
+        this.formSaveAs = window.open("./public/modules/saveas.html", "PopopWindow", "width=600,height=240,scrollbars=no,resizable=no");
     }
     cmdEliminarClick() {
+        return __awaiter(this, void 0, void 0, function* () {
+            let value = this.recipeComboBox.domObject.value;
+            if (value == "") {
+                alert("Seleccione la receta a eliminar");
+                return;
+            }
+            let userConfirmation = confirm("¿Está seguro de eliminar la receta?");
+            let queryString;
+            if (userConfirmation) {
+                queryString = `Use ENV_MARG; delete from DETALLE_RECETA where c_receta = '${value}';`;
+                this.sqlAgent.execute(this, queryString, "deleteRecipe");
+                yield Library.waitPID(this.pid[7]);
+                queryString = `Use ENV_MARG; delete from RECETA where c_receta = '${value}';`;
+                this.sqlAgent.execute(this, queryString, "deleteRecipe");
+                console.log("Receta eliminada con éxito");
+                this.clearInputFields();
+                yield Library.listaCodigos(this.copsa, this, this.pid[0]);
+                this.recipeComboBox.select();
+            }
+        });
     }
     cmdTransferirClick() {
-        const win = window.open("./public/modules/tansfer.html", "PopopWindow", "width=600,height=240,scrollbars=no,resizable=no");
+        return __awaiter(this, void 0, void 0, function* () {
+            var _a, _b, _c, _d, _e, _f, _g;
+            this.formTransfer = window.open("./public/modules/tansfer.html", "PopopWindow", "width=600,height=240,scrollbars=no,resizable=no");
+            yield new Promise((resolve) => {
+                var _a;
+                if (((_a = this.formTransfer) === null || _a === void 0 ? void 0 : _a.document.readyState) === "complete") {
+                    resolve();
+                }
+                else {
+                    this.formTransfer.onload = () => resolve();
+                }
+            });
+            ((_a = this.formTransfer) === null || _a === void 0 ? void 0 : _a.document.getElementById("lblEtiqueta")).textContent = `Transferencia a Planta ${this.copsa ? "COPSA" : "IPSA"}`;
+            ((_b = this.formTransfer) === null || _b === void 0 ? void 0 : _b.document.getElementById("recipeCode")).value = this.recipeComboBox.domObject.options[this.recipeComboBox.domObject.selectedIndex].text;
+            ((_c = this.formTransfer) === null || _c === void 0 ? void 0 : _c.document.getElementById("linea1")).disabled = this.copsa;
+            ((_d = this.formTransfer) === null || _d === void 0 ? void 0 : _d.document.getElementById("linea2")).disabled = this.copsa;
+            ((_e = this.formTransfer) === null || _e === void 0 ? void 0 : _e.document.getElementById("linea3")).disabled = this.copsa;
+            ((_f = this.formTransfer) === null || _f === void 0 ? void 0 : _f.document.getElementById("linea4")).disabled = !this.copsa;
+            ((_g = this.formTransfer) === null || _g === void 0 ? void 0 : _g.document.getElementById("linea5")).disabled = !this.copsa;
+        });
     }
     cmdImprimirClick() {
     }
     cmdSalirClick() {
     }
     cmdTransferirAction(line) {
-        this.tagDatabaseWrite(line);
+        let userConfirmation = confirm(`¿Está seguro de transferir la receta seleccionada a la línea ${line}?`);
+        if (!userConfirmation) {
+            return;
+        }
+        let apiJson = {
+            action: "write",
+            data: [{}],
+        };
+        let originalData = this.recipeJsonData;
+        apiJson.data.pop();
+        let hSize = originalData[0];
+        for (let i = 0; i < hSize.length; i++) {
+            let n_value = document.getElementById(`h${i + 1}2`);
+            let x_comen1 = document.getElementById(`h${i + 1}4`);
+            let c_ingred = Number(hSize[i].c_ingred.slice(1));
+            let tagData = {
+                name: "L" + line.toString() + "_NOMBRE_P" + c_ingred,
+                value: x_comen1.value,
+            };
+            apiJson.data.push(tagData);
+            tagData = {
+                name: "L" + line.toString() + "P" + c_ingred,
+                value: n_value.value,
+            };
+            apiJson.data.push(tagData);
+        }
+        let cSize = originalData[1];
+        for (let i = 0; i < cSize.length; i++) {
+            let n_value = document.getElementById(`c${i + 1}2`);
+            let x_comen1 = document.getElementById(`c${i + 1}4`);
+            let c_ingred = Number(cSize[i].c_ingred.slice(1));
+            let tagData = {
+                name: "L" + line.toString() + "_NOMBRE_P" + c_ingred,
+                value: x_comen1.value,
+            };
+            apiJson.data.push(tagData);
+            tagData = {
+                name: "L" + line.toString() + "P" + c_ingred,
+                value: n_value.value,
+            };
+            apiJson.data.push(tagData);
+        }
+        let iSize = originalData[2];
+        for (let i = 0; i < iSize.length; i++) {
+            let n_value = document.getElementById(`i${i + 1}2`);
+            let x_comen1 = document.getElementById(`i${i + 1}4`);
+            let c_ingred = Number(iSize[i].c_ingred.slice(1));
+            let tagData = {
+                name: "L" + line.toString() + "_NOMBRE_P" + c_ingred,
+                value: x_comen1.value,
+            };
+            apiJson.data.push(tagData);
+            tagData = {
+                name: "L" + line.toString() + "P" + c_ingred,
+                value: n_value.value,
+            };
+            apiJson.data.push(tagData);
+        }
+        this.plcAgent.write(this, JSON.stringify(apiJson), "writeRecipe");
     }
     cmdComoAction(name) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -374,12 +419,7 @@ export class CWCAbrir {
                 for (let i = 1; i <= 30; i++) {
                     let c_ingred = i < 10 ? `R0${i}` : `R${i}`;
                     let n_valor = Library.getInputElement(`ipsa${i}`).value;
-                    if (n_valor == "") {
-                        insertString += `('${c_receta}', '${c_ingred}', null, null, null), `;
-                    }
-                    else {
-                        insertString += `('${c_receta}', '${c_ingred}', '${n_valor}', null, null), `;
-                    }
+                    insertString += `('${c_receta}', '${c_ingred}', '${n_valor}', '', ''), `;
                 }
             }
             insertString = insertString.slice(0, -2);

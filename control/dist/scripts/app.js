@@ -9,35 +9,36 @@ function initializeWebApp() {
     // Assing Abrir application to window
     window.cwcAbrir = cwcAbrir;
 }
+// WebCC of Custom Web Control declaration for WinCC Unified
+WebCC.start(function (result) {
+    if (result) {
+        console.log('connected successfully');
+    }
+    else {
+        console.log('connection failed');
+    }
+    initializeWebApp();
+}, {
+    methods: {
+        PopulateRecipes: function (jsonString) {
+            cwcAbrir.recipeComboBox.update(jsonString);
+        },
+        QueryResponse: function (jsonString) {
+            cwcAbrir.sqlAgent.response(cwcAbrir, jsonString);
+        },
+        PLCResponse: function (jsonString) {
+            cwcAbrir.plcAgent.response(cwcAbrir, jsonString);
+        }
+    },
+    events: ['NewSelection', 'executeQuery', 'writePLC'],
+    properties: {
+        ComboDatos: " ",
+        ComboIndex: " "
+    }
+}, [], 10000);
 /**
  * Call initializeWebApp to run the project
  */
 $(document).ready(function () {
-    // WebCC of Custom Web Control declaration for WinCC Unified
-    WebCC.start(function (result) {
-        if (result) {
-            console.log('connected successfully');
-        }
-        else {
-            console.log('connection failed');
-        }
-        initializeWebApp();
-    }, {
-        methods: {
-            PopulateRecipes: function (jsonString) {
-                cwcAbrir.recipeComboBox.update(jsonString);
-            },
-            QueryResponse: function (jsonString) {
-                cwcAbrir.sqlAgent.response(cwcAbrir, jsonString);
-            },
-            PLCResponse: function (jsonString) {
-                cwcAbrir.plcAgent.response(cwcAbrir, jsonString);
-            }
-        },
-        events: ['NewSelection', 'executeQuery', 'writePLC'],
-        properties: {
-            ComboDatos: " ",
-            ComboIndex: " "
-        }
-    }, [], 10000);
+    // initializeWebApp();
 });

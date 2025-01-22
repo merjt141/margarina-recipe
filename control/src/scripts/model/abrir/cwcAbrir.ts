@@ -3,6 +3,9 @@ import * as Library from "../../modules/utilities.js";
 
 export class CWCAbrir implements Library.SQLObject, Library.PLCObject {
 
+    formTransfer: Window | null;
+    formSaveAs: Window | null;
+
     recipeJsonData: Library.IngredientTable[][];    // Raw table fo recipe ingredients from SQL Server
     ingredientsHeadArray: string[];                 // List of ingredients table header
     
@@ -53,7 +56,10 @@ export class CWCAbrir implements Library.SQLObject, Library.PLCObject {
         this.skipMessage = false;
         this.refreshCalculation = false;
 
-        this.pid = [[false,""], [false,""], [false,""], [false,""], [false,""]];
+        this.pid = [[false,""], [false,""], [false,""], [false,""], [false,""], [false,""], [false,""], [false,""]];
+
+        this.formTransfer = null;
+        this.formSaveAs = null;
 
         this.buildInputList();
     }
@@ -84,6 +90,10 @@ export class CWCAbrir implements Library.SQLObject, Library.PLCObject {
             case "insertReceta":
                 break;
             case "insertDetalle":
+                break;
+            case "deleteRecipe":
+                this.pid[7][1] = "";
+                this.pid[7][1] = true;
                 break;
         }
     }
@@ -169,7 +179,7 @@ export class CWCAbrir implements Library.SQLObject, Library.PLCObject {
         this.ingredientsDOM = [[],[]];
         this.parametersDOM = [];
         
-        (document.getElementById("idCodeRecipe") as HTMLInputElement).value = data[0][0].c_receta;
+        (document.getElementById("idCodeRecipe") as HTMLInputElement).value = this.recipeComboBox.domObject.value;
         // Hot ingredients
         data[0].forEach((item: Library.IngredientTable, i: number) => {
             this.ingredientsHeadArray.forEach((element: string, j: number) => {
@@ -201,70 +211,10 @@ export class CWCAbrir implements Library.SQLObject, Library.PLCObject {
         data[3].forEach((item: Library.IngredientTable, i:number) => {
             const inputLabel = document.getElementById(`ipsa${i + 1}`) as HTMLInputElement;
             item.n_valor == "" ? inputLabel.value = "" : inputLabel.value = item.n_valor;
-            //inputLabel.value = item.n_valor;
             this.parametersDOM.push(document.getElementById(`ipsa${i + 1}`) as HTMLInputElement);
         });
         Library.refrescoSuma(this);
         Library.saveTemporalData(1);
-    }
-
-    tagDatabaseWrite(line: number) {
-        let apiJson = {
-            action: "write",
-            data: [{}],
-        };
-        let originalData = this.recipeJsonData;
-
-        apiJson.data.pop();
-        let hSize = originalData[0] as Library.IngredientTable[];
-        for ( let i = 0; i < hSize.length; i++) {
-            let n_value = document.getElementById(`h${i + 1}2`) as HTMLInputElement;
-            let x_comen1 = document.getElementById(`h${i + 1}4`) as HTMLInputElement;
-            let c_ingred = Number(hSize[i].c_ingred.slice(1));
-            let tagData = {
-                name: "L"+line.toString()+"_NOMBRE_P"+c_ingred,
-                value: x_comen1.value,
-            }
-            apiJson.data.push(tagData);
-            tagData = {
-                name: "L"+line.toString()+"P"+c_ingred,
-                value: n_value.value,
-            }
-            apiJson.data.push(tagData);
-        }
-        let cSize = originalData[1] as Library.IngredientTable[];
-        for ( let i = 0; i < cSize.length; i++) {
-            let n_value = document.getElementById(`c${i + 1}2`) as HTMLInputElement;
-            let x_comen1 = document.getElementById(`c${i + 1}4`) as HTMLInputElement;
-            let c_ingred = Number(cSize[i].c_ingred.slice(1));
-            let tagData = {
-                name: "L"+line.toString()+"_NOMBRE_P"+c_ingred,
-                value: x_comen1.value,
-            }
-            apiJson.data.push(tagData);
-            tagData = {
-                name: "L"+line.toString()+"P"+c_ingred,
-                value: n_value.value,
-            }
-            apiJson.data.push(tagData);
-        }
-        let iSize = originalData[2] as Library.IngredientTable[];
-        for ( let i = 0; i < iSize.length; i++) {
-            let n_value = document.getElementById(`i${i + 1}2`) as HTMLInputElement;
-            let x_comen1 = document.getElementById(`i${i + 1}4`) as HTMLInputElement;
-            let c_ingred = Number(iSize[i].c_ingred.slice(1));
-            let tagData = {
-                name: "L"+line.toString()+"_NOMBRE_P"+c_ingred,
-                value: x_comen1.value,
-            }
-            apiJson.data.push(tagData);
-            tagData = {
-                name: "L"+line.toString()+"P"+c_ingred,
-                value: n_value.value,
-            }
-            apiJson.data.push(tagData);
-        }
-        this.plcAgent.write(this, JSON.stringify(apiJson), "writeRecipe");
     }
 
     cmdGuardarClickEvent() {
@@ -361,15 +311,51 @@ export class CWCAbrir implements Library.SQLObject, Library.PLCObject {
                 return;
             }
         }
-        const win = window.open("./public/modules/saveas.html", "PopopWindow", "width=600,height=240,scrollbars=no,resizable=no");
+        this.formSaveAs = window.open("./public/modules/saveas.html", "PopopWindow", "width=600,height=240,scrollbars=no,resizable=no");
     }
 
-    cmdEliminarClick() {
+    async cmdEliminarClick() {
+        let value = this.recipeComboBox.domObject.value;
+        if (value == "") {
+            alert("Seleccione la receta a eliminar");
+            return;
+        }
+        let userConfirmation = confirm("¿Está seguro de eliminar la receta?");
+        let queryString: string;
+        if (userConfirmation) {
+            queryString = `Use ENV_MARG; delete from DETALLE_RECETA where c_receta = '${value}';`;
+            this.sqlAgent.execute(this, queryString, "deleteRecipe");
 
+            await Library.waitPID(this.pid[7]);
+            
+            queryString = `Use ENV_MARG; delete from RECETA where c_receta = '${value}';`;
+            this.sqlAgent.execute(this, queryString, "deleteRecipe");
+
+            console.log("Receta eliminada con éxito");
+            this.clearInputFields();
+            await Library.listaCodigos(this.copsa, this, this.pid[0]);
+            this.recipeComboBox.select();
+        }
     }
 
-    cmdTransferirClick() {
-        const win = window.open("./public/modules/tansfer.html", "PopopWindow", "width=600,height=240,scrollbars=no,resizable=no");
+    async cmdTransferirClick() {
+        this.formTransfer = window.open("./public/modules/tansfer.html", "PopopWindow", "width=600,height=240,scrollbars=no,resizable=no");
+
+        await new Promise<void>((resolve) => {
+            if (this.formTransfer?.document.readyState === "complete") {
+                resolve();
+            } else {
+                (this.formTransfer as Window).onload = () => resolve();
+            }
+        });
+
+        (this.formTransfer?.document.getElementById("lblEtiqueta") as HTMLLabelElement).textContent = `Transferencia a Planta ${this.copsa ? "COPSA" : "IPSA"}`;
+        (this.formTransfer?.document.getElementById("recipeCode") as HTMLInputElement).value = this.recipeComboBox.domObject.options[this.recipeComboBox.domObject.selectedIndex].text;
+        (this.formTransfer?.document.getElementById("linea1") as HTMLButtonElement).disabled = this.copsa;
+        (this.formTransfer?.document.getElementById("linea2") as HTMLButtonElement).disabled = this.copsa;
+        (this.formTransfer?.document.getElementById("linea3") as HTMLButtonElement).disabled = this.copsa;
+        (this.formTransfer?.document.getElementById("linea4") as HTMLButtonElement).disabled = !this.copsa;
+        (this.formTransfer?.document.getElementById("linea5") as HTMLButtonElement).disabled = !this.copsa;
     }
 
     cmdImprimirClick() {
@@ -381,7 +367,69 @@ export class CWCAbrir implements Library.SQLObject, Library.PLCObject {
     }
 
     cmdTransferirAction(line: number) {
-        this.tagDatabaseWrite(line);
+
+        let userConfirmation = confirm(`¿Está seguro de transferir la receta seleccionada a la línea ${line}?`);
+
+        if (!userConfirmation) {
+            return;
+        }
+
+        let apiJson = {
+            action: "write",
+            data: [{}],
+        };
+        let originalData = this.recipeJsonData;
+
+        apiJson.data.pop();
+        let hSize = originalData[0] as Library.IngredientTable[];
+        for ( let i = 0; i < hSize.length; i++) {
+            let n_value = document.getElementById(`h${i + 1}2`) as HTMLInputElement;
+            let x_comen1 = document.getElementById(`h${i + 1}4`) as HTMLInputElement;
+            let c_ingred = Number(hSize[i].c_ingred.slice(1));
+            let tagData = {
+                name: "L"+line.toString()+"_NOMBRE_P"+c_ingred,
+                value: x_comen1.value,
+            }
+            apiJson.data.push(tagData);
+            tagData = {
+                name: "L"+line.toString()+"P"+c_ingred,
+                value: n_value.value,
+            }
+            apiJson.data.push(tagData);
+        }
+        let cSize = originalData[1] as Library.IngredientTable[];
+        for ( let i = 0; i < cSize.length; i++) {
+            let n_value = document.getElementById(`c${i + 1}2`) as HTMLInputElement;
+            let x_comen1 = document.getElementById(`c${i + 1}4`) as HTMLInputElement;
+            let c_ingred = Number(cSize[i].c_ingred.slice(1));
+            let tagData = {
+                name: "L"+line.toString()+"_NOMBRE_P"+c_ingred,
+                value: x_comen1.value,
+            }
+            apiJson.data.push(tagData);
+            tagData = {
+                name: "L"+line.toString()+"P"+c_ingred,
+                value: n_value.value,
+            }
+            apiJson.data.push(tagData);
+        }
+        let iSize = originalData[2] as Library.IngredientTable[];
+        for ( let i = 0; i < iSize.length; i++) {
+            let n_value = document.getElementById(`i${i + 1}2`) as HTMLInputElement;
+            let x_comen1 = document.getElementById(`i${i + 1}4`) as HTMLInputElement;
+            let c_ingred = Number(iSize[i].c_ingred.slice(1));
+            let tagData = {
+                name: "L"+line.toString()+"_NOMBRE_P"+c_ingred,
+                value: x_comen1.value,
+            }
+            apiJson.data.push(tagData);
+            tagData = {
+                name: "L"+line.toString()+"P"+c_ingred,
+                value: n_value.value,
+            }
+            apiJson.data.push(tagData);
+        }
+        this.plcAgent.write(this, JSON.stringify(apiJson), "writeRecipe");
     }
 
     async cmdComoAction(name:string) {

@@ -35,4 +35,9 @@ body {
 .button-transfer {
     width: 35px;
     height: 35px;
+    
+}
+
+button:disabled .button-transfer {
+    opacity: 0.5;
 }
