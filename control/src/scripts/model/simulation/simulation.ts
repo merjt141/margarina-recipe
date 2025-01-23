@@ -1,9 +1,9 @@
-import { data } from "jquery";
-import { CWCAbrir } from "../abrir/cwcAbrir.js";
+import { SQLObject } from '../../modules/utilities.js';
+import { CWCAbrir } from '../abrir/cwcAbrir.js';
 
 export class WebCCSimulator {
 
-    object: CWCAbrir;
+    object: SQLObject;
 
     jsonString1 = JSON.stringify({
         action: "selectTable",
@@ -193,17 +193,16 @@ export class WebCCSimulator {
         ])
     });
 
-    constructor(object: CWCAbrir) {
+    constructor(object: SQLObject) {
         this.object = object;
     }
 
     executeQuery(jsonString: string, action: string) {
         switch(action) {
             case "selectTable":
-                let a = document.getElementById("cbRecipes") as HTMLSelectElement;
-                let b = a.value;
+                let a = jsonString.slice(269,272);
                 let sendString: string = "";
-                switch(b) {
+                switch(a) {
                     case "P01":
                         sendString = this.jsonString1;
                         break;
@@ -249,6 +248,25 @@ export class WebCCSimulator {
                         ]),
                     });
                 this.object.sqlAgent.response(this.object, responseComboPeek);
+                break;
+
+            
+            case "selectIngr":
+                let response = JSON.stringify({
+                    action: "selectIngr",
+                    data: JSON.stringify([
+                        {c_ingred:"C01",x_ingred:"Grasa"},
+                        {c_ingred:"C02",x_ingred:"Agua"},
+                        {c_ingred:"C03",x_ingred:"Salmuera"},
+                        {c_ingred:"C04",x_ingred:"Leche"},
+                        {c_ingred:"P01",x_ingred:"Grasa"},
+                        {c_ingred:"P02",x_ingred:"Emulsif. Caliente1 TMG"},
+                        {c_ingred:"P03",x_ingred:"Emulsif. Caliente2 TMG"},
+                        {c_ingred:"P04",x_ingred:"Emulsif. Caliente3 TMG"},
+                        {c_ingred:"P05",x_ingred:"Agua"},
+                    ])
+                });
+                this.object.sqlAgent.response(this.object, response);
                 break;
         }
     }

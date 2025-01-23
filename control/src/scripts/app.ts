@@ -1,16 +1,43 @@
-import { CWCAbrir } from './model/abrir/cwcAbrir.js';
+import { CWCAbrir } from './model/abrir/cwcAbrir';
+import { CWCEscoger } from './model/escoger/cwcEscoger';
+
+class Manager {
+    public formAbrir?: CWCAbrir;
+    public formEscoger?: CWCEscoger;
+    
+    constructor() {
+    }
+    public loadContent(html: string): void {
+        switch(html) {
+            case('formAbrir'):
+                loadContent('./public/views/abrir.html').then(() => {
+                    cwcAbrir = new CWCAbrir();
+                    window.cwcAbrir = cwcAbrir;
+                });
+                break;
+            case('formEscoger'):
+                loadContent('./public/views/escoger.html').then(() => {
+                    this.formEscoger = new CWCEscoger();
+                });
+                break;
+        }
+    }
+}
+
 
 let cwcAbrir: CWCAbrir;
+let cwcEscoger: CWCEscoger;
+let manager: Manager;
 
 /**
  * Initialize web application
  */
 function initializeWebApp() {
-    // Initialize CWCAbrir application data
-    cwcAbrir = new CWCAbrir();
-
-    // Assing Abrir application to window
-    window.cwcAbrir = cwcAbrir;
+    loadContent('./public/views/escoger.html').then(() => {
+        manager = new Manager();
+        manager.formEscoger = new CWCEscoger();
+        window.manager = manager;
+    })
 }
 
 // WebCC of Custom Web Control declaration for WinCC Unified
@@ -25,13 +52,13 @@ WebCC.start(function(result: any){
 {
     methods: {
         PopulateRecipes: function(jsonString: string) {
-            cwcAbrir.recipeComboBox.update(jsonString);
+            cwcAbrir?.recipeComboBox.update(jsonString);
         },
         QueryResponse: function(jsonString: string) {
-            cwcAbrir.sqlAgent.response(cwcAbrir, jsonString);
+            cwcAbrir?.sqlAgent.response(cwcAbrir, jsonString);
         },
         PLCResponse: function(jsonString: string) {
-            cwcAbrir.plcAgent.response(cwcAbrir, jsonString);
+            cwcAbrir?.plcAgent.response(cwcAbrir, jsonString);
         }
     },
     events: ['NewSelection', 'executeQuery', 'writePLC'],
@@ -49,3 +76,12 @@ WebCC.start(function(result: any){
 $(document).ready(function() {
     // initializeWebApp();
 })
+
+async function loadContent(page: string) {
+    await fetch(page)
+        .then(response => response.text())
+        .then(html => {
+            (document.getElementById('main-content') as HTMLElement).innerHTML = html;
+        })
+        .catch(error => console.error('Error loading the page:', error));
+}

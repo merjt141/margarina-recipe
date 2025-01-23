@@ -1,0 +1,51 @@
+<div class="container">
+    <div class="top-bar">
+        <table>
+            <tbody>
+                <tr>
+                    <td class="recipe-nombre">
+                        <label for="nombreNuevaReceta">Nombre de Nueva Receta: </label>
+                        <input type="text" name="nombre-nueva-receta" id="nombreNuevaReceta" required>
+                    </td>
+                    <td class="right-title">
+                        <label id="esc-title">#</label>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="central-content">
+        <div>
+            <table class="element-list">
+                <tbody>
+                    <tr>
+                        <td>
+                            <p class="list-title">Ingredientes Existentes</p>
+                            <ul id="ingr-exist" class="ingr-list">
+                            </ul>
+                        </td>
+                        <td>
+                            <button id="cmdPut" disabled onclick="manager.formEscoger.cmdPutClick()">>></button>
+                            <button id="cmdGet" disabled onclick="manager.formEscoger.cmdGetClick()">&lt;&lt;</button>
+                        </td>
+                        <td>
+                            <p class="list-title">Ingredientes Seleccionados</p>
+                            <ul id="ingr-select"  class="ingr-list">
+                            </ul>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="esc-bottom">
+            <button onclick="manager.formEscoger.cmdAceptarClick()">
+                <img src="./src/assets/images/icons8-save-as-50.png" alt="Icon">
+                Aceptar
+            </button>
+            <button>
+                <img src="./src/assets/images/icons8-exit-door-64.png" alt="Icon">
+                Salir
+            </button>
+        </div>
+    </div>
+</div>

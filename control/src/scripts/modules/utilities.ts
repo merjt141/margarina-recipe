@@ -38,6 +38,11 @@ export interface IngredientTable {
     t_ingred: string,
 }
 
+export interface IngredientList {
+    c_ingred: string,
+    x_ingred: string,
+}
+
 export interface RecipeTable {
     c_receta: string,
     x_receta: string,
@@ -56,18 +61,23 @@ export interface PLCObject {
 }
 
 export class ComboBoxRecipe {
-    domObject: HTMLSelectElement;
+    domId: string;
+
     object: CWCAbrir;
     selectedIndex: string;
 
     constructor(domId: string, object: CWCAbrir) {
-        this.domObject = document.getElementById(domId) as HTMLSelectElement;
+        this.domId = domId;
         this.object = object;
         this.selectedIndex = "";
 
-        this.domObject.addEventListener('change', () => {
+        this.domObject().addEventListener('change', () => {
             this.select();
         })
+    }
+
+    domObject(): HTMLSelectElement {
+        return document.getElementById(this.domId) as HTMLSelectElement;
     }
 
     /**
@@ -76,32 +86,29 @@ export class ComboBoxRecipe {
      */
     update(data: string) {
         const obj = JSON.parse(typeof(data) == "string" ? data : JSON.stringify(data));
-        this.domObject.textContent = '';
+        this.domObject().textContent = '';
         for (let i = 0; i < obj.length; i++){
             let option = document.createElement("option") as HTMLOptionElement;
             option.value = obj[i].c_receta;
             option.innerHTML = obj[i].x_receta;
-            this.domObject.appendChild(option);
+            this.domObject().appendChild(option);
         }
+        console.log(obj);
+        console.log("updated");
     }
 
     /**
      * Select element from combo box
      */
     async select() {
-        this.selectedIndex = this.domObject.value;
-
+        this.selectedIndex = this.domObject().value;
         let queryString = `Use ENV_MARG; select r.c_receta, r.x_receta, d.n_valor, d.x_comen1, d.x_comen2, i.c_ingred, i.x_ingred, i.x_unidad, i.t_ingred `;
         queryString += `from RECETA r inner join DETALLE_RECETA d on r.c_receta = d.c_receta inner join INGREDIENTES i on d.c_ingred = i.c_ingred `;
         queryString += `where r.c_receta = '${this.selectedIndex}' order by c_ingred;`;
 
         this.object.sqlAgent.execute(this.object, queryString, "selectTable");
-        let pid: any[] = this.object.pid[1];
-        await waitPID(pid);
-        pid[0] = false;
-        let data = pid[1];
-        pid[1] = "";
-        this.object.writeRecipeData(data);
+        let response = await waitPID(this.object.pid[1]);
+        this.object.writeRecipeData(response);
     }
 }
 
@@ -304,8 +311,8 @@ export function valoresOk(object: CWCAbrir): boolean {
     return true;
 }
 
-export async function waitPID(pid: any[]): Promise<void> {
-    return new Promise<void>((resolve) => {
+export async function waitPID(pid: any[]): Promise<string> {
+    await new Promise<void>((resolve) => {
         const checkInterval = setInterval(() => {
             if (pid[0]) {
                 clearInterval(checkInterval);
@@ -313,30 +320,26 @@ export async function waitPID(pid: any[]): Promise<void> {
             }
         }, 100);
     });
+    pid[0] = false;
+    let response = pid[1];
+    pid[1] = "";
+    return response;
 }
 
 export async function listaCodigos(planta: boolean, object: CWCAbrir, pid: any[]) {
     let queryString: string = `Use ENV_MARG; select x_receta, c_receta from RECETA where left(c_receta, 1) = '${planta ? 'C' : 'P'}' order by c_receta;`;
     object.sqlAgent.execute(object, queryString, "selectCombo");
-
-    await waitPID(pid);
-    pid[0] = false;
-    let data = pid[1];
-    pid[1] = "";
-
-    object.recipeComboBox.update(data);
+    let response = await waitPID(pid);
+    object.recipeComboBox.update(response);
 }
 
 export async function buscaNuevoCodigo(planta: boolean, object: SQLObject, pid: any[]) {
     let queryString: string = `Use ENV_MARG; select top(1) x_receta, c_receta from RECETA where left(c_receta, 1) = '${planta ? 'C' : 'P'}' order by c_receta desc;`;
     object.sqlAgent.execute(object, queryString, "selectComboPeek");
 
-    await waitPID(pid);
-    pid[0] = false;
-    let data = pid[1];
-    pid[1] = "";
+    let response = await waitPID(pid);
 
-    let dataJson = JSON.parse(data);
+    let dataJson = JSON.parse(response);
     if (Boolean(dataJson[0])) {
         let code = dataJson[0].c_receta;
         return Number(code.slice(1,3)) + 1;
@@ -347,13 +350,8 @@ export async function buscaNuevoCodigo(planta: boolean, object: SQLObject, pid: 
 export async function nombreDuplicado(planta: boolean, name: string, object: SQLObject, pid: any[]) {
     let queryString: string = `Use ENV_MARG; select * from RECETA where left(c_receta, 1) = '${planta ? 'C' : 'P'}' and x_receta = '${name}' order by c_receta;`;
     object.sqlAgent.execute(object, queryString, "duplicadoPeek");
-
-    await waitPID(pid);
-    pid[0] = false;
-    let data = pid[1];
-    pid[1] = "";
-
-    let dataJson = JSON.parse(data);
+    let response = await waitPID(pid);
+    let dataJson = JSON.parse(response);
     if (Boolean(dataJson[0])) {
         return true;
     }

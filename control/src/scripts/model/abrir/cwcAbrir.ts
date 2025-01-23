@@ -1,12 +1,12 @@
-import { WebCCSimulator } from "../simulation/simulation.js"
-import * as Library from "../../modules/utilities.js";
+import { WebCCSimulator } from '../simulation/simulation';
+import * as Library from '../../modules/utilities';
 
 export class CWCAbrir implements Library.SQLObject, Library.PLCObject {
 
     formTransfer: Window | null;
     formSaveAs: Window | null;
 
-    recipeJsonData: Library.IngredientTable[][];    // Raw table fo recipe ingredients from SQL Server
+    recipeJsonData: Library.IngredientTable[][];    // Raw table of recipe ingredients from SQL Server
     ingredientsHeadArray: string[];                 // List of ingredients table header
     
     ingredientsDOM: HTMLInputElement[][];           // DOM references to used ingredients field
@@ -179,7 +179,7 @@ export class CWCAbrir implements Library.SQLObject, Library.PLCObject {
         this.ingredientsDOM = [[],[]];
         this.parametersDOM = [];
         
-        (document.getElementById("idCodeRecipe") as HTMLInputElement).value = this.recipeComboBox.domObject.value;
+        (document.getElementById("idCodeRecipe") as HTMLInputElement).value = this.recipeComboBox.domObject().value;
         // Hot ingredients
         data[0].forEach((item: Library.IngredientTable, i: number) => {
             this.ingredientsHeadArray.forEach((element: string, j: number) => {
@@ -315,7 +315,7 @@ export class CWCAbrir implements Library.SQLObject, Library.PLCObject {
     }
 
     async cmdEliminarClick() {
-        let value = this.recipeComboBox.domObject.value;
+        let value = this.recipeComboBox.domObject().value;
         if (value == "") {
             alert("Seleccione la receta a eliminar");
             return;
@@ -350,7 +350,7 @@ export class CWCAbrir implements Library.SQLObject, Library.PLCObject {
         });
 
         (this.formTransfer?.document.getElementById("lblEtiqueta") as HTMLLabelElement).textContent = `Transferencia a Planta ${this.copsa ? "COPSA" : "IPSA"}`;
-        (this.formTransfer?.document.getElementById("recipeCode") as HTMLInputElement).value = this.recipeComboBox.domObject.options[this.recipeComboBox.domObject.selectedIndex].text;
+        (this.formTransfer?.document.getElementById("recipeCode") as HTMLInputElement).value = this.recipeComboBox.domObject().options[this.recipeComboBox.domObject().selectedIndex].text;
         (this.formTransfer?.document.getElementById("linea1") as HTMLButtonElement).disabled = this.copsa;
         (this.formTransfer?.document.getElementById("linea2") as HTMLButtonElement).disabled = this.copsa;
         (this.formTransfer?.document.getElementById("linea3") as HTMLButtonElement).disabled = this.copsa;
@@ -493,7 +493,7 @@ export class CWCAbrir implements Library.SQLObject, Library.PLCObject {
         console.log("Receta guardada con éxito");
         this.clearInputFields();
         await Library.listaCodigos(this.copsa, this, this.pid[0]);
-        this.recipeComboBox.domObject.value = c_receta;
+        this.recipeComboBox.domObject().value = c_receta;
         this.recipeComboBox.select();
     }
 }

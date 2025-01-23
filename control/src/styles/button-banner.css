@@ -1,12 +1,14 @@
 .right-content {
     align-items: center;
-    border: 1px solid #ccc;
-    padding: 10px;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
     background: #f9f9f9;
-    width: 100px;
+    box-sizing: border-box;
+    width: 122px;
+    height: 621px;
+    border: 1px solid #ccc;
+    padding: 10px;
 }
 
 .right-content button {
