@@ -23,9 +23,9 @@
             <div class="tab-buttons">
                 <table>
                     <tr>
-                        <td><button onclick="cwcAbrir.cmdShowTabClick('tab1')">INGREDIENTES TMG</button></td>
-                        <td><button onclick="cwcAbrir.cmdShowTabClick('tab2')">INGREDIENTES BALANZA / EMULSION</button></td>
-                        <td><button onclick="cwcAbrir.cmdShowTabClick('tab3')">PARÁMETROS IPSA</button></td>
+                        <td><button onclick="app.formAbrir.cmdShowTabClick('tab1')">INGREDIENTES TMG</button></td>
+                        <td><button onclick="app.formAbrir.cmdShowTabClick('tab2')">INGREDIENTES BALANZA / EMULSION</button></td>
+                        <td><button onclick="app.formAbrir.cmdShowTabClick('tab3')">PARÁMETROS IPSA</button></td>
                     </tr>
                 </table>
             </div>
@@ -142,7 +142,7 @@
                             </td>
                             <td>
                                 <div>
-                                    <button type="button" onclick="cwcAbrir.cmdModificarClick()" id="button-modify-tmg">
+                                    <button type="button" onclick="app.formAbrir.cmdModificarClick()" id="button-modify-tmg">
                                         <img src="./src/assets/images/wrench.png" alt="Icon" class="button-wrench">
                                         Modificar Receta
                                     </button>
@@ -150,7 +150,7 @@
                             </td>
                             <td>
                                 <div>
-                                    <button type="button" onclick="cwcAbrir.cmdActualizarClick()">
+                                    <button type="button" onclick="app.formAbrir.cmdActualizarClick()">
                                         <img src="./src/assets/images/refresh.png" alt="Icon" class="button-wrench">
                                         Actualizar Receta
                                     </button>                                        
@@ -322,7 +322,7 @@
                             </td>
                             <td>
                                 <div>
-                                    <button type="button" onclick="cwcAbrir.cmdModificarClick()" id="button-modify-balanza">
+                                    <button type="button" onclick="app.formAbrir.cmdModificarClick()" id="button-modify-balanza">
                                         <img src="./src/assets/images/wrench.png" alt="Icon" class="button-wrench">
                                         Modificar Receta
                                     </button>
@@ -330,7 +330,7 @@
                             </td>
                             <td>
                                 <div>
-                                    <button type="button" onclick="cwcAbrir.cmdActualizarClick()">
+                                    <button type="button" onclick="app.formAbrir.cmdActualizarClick()">
                                         <img src="./src/assets/images/refresh.png" alt="Icon" class="button-wrench">
                                         Actualizar Receta
                                     </button>                                        
@@ -615,7 +615,7 @@
                             <td></td>
                             <td>
                                 <div>
-                                    <button type="button" onclick="cwcAbrir.cmdModificarClick()" id="button-modify-ipsa">
+                                    <button type="button" onclick="app.formAbrir.cmdModificarClick()" id="button-modify-ipsa">
                                         <img src="./src/assets/images/wrench.png" alt="Icon" class="button-wrench">
                                         Modificar Receta
                                     </button>
@@ -623,7 +623,7 @@
                             </td>
                             <td>
                                 <div>
-                                    <button type="button" onclick="cwcAbrir.cmdActualizarClick()">
+                                    <button type="button" onclick="app.formAbrir.cmdActualizarClick()">
                                         <img src="./src/assets/images/refresh.png" alt="Icon" class="button-wrench">
                                         Actualizar Receta
                                     </button>                                        
@@ -641,27 +641,27 @@
             <label for="idCodeRecipe" style="width: 120px; text-align: center; margin-bottom: 5px; font-weight: bold;">Código de Receta</label>
             <input type="text" id="idCodeRecipe" style="width: 100px; font-weight: bold; text-align: center;" name="recipe-code" disabled>
         </div>
-        <button id="b11" onclick="cwcAbrir.cmdGuardarClick()">
+        <button id="b11" onclick="app.formAbrir.cmdGuardarClick()">
             <img src="./src/assets/images/icons8-save-50.png" alt="Icon" class="button-right">
             Guardar
         </button>
-        <button id="b12" onclick="cwcAbrir.cmdComoClick()">
+        <button id="b12" onclick="app.formAbrir.cmdComoClick()">
             <img src="./src/assets/images/icons8-save-as-50.png" alt="Icon" class="button-right">
             Guardar Como
         </button>
-        <button id="b13" onclick="cwcAbrir.cmdEliminarClick()">
+        <button id="b13" onclick="app.formAbrir.cmdEliminarClick()">
             <img src="./src/assets/images/icons8-delete-50.png" alt="Icon" class="button-right">
             Eliminar
         </button>
-        <button id="b14" onclick="cwcAbrir.cmdTransferirClick()">
+        <button id="b14" onclick="app.formAbrir.cmdTransferirClick()">
             <img src="./src/assets/images/icons8-write-64.png" alt="Icon" class="button-right">
             Transferir
         </button>
-        <button id="b15" onclick="cwcAbrir.cmdImprimirClick()">
+        <button id="b15" onclick="app.formAbrir.cmdImprimirClick()">
             <img src="./src/assets/images/icons8-print-50.png" alt="Icon" class="button-right">
             Imprimir
         </button>
-        <button id="b16" onclick="cwcAbrir.cmdSalirClick()">
+        <button id="b16" onclick="app.formAbrir.cmdSalirClick()">
             <img src="./src/assets/images/icons8-exit-door-64.png" alt="Icon" class="button-right">
             Salir
         </button>

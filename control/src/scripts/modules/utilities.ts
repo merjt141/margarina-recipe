@@ -1,6 +1,6 @@
 export const ingredientsPropArray = ["x_ingred", "n_valor"];
 import { CWCAbrir } from "../model/abrir/cwcAbrir.js"
-import { WebCCSimulator } from "../model/simulation/simulation.js";
+import { App } from "./manager.js";
 
 export interface RecipeInputList {
     editable: {
@@ -48,15 +48,8 @@ export interface RecipeTable {
     x_receta: string,
 }
 
-export interface SQLObject {
-    sqlAgent: SQLAgent;
-    webCCSimulator: WebCCSimulator;
-    sqlQueryResponseHandler: (response: string) => void;
-}
-
 export interface PLCObject {
     plcAgent: PLCAgent;
-    webCCSimulator: WebCCSimulator;
     plcWriteResponseHandler: (response: string) => void;
 }
 
@@ -64,11 +57,13 @@ export class ComboBoxRecipe {
     domId: string;
 
     object: CWCAbrir;
+    manager: App;
     selectedIndex: string;
 
-    constructor(domId: string, object: CWCAbrir) {
+    constructor(domId: string, object: CWCAbrir, manager: App) {
         this.domId = domId;
         this.object = object;
+        this.manager = manager;
         this.selectedIndex = "";
 
         this.domObject().addEventListener('change', () => {
@@ -93,8 +88,6 @@ export class ComboBoxRecipe {
             option.innerHTML = obj[i].x_receta;
             this.domObject().appendChild(option);
         }
-        console.log(obj);
-        console.log("updated");
     }
 
     /**
@@ -106,33 +99,9 @@ export class ComboBoxRecipe {
         queryString += `from RECETA r inner join DETALLE_RECETA d on r.c_receta = d.c_receta inner join INGREDIENTES i on d.c_ingred = i.c_ingred `;
         queryString += `where r.c_receta = '${this.selectedIndex}' order by c_ingred;`;
 
-        this.object.sqlAgent.execute(this.object, queryString, "selectTable");
-        let response = await waitPID(this.object.pid[1]);
+        let response = await this.manager.pidManager.execute(queryString, 1);
+
         this.object.writeRecipeData(response);
-    }
-}
-
-export class SQLAgent {
-    constructor() {
-
-    }
-
-    execute(object:SQLObject, queryString: string, action: string) {
-        let packet = {
-            "action": action,
-            "data": queryString
-        };
-        console.log(packet);
-        try {
-            WebCC.Events.fire('executeQuery', JSON.stringify(packet), action);
-        } catch (error) {
-            console.log("Not access to WebCC API: Go Simulation");
-            object.webCCSimulator.executeQuery(queryString, action);
-        }
-    }
-
-    response(object: SQLObject, response: string) {
-        object.sqlQueryResponseHandler(response);
     }
 }
 
@@ -148,7 +117,6 @@ export class PLCAgent {
             WebCC.Events.fire('writePLC', writeCommand, action);
         } catch (error) {
             console.log("Not access to WebCC API");
-            object.webCCSimulator.writePLC(writeCommand);
         }
     }
 
@@ -311,33 +279,16 @@ export function valoresOk(object: CWCAbrir): boolean {
     return true;
 }
 
-export async function waitPID(pid: any[]): Promise<string> {
-    await new Promise<void>((resolve) => {
-        const checkInterval = setInterval(() => {
-            if (pid[0]) {
-                clearInterval(checkInterval);
-                resolve();
-            }
-        }, 100);
-    });
-    pid[0] = false;
-    let response = pid[1];
-    pid[1] = "";
-    return response;
-}
-
-export async function listaCodigos(planta: boolean, object: CWCAbrir, pid: any[]) {
+export async function listaCodigos(planta: boolean, object: App) {
     let queryString: string = `Use ENV_MARG; select x_receta, c_receta from RECETA where left(c_receta, 1) = '${planta ? 'C' : 'P'}' order by c_receta;`;
-    object.sqlAgent.execute(object, queryString, "selectCombo");
-    let response = await waitPID(pid);
-    object.recipeComboBox.update(response);
+    let response = await object.pidManager.execute(queryString, 0);
+    object.formAbrir?.recipeComboBox.update(response);
 }
 
-export async function buscaNuevoCodigo(planta: boolean, object: SQLObject, pid: any[]) {
+export async function buscaNuevoCodigo(planta: boolean, object: App, pid: any[]) {
     let queryString: string = `Use ENV_MARG; select top(1) x_receta, c_receta from RECETA where left(c_receta, 1) = '${planta ? 'C' : 'P'}' order by c_receta desc;`;
-    object.sqlAgent.execute(object, queryString, "selectComboPeek");
-
-    let response = await waitPID(pid);
+    
+    let response = await object.pidManager.execute(queryString, 4);
 
     let dataJson = JSON.parse(response);
     if (Boolean(dataJson[0])) {
@@ -347,10 +298,9 @@ export async function buscaNuevoCodigo(planta: boolean, object: SQLObject, pid: 
     return MenorCodigo;
 }
 
-export async function nombreDuplicado(planta: boolean, name: string, object: SQLObject, pid: any[]) {
+export async function nombreDuplicado(planta: boolean, name: string, object: App, pid: any[]) {
     let queryString: string = `Use ENV_MARG; select * from RECETA where left(c_receta, 1) = '${planta ? 'C' : 'P'}' and x_receta = '${name}' order by c_receta;`;
-    object.sqlAgent.execute(object, queryString, "duplicadoPeek");
-    let response = await waitPID(pid);
+    let response = await object.pidManager.execute(queryString, 3);
     let dataJson = JSON.parse(response);
     if (Boolean(dataJson[0])) {
         return true;

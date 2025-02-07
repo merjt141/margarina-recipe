@@ -11,18 +11,18 @@
     <label for="save-as">Guardar Como:</label>
     <input type="text" id="save-as" name="save-as-form">
     <button onclick="cmdComoClick()">
-        <img src="../src/assets/images/icons8-print-50.png" alt="Icon">
+        <img src="../../src/assets/images/icons8-save-50.png" alt="Icon">
         Aceptar
     </button>
     <button>
-        <img src="../src/assets/images/icons8-print-50.png" alt="Icon">
-        Aceptar
+        <img src="../../src/assets/images/icons8-exit-door-64.png" alt="Icon">
+        Cancelar
     </button>
 </body>
 <script>
     function cmdComoClick() {
         let saveName = document.getElementById("save-as").value.trim();
-        window.opener.cwcAbrir.cmdComoAction(saveName);
+        window.opener.app.formAbrir.cmdComoAction(saveName);
     }
 </script>
 </html>

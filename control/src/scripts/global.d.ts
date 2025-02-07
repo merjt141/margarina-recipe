@@ -1,6 +1,5 @@
 interface Window {
-    cwcAbrir: any;
-    manager: any;
+    app: any;
 }
 
 declare var WebCC : any;

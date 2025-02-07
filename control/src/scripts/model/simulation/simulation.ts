@@ -1,9 +1,8 @@
-import { SQLObject } from '../../modules/utilities.js';
-import { CWCAbrir } from '../abrir/cwcAbrir.js';
+import { PIDManager } from "../../modules/pidManager";
 
 export class WebCCSimulator {
 
-    object: SQLObject;
+    object: PIDManager;
 
     jsonString1 = JSON.stringify({
         action: "selectTable",
@@ -193,7 +192,7 @@ export class WebCCSimulator {
         ])
     });
 
-    constructor(object: SQLObject) {
+    constructor(object: PIDManager) {
         this.object = object;
     }
 
@@ -216,10 +215,10 @@ export class WebCCSimulator {
                         sendString = this.jsonString4;
                         break
                 }
-                this.object.sqlAgent.response(this.object, sendString);
+                this.object.response(sendString);
                 break;
             case "selectCombo":
-                this.object.sqlAgent.response(this.object, this.comboList);
+                this.object.response(this.comboList);
                 break;
             case "updateTable":
                 break;
@@ -234,7 +233,7 @@ export class WebCCSimulator {
                             }*/
                         ])
                 });
-                this.object.sqlAgent.response(this.object, responseDuplicadoPeek);
+                this.object.response(responseDuplicadoPeek);
                 break;
             case "selectComboPeek":
                 let responseComboPeek = JSON.stringify({
@@ -247,7 +246,7 @@ export class WebCCSimulator {
                             }
                         ]),
                     });
-                this.object.sqlAgent.response(this.object, responseComboPeek);
+                this.object.response(responseComboPeek);
                 break;
 
             
@@ -266,7 +265,7 @@ export class WebCCSimulator {
                         {c_ingred:"P05",x_ingred:"Agua"},
                     ])
                 });
-                this.object.sqlAgent.response(this.object, response);
+                this.object.response(response);
                 break;
         }
     }

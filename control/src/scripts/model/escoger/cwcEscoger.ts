@@ -1,27 +1,23 @@
-import { WebCCSimulator } from '../simulation/simulation';
 import * as Library from '../../modules/utilities';
-import { event } from 'jquery';
+import { App } from '../../modules/manager';
 
-export class CWCEscoger implements Library.SQLObject {
+export class CWCEscoger {
 
     ingredientJsonData: Library.IngredientList[];   // Raw table of ingredients from SQL Server
     ingredientExistIndex: string = "";
     ingredientSelectIndex: string = "";
 
-    sqlAgent: Library.SQLAgent;                     // SQL Sever agent for query control
+    app: App;
     
-    webCCSimulator: WebCCSimulator;                 // For simulation in developer environment
-
     copsa: boolean;                                 // Area of production
 
     pid: any[][];                                   // Attribute to handle async functions
 
 
-    constructor() {
+    constructor(app: App) {
         this.ingredientJsonData = [];
 
-        this.sqlAgent = new Library.SQLAgent();
-        this.webCCSimulator = new WebCCSimulator(this);
+        this.app = app;
 
         this.copsa = false;
 
@@ -34,8 +30,8 @@ export class CWCEscoger implements Library.SQLObject {
         (document.getElementById("esc-title") as HTMLLabelElement).textContent = `Total ingredientes de ${this.copsa ? "COPSA" : "IPSA"}`
 
         let queryString: string = `Use ENV_MARG; select c_ingred, x_ingred from INGREDIENTES where left(c_ingred,1)=${this.copsa ? "C" : "P"} order by c_ingred;`;
-        this.sqlAgent.execute(this, queryString, "selectIngr");
-        let response: string = await Library.waitPID(this.pid[0]);
+        
+        let response: string = await this.app.pidManager.execute(queryString, 8);
         this.ingredientJsonData = JSON.parse(response);
 
         const list: HTMLUListElement = document.getElementById("ingr-exist") as HTMLUListElement;

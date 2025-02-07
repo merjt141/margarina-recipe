@@ -1,7 +1,8 @@
 import { WebCCSimulator } from '../simulation/simulation';
 import * as Library from '../../modules/utilities';
+import { App } from '../../modules/manager';
 
-export class CWCAbrir implements Library.SQLObject, Library.PLCObject {
+export class CWCAbrir implements Library.PLCObject {
 
     formTransfer: Window | null;
     formSaveAs: Window | null;
@@ -15,11 +16,9 @@ export class CWCAbrir implements Library.SQLObject, Library.PLCObject {
     editionDisabled: boolean;                       // Lock edition of fields
     recipeInputList: Library.RecipeInputList;
 
-    sqlAgent: Library.SQLAgent;                     // SQL Sever agent for query control
+    app: App;
     plcAgent: Library.PLCAgent;                     // PLC Agent for write tags value
     recipeComboBox: Library.ComboBoxRecipe;         // ComboBox object instance for recipe app
-
-    webCCSimulator: WebCCSimulator;                 // For simulation in developer environment
 
     copsa: boolean;                                 // Area of production
     skipMessage: boolean;                           // Skip confirmation messages
@@ -27,7 +26,7 @@ export class CWCAbrir implements Library.SQLObject, Library.PLCObject {
 
     pid: any[][];                                   // Attribute to handle async functions
 
-    constructor() {
+    constructor(manager: App) {
         this.recipeJsonData = [[],[],[],[],[]];
         this.ingredientsHeadArray = ["x_ingred", "n_valor", "x_unidad", "x_comen1", "x_comen2"];
 
@@ -46,11 +45,9 @@ export class CWCAbrir implements Library.SQLObject, Library.PLCObject {
             ["itmg","icantidad","iunidad","idescripcion","sumabalanza"]]
         };
 
-        this.sqlAgent = new Library.SQLAgent();
+        this.app = manager;
         this.plcAgent = new Library.PLCAgent();
-        this.recipeComboBox = new Library.ComboBoxRecipe("cbRecipes", this);
-
-        this.webCCSimulator = new WebCCSimulator(this);
+        this.recipeComboBox = new Library.ComboBoxRecipe("cbRecipes", this, this.app);
 
         this.copsa = false;
         this.skipMessage = false;
@@ -68,8 +65,8 @@ export class CWCAbrir implements Library.SQLObject, Library.PLCObject {
         let packet = JSON.parse(response);
         switch(packet.action) {
             case "selectCombo":
-                this.pid[0][1] = packet.data;
-                this.pid[0][0] = true;
+                //this.pid[0][1] = packet.data;
+                //this.pid[0][0] = true;
                 break;
             case "selectTable":
                 this.pid[1][1] = packet.data;
@@ -121,7 +118,7 @@ export class CWCAbrir implements Library.SQLObject, Library.PLCObject {
             this.recipeInputList.editable.ipsa.push(`ipsa${i}`)
         }
 
-        await Library.listaCodigos(this.copsa, this, this.pid[0]);
+        await Library.listaCodigos(this.copsa, this.app);
         this.recipeComboBox.select();
     }
 
@@ -242,7 +239,7 @@ export class CWCAbrir implements Library.SQLObject, Library.PLCObject {
             let x_comen1 = document.getElementById(`h${i + 1}4`) as HTMLInputElement;
             let x_comen2 = document.getElementById(`h${i + 1}5`) as HTMLInputElement;
             let queryString = `Use ENV_MARG; update DETALLE_RECETA set n_valor = ${n_value.value}, x_comen1 = '${x_comen1.value}', x_comen2 = '${x_comen2.value}' where c_receta = '${recipeId}' and c_ingred = '${hSize[i]["c_ingred"]}';`
-            this.sqlAgent.execute(this, queryString, "updateTable");
+            this.app.pidManager.execute(queryString, 2);
         }
         let cSize = originalData[1] as Library.IngredientTable[];
         for (let i = 0; i < cSize.length; i++) {
@@ -250,7 +247,7 @@ export class CWCAbrir implements Library.SQLObject, Library.PLCObject {
             let x_comen1 = document.getElementById(`c${i + 1}4`) as HTMLInputElement;
             let x_comen2 = document.getElementById(`c${i + 1}5`) as HTMLInputElement;
             let queryString = `Use ENV_MARG; update DETALLE_RECETA set n_valor = ${n_value.value}, x_comen1 = '${x_comen1.value}', x_comen2 = '${x_comen2.value}' where c_receta = '${recipeId}' and c_ingred = '${cSize[i]["c_ingred"]}';`
-            this.sqlAgent.execute(this, queryString, "updateTable");
+            this.app.pidManager.execute(queryString, 2);
         }
         let iSize = originalData[2] as Library.IngredientTable[];
         for (let i = 0; i < iSize.length; i++) {
@@ -258,7 +255,7 @@ export class CWCAbrir implements Library.SQLObject, Library.PLCObject {
             let x_comen1 = document.getElementById(`i${i + 1}4`) as HTMLInputElement;
             let x_comen2 = document.getElementById(`i${i + 1}5`) as HTMLInputElement;
             let queryString = `Use ENV_MARG; update DETALLE_RECETA set n_valor = ${n_value.value}, x_comen1 = '${x_comen1.value}', x_comen2 = '${x_comen2.value}' where c_receta = '${recipeId}' and c_ingred = '${iSize[i]["c_ingred"]}';`
-            this.sqlAgent.execute(this, queryString, "updateTable");
+            this.app.pidManager.execute(queryString, 2);
         }
         let ipsaSize = originalData[3] as Library.IngredientTable[];
         for (let i = 0; i < ipsaSize.length; i++) {
@@ -266,7 +263,7 @@ export class CWCAbrir implements Library.SQLObject, Library.PLCObject {
             let value: any;
             n_value.value == "0" ? value = null : value = n_value.value;
             let queryString = `Use ENV_MARG; update DETALLE_RECETA set n_valor = ${value} where c_receta = '${recipeId}' and c_ingred = '${ipsaSize[i]["c_ingred"]}';`
-            this.sqlAgent.execute(this, queryString, "updateTable");
+            this.app.pidManager.execute(queryString, 2);
         }
     }
 
@@ -324,16 +321,15 @@ export class CWCAbrir implements Library.SQLObject, Library.PLCObject {
         let queryString: string;
         if (userConfirmation) {
             queryString = `Use ENV_MARG; delete from DETALLE_RECETA where c_receta = '${value}';`;
-            this.sqlAgent.execute(this, queryString, "deleteRecipe");
-
-            await Library.waitPID(this.pid[7]);
+            
+            await this.app.pidManager.execute(queryString, 7);
             
             queryString = `Use ENV_MARG; delete from RECETA where c_receta = '${value}';`;
-            this.sqlAgent.execute(this, queryString, "deleteRecipe");
+            this.app.pidManager.execute(queryString, 7);
 
             console.log("Receta eliminada con éxito");
             this.clearInputFields();
-            await Library.listaCodigos(this.copsa, this, this.pid[0]);
+            await Library.listaCodigos(this.copsa, this.app);
             this.recipeComboBox.select();
         }
     }
@@ -348,6 +344,8 @@ export class CWCAbrir implements Library.SQLObject, Library.PLCObject {
                 (this.formTransfer as Window).onload = () => resolve();
             }
         });
+
+        await new Promise<void>(resolve => setTimeout(resolve, 100));
 
         (this.formTransfer?.document.getElementById("lblEtiqueta") as HTMLLabelElement).textContent = `Transferencia a Planta ${this.copsa ? "COPSA" : "IPSA"}`;
         (this.formTransfer?.document.getElementById("recipeCode") as HTMLInputElement).value = this.recipeComboBox.domObject().options[this.recipeComboBox.domObject().selectedIndex].text;
@@ -367,6 +365,8 @@ export class CWCAbrir implements Library.SQLObject, Library.PLCObject {
     }
 
     cmdTransferirAction(line: number) {
+
+        window.focus();
 
         let userConfirmation = confirm(`¿Está seguro de transferir la receta seleccionada a la línea ${line}?`);
 
@@ -438,12 +438,12 @@ export class CWCAbrir implements Library.SQLObject, Library.PLCObject {
             return;
         }
 
-        let isRepeated = await Library.nombreDuplicado(this.copsa, name, this, this.pid[3]);
+        let isRepeated = await Library.nombreDuplicado(this.copsa, name, this.app, this.pid[3]);
         if (isRepeated) {
             alert("El nombre ingresado ya existe");
         }
         let field = this.copsa ? "C" : "P";
-        let value = await Library.buscaNuevoCodigo(this.copsa, this, this.pid[4]);
+        let value = await Library.buscaNuevoCodigo(this.copsa, this.app, this.pid[4]);
         
         if (value < 10) {
             field += "0";
@@ -453,7 +453,7 @@ export class CWCAbrir implements Library.SQLObject, Library.PLCObject {
         
         let queryString = `Use ENV_MARG; insert into RECETA(c_receta, x_receta) values('${c_receta}', '${name}');`;
         
-        this.sqlAgent.execute(this, queryString, "insertReceta");
+        this.app.pidManager.execute(queryString, 5);
 
         let insertString = `Use ENV_MARG; insert into DETALLE_RECETA(c_receta, c_ingred, n_valor, x_comen1, x_comen2) values `;
         this.recipeJsonData[0].forEach((item: Library.IngredientTable, index: number) => {
@@ -488,11 +488,11 @@ export class CWCAbrir implements Library.SQLObject, Library.PLCObject {
 
         insertString = insertString.slice(0, -2);
         insertString += `;`;
-        this.sqlAgent.execute(this, insertString, "insertDetalle");
+        this.app.pidManager.execute(insertString, 6);
 
         console.log("Receta guardada con éxito");
         this.clearInputFields();
-        await Library.listaCodigos(this.copsa, this, this.pid[0]);
+        await Library.listaCodigos(this.copsa, this.app);
         this.recipeComboBox.domObject().value = c_receta;
         this.recipeComboBox.select();
     }

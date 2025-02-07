@@ -3,7 +3,7 @@ const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 
 module.exports = {
-  entry: './control/src/scripts/app.ts',
+  entry: './control/src/scripts/main.ts',
   output: {
     filename: 'jys-recipe-app.js',
     path: path.resolve(__dirname, 'control/dist'),
