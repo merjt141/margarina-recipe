@@ -200,7 +200,7 @@ export function refrescoSuma(object: CWCAbrir) {
 
     // Corregir imprecisiones de punto flotante en suma
     sumaBalanza += sumaBalanza + sumaTMG;
-    sumaBalanza += Number(sumaBalanza.toFixed(6));
+    sumaBalanza = Number(sumaBalanza.toFixed(6));
     getInputElement(object.recipeInputList.resume[1][4]).value = sumaBalanza.toString();
 }
 

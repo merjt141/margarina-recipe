@@ -437,7 +437,8 @@ export class CWCAbrir implements Library.PLCObject {
         let groupNameTag = "TN_" + (this.copsa ? "COPSA" : "IPSA") + line.toString();
         let groupValueTag = "TV_" + (this.copsa ? "COPSA" : "IPSA") + line.toString();
 
-        let fdsCopy = this.app.FDS.groups;
+        // Crear copia de estructura de datos
+        let fdsCopy = JSON.parse(JSON.stringify(this.app.FDS.groups));
 
         // Extraer data de Ingredientes Calientes
         let hSize = originalData[0] as Library.IngredientTable[];
