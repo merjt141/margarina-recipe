@@ -234,37 +234,64 @@ export class CWCAbrir implements Library.PLCObject {
         let originalData = this.recipeJsonData;
 
         let hSize = originalData[0] as Library.IngredientTable[];
+
+        // Creación de consulta UPDATE SQL
+        let queryString = "Use ENV_MARG; update dr set dr.n_valor = v.n_valor, dr.x_comen1 = v.x_comen1, dr.x_comen2 = v.x_comen2 from DETALLE_RECETA dr join ( values ";
+
         for (let i = 0; i < hSize.length; i++) {
             let n_value = document.getElementById(`h${i + 1}2`) as HTMLInputElement;
             let x_comen1 = document.getElementById(`h${i + 1}4`) as HTMLInputElement;
             let x_comen2 = document.getElementById(`h${i + 1}5`) as HTMLInputElement;
-            let queryString = `Use ENV_MARG; update DETALLE_RECETA set n_valor = ${n_value.value}, x_comen1 = '${x_comen1.value}', x_comen2 = '${x_comen2.value}' where c_receta = '${recipeId}' and c_ingred = '${hSize[i]["c_ingred"]}';`
-            this.app.pidManager.execute(queryString, 2);
+            //let queryString = `Use ENV_MARG; update DETALLE_RECETA set n_valor = ${n_value.value}, x_comen1 = '${x_comen1.value}', x_comen2 = '${x_comen2.value}' where c_receta = '${recipeId}' and c_ingred = '${hSize[i]["c_ingred"]}';`
+            
+            queryString += `('${recipeId}', '${hSize[i]["c_ingred"]}', ${n_value.value}, '${x_comen1.value}', '${x_comen2.value}'),`
+            
+            //this.app.pidManager.execute(queryString, 2);
         }
+
         let cSize = originalData[1] as Library.IngredientTable[];
+        
         for (let i = 0; i < cSize.length; i++) {
             let n_value = document.getElementById(`c${i + 1}2`) as HTMLInputElement;
             let x_comen1 = document.getElementById(`c${i + 1}4`) as HTMLInputElement;
             let x_comen2 = document.getElementById(`c${i + 1}5`) as HTMLInputElement;
-            let queryString = `Use ENV_MARG; update DETALLE_RECETA set n_valor = ${n_value.value}, x_comen1 = '${x_comen1.value}', x_comen2 = '${x_comen2.value}' where c_receta = '${recipeId}' and c_ingred = '${cSize[i]["c_ingred"]}';`
-            this.app.pidManager.execute(queryString, 2);
+            //let queryString = `Use ENV_MARG; update DETALLE_RECETA set n_valor = ${n_value.value}, x_comen1 = '${x_comen1.value}', x_comen2 = '${x_comen2.value}' where c_receta = '${recipeId}' and c_ingred = '${cSize[i]["c_ingred"]}';`
+            
+            queryString += `('${recipeId}', '${cSize[i]["c_ingred"]}', ${n_value.value}, '${x_comen1.value}', '${x_comen2.value}'),`
+            
+            //this.app.pidManager.execute(queryString, 2);
         }
+
         let iSize = originalData[2] as Library.IngredientTable[];
+        
         for (let i = 0; i < iSize.length; i++) {
             let n_value = document.getElementById(`i${i + 1}2`) as HTMLInputElement;
             let x_comen1 = document.getElementById(`i${i + 1}4`) as HTMLInputElement;
             let x_comen2 = document.getElementById(`i${i + 1}5`) as HTMLInputElement;
-            let queryString = `Use ENV_MARG; update DETALLE_RECETA set n_valor = ${n_value.value}, x_comen1 = '${x_comen1.value}', x_comen2 = '${x_comen2.value}' where c_receta = '${recipeId}' and c_ingred = '${iSize[i]["c_ingred"]}';`
-            this.app.pidManager.execute(queryString, 2);
+            //let queryString = `Use ENV_MARG; update DETALLE_RECETA set n_valor = ${n_value.value}, x_comen1 = '${x_comen1.value}', x_comen2 = '${x_comen2.value}' where c_receta = '${recipeId}' and c_ingred = '${iSize[i]["c_ingred"]}';`
+            
+            queryString += `('${recipeId}', '${iSize[i]["c_ingred"]}', ${n_value.value}, '${x_comen1.value}', '${x_comen2.value}'),`
+            
+            //this.app.pidManager.execute(queryString, 2);
         }
+
         let ipsaSize = originalData[3] as Library.IngredientTable[];
+        
         for (let i = 0; i < ipsaSize.length; i++) {
             let n_value = document.getElementById(`ipsa${i + 1}`) as HTMLInputElement;
             let value: any;
-            n_value.value == "0" ? value = null : value = n_value.value;
-            let queryString = `Use ENV_MARG; update DETALLE_RECETA set n_valor = ${value} where c_receta = '${recipeId}' and c_ingred = '${ipsaSize[i]["c_ingred"]}';`
-            this.app.pidManager.execute(queryString, 2);
+            ((n_value.value == "0") || (n_value.value == "")) ? value = null : value = n_value.value;
+            //let queryString = `Use ENV_MARG; update DETALLE_RECETA set n_valor = ${value} where c_receta = '${recipeId}' and c_ingred = '${ipsaSize[i]["c_ingred"]}';`
+            
+            queryString += `('${recipeId}', '${ipsaSize[i]["c_ingred"]}', ${value}, '', ''),`
+            
+            //this.app.pidManager.execute(queryString, 2);
         }
+
+        queryString = queryString.slice(0, -1);
+        queryString += `) as v(c_receta, c_ingred, n_valor, x_comen1, x_comen2) on dr.c_receta = v.c_receta and dr.c_ingred = v.c_ingred;`;
+
+        this.app.pidManager.execute(queryString, 2);
     }
 
     /**
@@ -335,8 +362,24 @@ export class CWCAbrir implements Library.PLCObject {
     }
 
     async cmdTransferirClick() {
-        this.formTransfer = window.open("./public/modules/tansfer.html", "PopopWindow", "width=600,height=240,scrollbars=no,resizable=no");
+        this.formTransfer = window.open("./public/modules/tansfer.html", "popupWindow", "width=600,height=240,scrollbars=no,resizable=no");
 
+        //const popup = this.formTransfer;
+        //popup = window.open("./public/modules/tansfer.html", "popupWindow", "width=600,height=240,scrollbars=no,resizable=no")
+
+        if (!this.formTransfer) return;
+
+        this.formTransfer.onload = () => {
+            if (!this.formTransfer) return;
+
+            this.formTransfer.receiveData({
+                recipe: this.recipeComboBox.text,
+                copsa: this.copsa,
+            })
+        }
+
+
+        /*
         await new Promise<void>((resolve) => {
             if (this.formTransfer?.document.readyState === "complete") {
                 resolve();
@@ -354,6 +397,7 @@ export class CWCAbrir implements Library.PLCObject {
         (this.formTransfer?.document.getElementById("linea3") as HTMLButtonElement).disabled = this.copsa;
         (this.formTransfer?.document.getElementById("linea4") as HTMLButtonElement).disabled = !this.copsa;
         (this.formTransfer?.document.getElementById("linea5") as HTMLButtonElement).disabled = !this.copsa;
+        */
     }
 
     cmdImprimirClick() {
@@ -366,69 +410,139 @@ export class CWCAbrir implements Library.PLCObject {
 
     cmdTransferirAction(line: number) {
 
+        // Falta implementar validación de guardado de receta previa carga si se han hecho modificaciones
+
+        // Secuencia de confirmación de carga de receta (Validar porque no funciona sin desarrollador)
         window.focus();
+        //let userConfirmation = confirm(`¿Está seguro de transferir la receta seleccionada a la línea ${line}?`);
 
-        let userConfirmation = confirm(`¿Está seguro de transferir la receta seleccionada a la línea ${line}?`);
+        //if (!userConfirmation) {
+        //    return;
+        //}
+        //////////////////////////////////////////////////////////////////////////////////////////////
 
-        if (!userConfirmation) {
-            return;
-        }
-
+        // Formato de JSON para comandar escritura de TAGS en PLC
         let apiJson = {
             action: "write",
             data: [{}],
         };
+
+        // Obtener valores actuales de receta de la interfaz gráfica
         let originalData = this.recipeJsonData;
 
+        // Limpieza de último elemento de array para iniciar escritura
         apiJson.data.pop();
+
+        // Grupos de tags de ingredientes
+        let groupNameTag = "TN_" + (this.copsa ? "COPSA" : "IPSA") + line.toString();
+        let groupValueTag = "TV_" + (this.copsa ? "COPSA" : "IPSA") + line.toString();
+
+        let fdsCopy = this.app.FDS.groups;
+
+        // Extraer data de Ingredientes Calientes
         let hSize = originalData[0] as Library.IngredientTable[];
+
+        // Iterar TAGS de Ingredientes Calientes
         for ( let i = 0; i < hSize.length; i++) {
-            let n_value = document.getElementById(`h${i + 1}2`) as HTMLInputElement;
+            // Extraer nombre y valor de ingrediente
             let x_comen1 = document.getElementById(`h${i + 1}4`) as HTMLInputElement;
+            let n_value = document.getElementById(`h${i + 1}2`) as HTMLInputElement;
+            
+            // Extraer número de código de ingrediente (P01, C01, R01, etc...)
             let c_ingred = Number(hSize[i].c_ingred.slice(1));
-            let tagData = {
-                name: "L"+line.toString()+"_NOMBRE_P"+c_ingred,
-                value: x_comen1.value,
-            }
-            apiJson.data.push(tagData);
-            tagData = {
-                name: "L"+line.toString()+"P"+c_ingred,
-                value: n_value.value,
-            }
-            apiJson.data.push(tagData);
+
+            // Actualizar valores de FDS
+            fdsCopy[groupNameTag]["L"+line.toString()+"_NOMBRE_P"+c_ingred] = x_comen1.value;
+            fdsCopy[groupValueTag]["L"+line.toString()+"P"+c_ingred] = n_value.value;
         }
+
+        // Extraer data de Ingredientes Fríos
         let cSize = originalData[1] as Library.IngredientTable[];
+
+        // Iterar TAGS de Ingredientes Fríos
         for ( let i = 0; i < cSize.length; i++) {
-            let n_value = document.getElementById(`c${i + 1}2`) as HTMLInputElement;
+            // Extraer nombre y valor de ingredientes
             let x_comen1 = document.getElementById(`c${i + 1}4`) as HTMLInputElement;
+            let n_value = document.getElementById(`c${i + 1}2`) as HTMLInputElement;
+            
+            // Extraer número de código de ingrediente (P01, C01, R01, etc...)
             let c_ingred = Number(cSize[i].c_ingred.slice(1));
-            let tagData = {
-                name: "L"+line.toString()+"_NOMBRE_P"+c_ingred,
-                value: x_comen1.value,
-            }
-            apiJson.data.push(tagData);
-            tagData = {
-                name: "L"+line.toString()+"P"+c_ingred,
-                value: n_value.value,
-            }
-            apiJson.data.push(tagData);
+
+            // Actualizar valores de FDS
+            fdsCopy[groupNameTag]["L"+line.toString()+"_NOMBRE_P"+c_ingred] = x_comen1.value;
+            fdsCopy[groupValueTag]["L"+line.toString()+"P"+c_ingred] = n_value.value;
         }
+
+        // Extraer data de Ingredientes Balanza / Emulsión
         let iSize = originalData[2] as Library.IngredientTable[];
+
+        // Iterar TAGS de Balanza / Emulsión
         for ( let i = 0; i < iSize.length; i++) {
-            let n_value = document.getElementById(`i${i + 1}2`) as HTMLInputElement;
+            // Extraer nombre y valor de ingredientes
             let x_comen1 = document.getElementById(`i${i + 1}4`) as HTMLInputElement;
+            let n_value = document.getElementById(`i${i + 1}2`) as HTMLInputElement;
+            
+            // Extraer número de código de ingrediente (P01, C01, R01, etc...)
             let c_ingred = Number(iSize[i].c_ingred.slice(1));
-            let tagData = {
-                name: "L"+line.toString()+"_NOMBRE_P"+c_ingred,
-                value: x_comen1.value,
-            }
-            apiJson.data.push(tagData);
-            tagData = {
-                name: "L"+line.toString()+"P"+c_ingred,
-                value: n_value.value,
-            }
-            apiJson.data.push(tagData);
+
+            // Actualizar valores de FDS
+            fdsCopy[groupNameTag]["L"+line.toString()+"_NOMBRE_P"+c_ingred] = x_comen1.value;
+            fdsCopy[groupValueTag]["L"+line.toString()+"P"+c_ingred] = n_value.value;
         }
+
+        // Grupo de tags de parámetros
+        let groupParamTag = "TV_PARAM" + line.toString();
+
+        if (line > 0 && line < 4) {
+
+            // Extraer data de Parámetros
+            let ipsaSize = originalData[3] as Library.IngredientTable[];
+
+            for ( let i = 0; i < ipsaSize.length; i++) {
+                // Extraer valor de parámetro
+                let n_value = document.getElementById(`ipsa${i + 1}`) as HTMLInputElement;
+
+                // Extraer número de código de ingrediente (P01, C01, R01, etc...)
+                let c_ingred = Number(ipsaSize[i].c_ingred.slice(1));
+
+                // Actualizar valores de FDS
+                if (line == 1 || c_ingred <= 26) {
+                    fdsCopy[groupParamTag]["L"+line.toString()+"R"+c_ingred] = n_value.value;
+                }
+            }
+        }
+
+        // Añadir TAGS a JSON para escribir en PLC
+        for (const [key, value] of Object.entries(fdsCopy[groupNameTag])) {
+            apiJson.data.push({
+                name: key,
+                value: value
+            });
+        }
+
+        for (const [key, value] of Object.entries(fdsCopy[groupValueTag])) {
+            apiJson.data.push({
+                name: key,
+                value: value
+            });
+        }
+
+        if (line > 0 && line < 4) {
+            for (const [key, value] of Object.entries(fdsCopy[groupParamTag])) {
+                apiJson.data.push({
+                    name: key,
+                    value: value
+                });
+            }
+        }
+
+        // Escribir nombre de receta
+        apiJson.data.push({
+            name: "RECETA_LINEA" + line.toString(),
+            value: this.recipeComboBox.text
+        });
+
+        // Invocar API para escribir valores en PLC
         this.plcAgent.write(this, JSON.stringify(apiJson), "writeRecipe");
     }
 

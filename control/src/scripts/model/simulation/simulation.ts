@@ -40,7 +40,7 @@ export class WebCCSimulator {
             {"c_receta":"P01","x_receta":"P. HOJALDRE 2 Kg.","n_valor":"0.05","x_comen1":"","":"","c_ingred":"R24","x_ingred":"","x_unidad":"%","t_ingred":"4"},
             {"c_receta":"P01","x_receta":"P. HOJALDRE 2 Kg.","n_valor":"0.5","x_comen1":"","":"","c_ingred":"R25","x_ingred":"","x_unidad":"%","t_ingred":"4"},
             {"c_receta":"P01","x_receta":"P. HOJALDRE 2 Kg.","n_valor":"0.5","x_comen1":"","":"","c_ingred":"R26","x_ingred":"","x_unidad":"%","t_ingred":"4"},
-            {"c_receta":"P01","x_receta":"P. HOJALDRE 2 Kg.","n_valor":"500","x_comen1":"","":"","c_ingred":"R27","x_ingred":"","x_unidad":"%","t_ingred":"4"},
+            {"c_receta":"P01","x_receta":"P. HOJALDRE 2 Kg.","n_valor":"550","x_comen1":"","":"","c_ingred":"R27","x_ingred":"","x_unidad":"%","t_ingred":"4"},
             {"c_receta":"P01","x_receta":"P. HOJALDRE 2 Kg.","n_valor":"0.01","x_comen1":"","":"","c_ingred":"R28","x_ingred":"","x_unidad":"%","t_ingred":"4"},
             {"c_receta":"P01","x_receta":"P. HOJALDRE 2 Kg.","n_valor":"0.2","x_comen1":"","":"","c_ingred":"R29","x_ingred":"","x_unidad":"%","t_ingred":"4"},
             {"c_receta":"P01","x_receta":"P. HOJALDRE 2 Kg.","n_valor":"0.05","x_comen1":"","":"","c_ingred":"R30","x_ingred":"","x_unidad":"%","t_ingred":"4"},

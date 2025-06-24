@@ -23,9 +23,9 @@
             <div class="tab-buttons">
                 <table>
                     <tr>
-                        <td><button onclick="app.formAbrir.cmdShowTabClick('tab1')">INGREDIENTES TMG</button></td>
-                        <td><button onclick="app.formAbrir.cmdShowTabClick('tab2')">INGREDIENTES BALANZA / EMULSION</button></td>
-                        <td><button onclick="app.formAbrir.cmdShowTabClick('tab3')">PARÁMETROS IPSA</button></td>
+                        <td><button type="button" onclick="app.formAbrir.cmdShowTabClick('tab1')">INGREDIENTES TMG</button></td>
+                        <td><button type="button" onclick="app.formAbrir.cmdShowTabClick('tab2')">INGREDIENTES BALANZA / EMULSION</button></td>
+                        <td><button type="button" onclick="app.formAbrir.cmdShowTabClick('tab3')">PARÁMETROS IPSA</button></td>
                     </tr>
                 </table>
             </div>
@@ -357,7 +357,7 @@
                             <tr>
                                 <td>
                                     <div>
-                                        <label for="ipsa6">Set Point (°C):</label>
+                                        <label for="ipsa6"><span style="color: DarkRed; font-size: 1.1em;">✽</span>Set Point (°C):</label>
                                         <input type="number" id="ipsa6" name="tgd-temp" disabled>   
                                     </div>
                                     <div>

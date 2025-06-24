@@ -1,14 +1,17 @@
 import { CWCAbrir } from '../model/abrir/cwcAbrir';
 import { CWCEscoger } from '../model/escoger/cwcEscoger';
 import { PIDManager } from '../modules/pidManager';
+import { FDS } from './FDS';
 
 export class App {
     public pidManager: PIDManager;
+    public FDS: FDS;
     public formAbrir?: CWCAbrir;
     public formEscoger?: CWCEscoger;
     
     constructor() {
         this.pidManager = new PIDManager();
+        this.FDS = new FDS();
     }
 
     public loadContent(html: string): void {

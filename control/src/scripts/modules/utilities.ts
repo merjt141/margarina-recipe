@@ -59,12 +59,14 @@ export class ComboBoxRecipe {
     object: CWCAbrir;
     manager: App;
     selectedIndex: string;
+    text: string;
 
     constructor(domId: string, object: CWCAbrir, manager: App) {
         this.domId = domId;
         this.object = object;
         this.manager = manager;
         this.selectedIndex = "";
+        this.text = "";
 
         this.domObject().addEventListener('change', () => {
             this.select();
@@ -95,6 +97,7 @@ export class ComboBoxRecipe {
      */
     async select() {
         this.selectedIndex = this.domObject().value;
+        this.text = this.domObject().options[this.domObject().selectedIndex].text;
         let queryString = `Use ENV_MARG; select r.c_receta, r.x_receta, d.n_valor, d.x_comen1, d.x_comen2, i.c_ingred, i.x_ingred, i.x_unidad, i.t_ingred `;
         queryString += `from RECETA r inner join DETALLE_RECETA d on r.c_receta = d.c_receta inner join INGREDIENTES i on d.c_ingred = i.c_ingred `;
         queryString += `where r.c_receta = '${this.selectedIndex}' order by c_ingred;`;
@@ -183,6 +186,10 @@ export function refrescoSuma(object: CWCAbrir) {
     object.ingredientsDOM[0].forEach((item: HTMLInputElement, i: number) => {
         sumaTMG += Number(item.value);
     });
+
+    // Corregir imprecisiones de punto flotante en suma
+    sumaTMG = Number(sumaTMG.toFixed(6));
+
     getInputElement(object.recipeInputList.resume[0][1]).value = sumaTMG.toString();
     getInputElement(object.recipeInputList.resume[1][1]).value = sumaTMG.toString();
 
@@ -190,6 +197,10 @@ export function refrescoSuma(object: CWCAbrir) {
     object.ingredientsDOM[1].forEach((item: HTMLInputElement, i: number) => {
         sumaBalanza += Number(item.value);
     });
+
+    // Corregir imprecisiones de punto flotante en suma
+    sumaBalanza += sumaBalanza + sumaTMG;
+    sumaBalanza += Number(sumaBalanza.toFixed(6));
     getInputElement(object.recipeInputList.resume[1][4]).value = sumaBalanza.toString();
 }
 
