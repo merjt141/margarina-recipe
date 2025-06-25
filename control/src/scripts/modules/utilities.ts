@@ -53,6 +53,16 @@ export interface PLCObject {
     plcWriteResponseHandler: (response: string) => void;
 }
 
+export interface PopupOptions {
+  title?: string;
+  width?: number;
+  height?: number;
+  left?: number;
+  top?: number;
+  content?: string | HTMLElement;
+  onClose?: () => void;
+} 
+
 export class ComboBoxRecipe {
     domId: string;
 
@@ -163,6 +173,92 @@ export function validateInputElements(elementArray: HTMLInputElement[]): boolean
         } 
     })
     return true;
+}
+
+/**
+ * Crear un popup flotante en la ventana principal
+ * @param options Configuracion del popup
+ * @returns 
+ */
+export function createFloatingPopup(options: PopupOptions = {}): HTMLDivElement {
+    const {
+        title = "Título del Popup",
+        width = 300,
+        height = 200,
+        left = 100,
+        top = 100,
+        content = "",
+        onClose = () => {},
+    } = options;
+
+    const popup = document.createElement("div");
+    popup.className = "floating-popup";
+    popup.style.width = `${width}px`;
+    popup.style.height = `${height}px`;
+    popup.style.position = "fixed";
+    popup.style.left = `${left}px`;
+    popup.style.top = `${top}px`;
+
+    popup.innerHTML = `
+        <div class="floating-popup-header">
+        <span class="floating-popup-title">${title}</span>
+        <svg class="floating-popup-close" width="26" height="26" xmlns="http://www.w3.org/2000/svg">
+            <g>
+            <rect x="0" y="2" width="26" height="26" fill="transparent"></rect>
+            <path d="M7 9 L19 21 M7 21 L19 9" stroke="black" stroke-width="1" fill="none"/>
+            </g>
+        </svg>
+        </div>
+        <div class="floating-popup-body"></div>
+    `;
+
+    const body = popup.querySelector(".floating-popup-body") as HTMLDivElement;
+    if (typeof content === "string") {
+        body.innerHTML = content;
+    } else {
+        body.appendChild(content);
+    }
+
+    document.body.appendChild(popup);
+
+    const header = popup.querySelector(".floating-popup-header") as HTMLElement;
+    let offsetX = 0, offsetY = 0, isDragging = false;
+
+    header.addEventListener("mousedown", (e: MouseEvent) => {
+        isDragging = true;
+        offsetX = e.clientX - popup.offsetLeft;
+        offsetY = e.clientY - popup.offsetTop;
+    });
+
+    document.addEventListener("mousemove", (e: MouseEvent) => {
+        if (isDragging) {
+        popup.style.left = `${e.clientX - offsetX}px`;
+        popup.style.top = `${e.clientY - offsetY}px`;
+        }
+    });
+
+    document.addEventListener("mouseup", () => {
+        isDragging = false;
+    });
+
+    popup.addEventListener("mousedown", (e) => {
+        popup.style.backgroundColor = "rgba(125,204,246,1)";
+        e.stopPropagation();
+    });
+
+    document.addEventListener("mousedown", (e) => {
+        if (!popup.contains(e.target as Node)) {
+        popup.style.backgroundColor = "rgba(145,147,154,1)";
+        }
+    });
+
+    const closeBtn = popup.querySelector(".floating-popup-close") as SVGElement;
+    closeBtn.addEventListener("click", () => {
+        popup.remove();
+        onClose();
+    });
+
+    return popup;
 }
 
 /**

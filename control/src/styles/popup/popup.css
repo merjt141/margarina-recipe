@@ -1,0 +1,37 @@
+.floating-popup {
+    background-color: rgba(145,147,154,1);
+    border-radius: 5px;
+    padding: 2px;
+    position: fixed;
+    z-index: 1000;
+    overflow: hidden;
+    cursor: default;
+}
+
+.floating-popup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 30px;
+    padding: 0 10px;
+    font-family: Arial;
+    font-size: 11pt;
+    cursor: move;
+}
+
+.floating-popup-close:hover path {
+    stroke: gray;
+}
+
+.floating-popup-close:hover {
+    cursor: pointer;
+}
+
+.floating-popup-body {
+    background-color: rgba(245,245,245,1);
+    height: calc(100% - 40px);
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    padding: 5px;
+    overflow: auto;
+}

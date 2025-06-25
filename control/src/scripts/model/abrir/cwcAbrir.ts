@@ -361,7 +361,20 @@ export class CWCAbrir implements Library.PLCObject {
         }
     }
 
-    async cmdTransferirClick() {
+    async cmdTransferirClick(options: any) {
+
+        Library.createFloatingPopup({
+            title: "Transferencia de Recetas",
+            width: 300,
+            height: 200,
+            left: 300,
+            top: 200,
+            content: "",
+            onClose: () => {console.log("Popup cerrado")},
+        })
+
+        /*
+
         this.formTransfer = window.open("./public/modules/tansfer.html", "popupWindow", "width=600,height=240,scrollbars=no,resizable=no");
 
         //const popup = this.formTransfer;
@@ -398,6 +411,7 @@ export class CWCAbrir implements Library.PLCObject {
         (this.formTransfer?.document.getElementById("linea4") as HTMLButtonElement).disabled = !this.copsa;
         (this.formTransfer?.document.getElementById("linea5") as HTMLButtonElement).disabled = !this.copsa;
         */
+
     }
 
     cmdImprimirClick() {
