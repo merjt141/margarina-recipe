@@ -44,7 +44,7 @@
     padding: 0px;
     margin: 0px 0px 0px 0px;
 }
-td div {
+#main-content td div {
     display: flex;
     margin-bottom: 5px;
     align-items: center;
@@ -55,7 +55,7 @@ td div {
 .vertical-align div label {
     margin-bottom: 2px;
 }
-td div input {
+#main-content td div input {
     width: 100px;
     margin-left: auto;
 }

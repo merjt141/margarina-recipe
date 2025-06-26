@@ -31,7 +31,8 @@ WebCC.start(function(result: any){
             app.pidManager.response(jsonString);
         },
         PLCResponse: function(jsonString: string) {
-            app.formAbrir?.plcAgent.response(app.formAbrir, jsonString);
+            //app.pidManager.response(jsonString);
+            //app.formAbrir?.plcAgent.response(app.formAbrir, jsonString);
         }
     },
     events: ['NewSelection', 'executeQuery', 'writePLC'],

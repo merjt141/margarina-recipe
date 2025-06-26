@@ -221,6 +221,17 @@ export class WebCCSimulator {
                 this.object.response(this.comboList);
                 break;
             case "updateTable":
+                let responseUpdate = JSON.stringify({
+                    action: "updateTable",
+                    data: JSON.stringify(
+                        [/**
+                            {
+                            c_receta: "P01",
+                            x_receta: "Nueva receta",
+                            }*/
+                        ])
+                });
+                this.object.response(responseUpdate);
                 break;
             case "duplicadoPeek":
                 let responseDuplicadoPeek = JSON.stringify({
@@ -270,12 +281,13 @@ export class WebCCSimulator {
         }
     }
 
-    writePLC(writeCommand: string) {
+    writePLC(writeCommand: string, action2: string) {
         console.log(writeCommand);
 
         let writeData = JSON.parse(writeCommand);
         let action = writeData.action;
-        let data = writeData.data;
+        console.log(writeData.data);
+        let data = JSON.parse(writeData.data);
 
         let tableTagSet = [];
         for (let i in data) {
@@ -297,6 +309,13 @@ export class WebCCSimulator {
         }
 
         //tagSet.Write();
+
+        let response = JSON.stringify({
+            action: "writePLCTags",
+            data: JSON.stringify([
+            ])
+        });
+        this.object.response(response);
     }
 
 }

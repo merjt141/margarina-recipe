@@ -2,9 +2,12 @@ import { WebCCSimulator } from '../simulation/simulation';
 import * as Library from '../../modules/utilities';
 import { App } from '../../modules/manager';
 
-export class CWCAbrir implements Library.PLCObject {
+/**
+ * Clase para el control de la carga y modificación de recetas
+ * para las líneas de producción
+ */
+export class CWCAbrir {
 
-    formTransfer: Window | null;
     formSaveAs: Window | null;
 
     recipeJsonData: Library.IngredientTable[][];    // Raw table of recipe ingredients from SQL Server
@@ -17,14 +20,11 @@ export class CWCAbrir implements Library.PLCObject {
     recipeInputList: Library.RecipeInputList;
 
     app: App;
-    plcAgent: Library.PLCAgent;                     // PLC Agent for write tags value
     recipeComboBox: Library.ComboBoxRecipe;         // ComboBox object instance for recipe app
 
     copsa: boolean;                                 // Area of production
     skipMessage: boolean;                           // Skip confirmation messages
     refreshCalculation: boolean;                    // Refresh calculated fields
-
-    pid: any[][];                                   // Attribute to handle async functions
 
     constructor(manager: App) {
         this.recipeJsonData = [[],[],[],[],[]];
@@ -46,181 +46,231 @@ export class CWCAbrir implements Library.PLCObject {
         };
 
         this.app = manager;
-        this.plcAgent = new Library.PLCAgent();
         this.recipeComboBox = new Library.ComboBoxRecipe("cbRecipes", this, this.app);
 
         this.copsa = false;
         this.skipMessage = false;
         this.refreshCalculation = false;
 
-        this.pid = [[false,""], [false,""], [false,""], [false,""], [false,""], [false,""], [false,""], [false,""]];
-
-        this.formTransfer = null;
         this.formSaveAs = null;
 
-        this.buildInputList();
+        this.buildInputListAndInitializeComboBox();
     }
 
-    sqlQueryResponseHandler(response: string) {
-        let packet = JSON.parse(response);
-        switch(packet.action) {
-            case "selectCombo":
-                //this.pid[0][1] = packet.data;
-                //this.pid[0][0] = true;
-                break;
-            case "selectTable":
-                this.pid[1][1] = packet.data;
-                this.pid[1][0] = true;
-                break;
-            case "updateTable":
-                // Just update data, do not receive
-                console.log("Received update SQL confirmation");
-                break;
-            case "duplicadoPeek":
-                this.pid[3][1] = packet.data;
-                this.pid[3][0] = true;
-                break;
-            case "selectComboPeek":
-                this.pid[4][1] = packet.data;
-                this.pid[4][0] = true;
-                break;
-            case "insertReceta":
-                break;
-            case "insertDetalle":
-                break;
-            case "deleteRecipe":
-                this.pid[7][1] = "";
-                this.pid[7][1] = true;
-                break;
-        }
-    }
-
-    plcWriteResponseHandler(response: string) {
-
-    }
-
-    async buildInputList(){
-        // Hot and cold ingredients
+    /**
+     * Guarda en memoria el listado de todos los inputs del formulario
+     * separado por categorías e inicializa los valores de receta
+     * en el combobox
+     */
+    private async buildInputListAndInitializeComboBox(): Promise<void> {
+        // Emulsificantes fríos y calientes
         for (let i = 1; i <= 5; i++) {
             [2,4,5].forEach((j: number) => {
-                this.recipeInputList.editable.tmg.push(`c${i}${j}`);
-                this.recipeInputList.editable.tmg.push(`h${i}${j}`);
+                this.recipeInputList.editable.tmg.push(`c${i}${j}`);        //Ingredientes fríos
+                this.recipeInputList.editable.tmg.push(`h${i}${j}`);        // Ingredientes calientes
             });
         }
-        // General ingredients
+        // Ingredientes de balanza
         for (let i = 1; i <= 17; i++) {
-            [2,4,5].forEach((j:number) => {
-                this.recipeInputList.editable.balanza.push(`i${i}${j}`)
+            [2,4,5].forEach((j: number) => {
+                this.recipeInputList.editable.balanza.push(`i${i}${j}`);    // Ingredientes balanza
             });
         }
-        // IPSA parameters
+        // Parámetros IPSA
         for (let i = 1; i <= 30; i++) {
-            this.recipeInputList.editable.ipsa.push(`ipsa${i}`)
+            this.recipeInputList.editable.ipsa.push(`ipsa${i}`)             // Parámetros
         }
 
+        // Llenar combobox con lista de recetas de base de datos
         await Library.listaCodigos(this.copsa, this.app);
+
+        // Selecciona el primer elemento del combobox
         this.recipeComboBox.select();
     }
 
-    enableInputs(editionDisabled: boolean) {
+    /**
+     * Habilita o deshabilita la edición de los ingredientes de la receta seleccionada
+     * @param editionDisabled Deshabilitar edición
+     */
+    private enableInputs(editionDisabled: boolean): void {
+        // Deshabilitar/habilitar emulsificantes calientes y fríos
         this.recipeInputList.editable.tmg.forEach((item: string) => {
             (document.getElementById(item) as HTMLInputElement).disabled = editionDisabled;
         });
+
+        // Deshabilitar/habilitar ingredientes de balanza
         this.recipeInputList.editable.balanza.forEach((item: string) => {
             (document.getElementById(item) as HTMLInputElement).disabled = editionDisabled;
         });
+
+        // Deshabilitar/habilitar parámetros IPSA
         this.recipeInputList.editable.ipsa.forEach((item: string) => {
             (document.getElementById(item) as HTMLInputElement).disabled = editionDisabled;
         });
+
+        // Animar boton de deshabilitado de edición
         this.recipeInputList.editable.buttons.forEach((item: string) => {
             (document.getElementById(item) as HTMLButtonElement).style.color = editionDisabled ? "black" : "blue";
         });
     }
 
-    clearInputFields() {
+    /**
+     * Limpiar todos los campos de entrada del formulario
+     */
+    private clearInputFields(): void {
+        // Limpiar código de receta
         (document.getElementById("idCodeRecipe") as HTMLInputElement).value = "";
+        
+        // Limpiar emulsificantes fríos y calientes
         for (let i = 1; i <= 5; i++) {
             for (let j = 1; j <= 5; j++) {
                 (document.getElementById(`c${i}${j}`) as HTMLInputElement).value = "";
                 (document.getElementById(`h${i}${j}`) as HTMLInputElement).value = "";
             }
         }
+
+        // Limpiar suma de emulsificantes fríos y calientes
         (document.getElementById(`sumatmg`) as HTMLInputElement).value = "";
+        
+        // Limpier ingredientes de balanza
         for (let i = 1; i <= 17; i++) {
             for (let j = 1; j <= 5; j++) {
                 (document.getElementById(`i${i}${j}`) as HTMLInputElement).value = "";
             }
         }
-        (document.getElementById(`itmg`) as HTMLInputElement).value = "";
-        (document.getElementById(`icantidad`) as HTMLInputElement).value = "";
-        (document.getElementById(`iunidad`) as HTMLInputElement).value = "";
-        (document.getElementById(`idescripcion`) as HTMLInputElement).value = "";
-        (document.getElementById(`sumabalanza`) as HTMLInputElement).value = "";
+
+        // Limpiar totalizados de ingredientes de balanza
+        (document.getElementById(`itmg`) as HTMLInputElement).value = "";           // TMG
+        (document.getElementById(`icantidad`) as HTMLInputElement).value = "";      // Cantidad
+        (document.getElementById(`iunidad`) as HTMLInputElement).value = "";        // Unidad
+        (document.getElementById(`idescripcion`) as HTMLInputElement).value = "";   // Descripción
+        (document.getElementById(`sumabalanza`) as HTMLInputElement).value = "";    // Total
+        
+        // Limpiar parámetros IPSA
         for (let i = 1; i <= 30; i++) {
             (document.getElementById(`ipsa${i}`) as HTMLInputElement).value = "";
         }
     }
 
-    writeRecipeData(jsonString: string) {
+    /**
+     * Escribe todos los valores de los ingredientes en el formulario de receta
+     * @param jsonString Listado de ingredientes de la receta en formato IngredientTable[]
+     */
+    writeRecipeData(jsonString: string): void {
 
+        // Inicialización de variable de memoria local de receta
         this.recipeJsonData = [[],[],[],[],[]];
+
+        // Extraer listado de recetas en formaro IngredientTable[]
         let dataJson = JSON.parse(jsonString) as Library.IngredientTable[];
+        
+        // Separar los ingredientes por tipo de ingrediente t_ingred 1, 2, 3, 4 y 5
+        // 1: Emulsificantes calientes
+        // 2: Emulsificantes fríos
+        // 3: Ingredientes de balanza
+        // 4: Parámetros IPSA
         dataJson.forEach((item: Library.IngredientTable, index: number) => {
             this.recipeJsonData[Number(item.t_ingred)-1].push(item);
         })
 
+        // Limpiar campos de entrada antes de escribir
         this.clearInputFields();
 
+        // Crear copia de receta cargada en memoria
         const data = this.recipeJsonData;
 
+        // Guardar valores en memoria para posterior comparación y totalizado
         this.ingredientsDOM = [[],[]];
         this.parametersDOM = [];
         
+        // Escribir código de receta en formulario
         (document.getElementById("idCodeRecipe") as HTMLInputElement).value = this.recipeComboBox.domObject().value;
-        // Hot ingredients
+
+
+        // Emulsificantes calientes
         data[0].forEach((item: Library.IngredientTable, i: number) => {
+            // Iterar por la cabezera de datos de los ingrdientes y extraer los valores
             this.ingredientsHeadArray.forEach((element: string, j: number) => {
+                // Convertir string en indice para extraer valor de IngredientTable
                 const dynamicKey: keyof Library.IngredientTable = element as keyof Library.IngredientTable;
+
+                // Asignar valor de la receta o vacío de no existir
                 (document.getElementById(`h${i + 1}${j + 1}`) as HTMLInputElement).value = item[dynamicKey] || "";
             });
+
+            // Guardar valor en memoria local
             this.ingredientsDOM[0].push(Library.getInputElement(`h${i + 1}2`));
         });
-        // Cold ingredients
+
+        // Emulsificantes fríos
         data[1].forEach((item: Library.IngredientTable, i: number) => {
+            // Iterar por la cabezera de datos de los ingrdientes y extraer los valores
             this.ingredientsHeadArray.forEach((element: string, j: number) => {
+                // Convertir string en indice para extraer valor de IngredientTable
                 const dynamicKey: keyof Library.IngredientTable = element as keyof Library.IngredientTable;
+
+                // Asignar valor de la receta o vacío de no existir
                 (document.getElementById(`c${i + 1}${j + 1}`) as HTMLInputElement).value = item[dynamicKey] || "";
             });
+
+            // Guardar valor en memoria local
             this.ingredientsDOM[0].push(Library.getInputElement(`c${i + 1}2`));
         });
-        // Ingredients
+
+        // Ingredientes de balanza
         data[2].forEach((item: Library.IngredientTable, i: number) => {
+            // Iterar por la cabezera de datos de los ingrdientes y extraer los valores
             this.ingredientsHeadArray.forEach((element: string, j: number) => {
+                // Convertir string en indice para extraer valor de IngredientTable
                 const dynamicKey: keyof Library.IngredientTable = element as keyof Library.IngredientTable;
+
+                // Asignar valor de la receta o vacío de no existir
                 (document.getElementById(`i${i + 1}${j + 1}`) as HTMLInputElement).value = item[dynamicKey] || "";
             });
+
+            // Guardar valor en memoria local
             this.ingredientsDOM[1].push(Library.getInputElement(`i${i + 1}2`));
         });
+
+        // Escribir valores estáticos de formulario
         Library.getInputElement("itmg").value = "Total Emulsificantes";
         Library.getInputElement("iunidad").value = "%";
         Library.getInputElement("idescripcion").value = "Emulsif. Calientes y Fríos";
-        // IPSA parameters
+
+        // Parámetros IPSA
         data[3].forEach((item: Library.IngredientTable, i:number) => {
+            // Extraer objeto del formulario
             const inputLabel = document.getElementById(`ipsa${i + 1}`) as HTMLInputElement;
+            
+            // Si el valor es vacio escribir vacío sino escribir el valor correspondiente
             item.n_valor == "" ? inputLabel.value = "" : inputLabel.value = item.n_valor;
+
+            // Guardar valor en memoria local
             this.parametersDOM.push(document.getElementById(`ipsa${i + 1}`) as HTMLInputElement);
         });
+
+        // Actualizar suma de valores de receta
         Library.refrescoSuma(this);
+
+        // Guardar valores en memoria temporal
         Library.saveTemporalData(1);
     }
 
-    cmdGuardarClickEvent() {
+    /**
+     * Realiza el guardado de los cambios de la receta en la base de datos
+     * @returns Salida de la función
+     */
+    async cmdGuardarClickEvent(): Promise<void> {
+        // Extraer ID actual de receta
         let recipeId = this.recipeComboBox.selectedIndex;
+
+        // Cancelar si no se seleccionó receta
         if (!recipeId) {
             alert("No se seleccionó receta");
             return;
         }
         
+        // 
         if (!Library.validateInputElements(this.ingredientsDOM[0])) {
             return;
         }
@@ -360,58 +410,56 @@ export class CWCAbrir implements Library.PLCObject {
             this.recipeComboBox.select();
         }
     }
+    
+    /**
+     * Invocar popup de transferencia de receta a PLC
+     */
+    async cmdTransferirClick() {
 
-    async cmdTransferirClick(options: any) {
-
-        Library.createFloatingPopup({
-            title: "Transferencia de Recetas",
-            width: 300,
-            height: 200,
-            left: 300,
-            top: 200,
-            content: "",
-            onClose: () => {console.log("Popup cerrado")},
-        })
-
-        /*
-
-        this.formTransfer = window.open("./public/modules/tansfer.html", "popupWindow", "width=600,height=240,scrollbars=no,resizable=no");
-
-        //const popup = this.formTransfer;
-        //popup = window.open("./public/modules/tansfer.html", "popupWindow", "width=600,height=240,scrollbars=no,resizable=no")
-
-        if (!this.formTransfer) return;
-
-        this.formTransfer.onload = () => {
-            if (!this.formTransfer) return;
-
-            this.formTransfer.receiveData({
-                recipe: this.recipeComboBox.text,
-                copsa: this.copsa,
+        // Extraer contenido de archivo transfer.html para popup
+        let content: string = "";
+        await fetch('./public/modules/transfer.html')
+            .then(response => response.text())
+            .then(html => {
+                content = html;
             })
+            .catch(error => console.error("Error cargando el popup"));
+
+        // Creación de popup de transfer.html con contenido cargado
+        let transferPopup : HTMLDivElement = document.getElementById("transfer-popup") as HTMLDivElement;
+
+        if (!transferPopup) {
+            transferPopup = Library.createFloatingPopup({
+                title: "Transferencia de Recetas",
+                id: "transfer-popup",
+                width: 560,
+                height: 240,
+                left: 300,
+                top: 200,
+                content: content,
+                onClose: () => { console.log("Popup cerrado"); },
+            });
+        } else {
+            console.log("Ya hay un popup abierto con ese ID.");
         }
 
+        // Actualizar titulo de popup
+        (document.getElementById("lblEtiqueta") as HTMLLabelElement).textContent = `Transferencia a Planta ${this.copsa ? "COPSA" : "IPSA"}`;
+        
+        // Actualizar nombre de receta
+        (document.getElementById("recipeCode") as HTMLInputElement).value = this.recipeComboBox.text;
+        
+        // Deshabilitar/habilitar botones de líneas usadas
+        (document.getElementById("linea1") as HTMLButtonElement).disabled = this.copsa;
+        (document.getElementById("linea2") as HTMLButtonElement).disabled = this.copsa;
+        (document.getElementById("linea3") as HTMLButtonElement).disabled = this.copsa;
+        (document.getElementById("linea4") as HTMLButtonElement).disabled = !this.copsa;
+        (document.getElementById("linea5") as HTMLButtonElement).disabled = !this.copsa;
 
-        /*
-        await new Promise<void>((resolve) => {
-            if (this.formTransfer?.document.readyState === "complete") {
-                resolve();
-            } else {
-                (this.formTransfer as Window).onload = () => resolve();
-            }
+        // Agregar evento de cierre de popup a boton cancelar
+        (document.getElementById("transfer-cerrar") as HTMLButtonElement).addEventListener("click", () => {
+            transferPopup.remove();
         });
-
-        await new Promise<void>(resolve => setTimeout(resolve, 100));
-
-        (this.formTransfer?.document.getElementById("lblEtiqueta") as HTMLLabelElement).textContent = `Transferencia a Planta ${this.copsa ? "COPSA" : "IPSA"}`;
-        (this.formTransfer?.document.getElementById("recipeCode") as HTMLInputElement).value = this.recipeComboBox.domObject().options[this.recipeComboBox.domObject().selectedIndex].text;
-        (this.formTransfer?.document.getElementById("linea1") as HTMLButtonElement).disabled = this.copsa;
-        (this.formTransfer?.document.getElementById("linea2") as HTMLButtonElement).disabled = this.copsa;
-        (this.formTransfer?.document.getElementById("linea3") as HTMLButtonElement).disabled = this.copsa;
-        (this.formTransfer?.document.getElementById("linea4") as HTMLButtonElement).disabled = !this.copsa;
-        (this.formTransfer?.document.getElementById("linea5") as HTMLButtonElement).disabled = !this.copsa;
-        */
-
     }
 
     cmdImprimirClick() {
@@ -422,30 +470,42 @@ export class CWCAbrir implements Library.PLCObject {
 
     }
 
-    cmdTransferirAction(line: number) {
+    /**
+     * Cargar valores de receta a línea de producción en PLC
+     * @param line Linea de producción a cargar receta
+     * @returns 
+     */
+    async cmdTransferirAction(line: number) {
+
+        // Animación de estado de carga
+        const transferMsg = document.getElementById("transferMsg") as HTMLButtonElement;
+        const transferProgress = document.getElementById("transferProgress") as HTMLProgressElement;
+        
+        transferMsg.style.display = 'none';
+        transferProgress.value = 0;
 
         // Falta implementar validación de guardado de receta previa carga si se han hecho modificaciones
 
-        // Secuencia de confirmación de carga de receta (Validar porque no funciona sin desarrollador)
-        window.focus();
-        //let userConfirmation = confirm(`¿Está seguro de transferir la receta seleccionada a la línea ${line}?`);
+        // Secuencia de confirmación de carga de receta
+        let userConfirmation = confirm(`¿Está seguro de transferir la receta seleccionada a la línea ${line}?`);
+        if (!userConfirmation) return;
 
-        //if (!userConfirmation) {
-        //    return;
-        //}
-        //////////////////////////////////////////////////////////////////////////////////////////////
+        // Iniciar barra de progreso
+        transferProgress.style.display = 'block';
+
+        // Inicio de cuenta de tiempo de ejecución
+        const start = performance.now();
 
         // Formato de JSON para comandar escritura de TAGS en PLC
-        let apiJson = {
-            action: "write",
-            data: [{}],
-        };
+        let dataJson = [{}];
 
         // Obtener valores actuales de receta de la interfaz gráfica
         let originalData = this.recipeJsonData;
 
         // Limpieza de último elemento de array para iniciar escritura
-        apiJson.data.pop();
+        dataJson.pop();
+
+        transferProgress.value += 5;
 
         // Grupos de tags de ingredientes
         let groupNameTag = "TN_" + (this.copsa ? "COPSA" : "IPSA") + line.toString();
@@ -471,6 +531,8 @@ export class CWCAbrir implements Library.PLCObject {
             fdsCopy[groupValueTag]["L"+line.toString()+"P"+c_ingred] = n_value.value;
         }
 
+        transferProgress.value += 5;
+
         // Extraer data de Ingredientes Fríos
         let cSize = originalData[1] as Library.IngredientTable[];
 
@@ -488,6 +550,8 @@ export class CWCAbrir implements Library.PLCObject {
             fdsCopy[groupValueTag]["L"+line.toString()+"P"+c_ingred] = n_value.value;
         }
 
+        transferProgress.value += 5;
+
         // Extraer data de Ingredientes Balanza / Emulsión
         let iSize = originalData[2] as Library.IngredientTable[];
 
@@ -504,6 +568,8 @@ export class CWCAbrir implements Library.PLCObject {
             fdsCopy[groupNameTag]["L"+line.toString()+"_NOMBRE_P"+c_ingred] = x_comen1.value;
             fdsCopy[groupValueTag]["L"+line.toString()+"P"+c_ingred] = n_value.value;
         }
+
+        transferProgress.value += 5;
 
         // Grupo de tags de parámetros
         let groupParamTag = "TV_PARAM" + line.toString();
@@ -527,38 +593,59 @@ export class CWCAbrir implements Library.PLCObject {
             }
         }
 
-        // Añadir TAGS a JSON para escribir en PLC
+        transferProgress.value += 5;
+
+        // Añadir TAGS a JSON para escribir en PLC: Nombre Ingredientes
         for (const [key, value] of Object.entries(fdsCopy[groupNameTag])) {
-            apiJson.data.push({
+            dataJson.push({
                 name: key,
                 value: value
             });
         }
 
+        transferProgress.value += 5;
+
+        // Añadir TAGS a JSON para escribir en PLC: Cantidad Ingredientes
         for (const [key, value] of Object.entries(fdsCopy[groupValueTag])) {
-            apiJson.data.push({
+            dataJson.push({
                 name: key,
                 value: value
             });
         }
 
+        transferProgress.value += 5;
+
+        // Añadir TAGS a JSON para escribir en PLC: Parámetros IPSA
         if (line > 0 && line < 4) {
             for (const [key, value] of Object.entries(fdsCopy[groupParamTag])) {
-                apiJson.data.push({
+                dataJson.push({
                     name: key,
                     value: value
                 });
             }
         }
 
+        transferProgress.value += 5;
+
         // Escribir nombre de receta
-        apiJson.data.push({
+        dataJson.push({
             name: "RECETA_LINEA" + line.toString(),
             value: this.recipeComboBox.text
         });
 
+        transferProgress.value += 5;
+
         // Invocar API para escribir valores en PLC
-        this.plcAgent.write(this, JSON.stringify(apiJson), "writeRecipe");
+        await this.app.pidManager.execute(JSON.stringify(dataJson), 21);
+
+        transferProgress.value += 55;
+
+        // Fin de cuenta de tiempo de ejecución
+        const end = performance.now();
+
+        // Informar carga de receta a PLC
+        transferMsg.style.display = 'block';
+        transferMsg.innerText = `Receta transferida al PLC en ${((end - start)/1000).toFixed(3)} segundos`;
     }
 
     async cmdComoAction(name:string) {
@@ -567,12 +654,12 @@ export class CWCAbrir implements Library.PLCObject {
             return;
         }
 
-        let isRepeated = await Library.nombreDuplicado(this.copsa, name, this.app, this.pid[3]);
+        let isRepeated = await Library.nombreDuplicado(this.copsa, name, this.app);
         if (isRepeated) {
             alert("El nombre ingresado ya existe");
         }
         let field = this.copsa ? "C" : "P";
-        let value = await Library.buscaNuevoCodigo(this.copsa, this.app, this.pid[4]);
+        let value = await Library.buscaNuevoCodigo(this.copsa, this.app);
         
         if (value < 10) {
             field += "0";

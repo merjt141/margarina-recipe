@@ -29,9 +29,28 @@
 
 .floating-popup-body {
     background-color: rgba(245,245,245,1);
-    height: calc(100% - 40px);
+    height: calc(100% - 30px);
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
-    padding: 5px;
+    padding: 0px;
     overflow: auto;
+}
+
+.floating-popup-body progress {
+  -webkit-appearance: none;
+  appearance: none;
+  border: 1px solid black; /* Borde negro */
+  border-radius: 0;
+  background-color: transparent;
+}
+
+.floating-popup-body progress::-webkit-progress-bar {
+  background-color: rgba(245, 245, 245, 1); /* color de fondo celeste claro */
+  border-radius: 0;
+  border: none;
+}
+
+.floating-popup-body progress::-webkit-progress-value {
+  background-color: rgba(125, 204, 246, 1); /* celeste más fuerte */
+  border-radius: 0;
 }

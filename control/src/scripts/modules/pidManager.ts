@@ -18,6 +18,19 @@ export class PIDManager {
             "insertDetalle",    //6
             "deleteRecipe",     //7
             "selectIngr",       //8
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "writePLCTags",      //21
         ];
 
         this.initialize();
@@ -30,6 +43,15 @@ export class PIDManager {
     }
 
     public async execute(execute: string, actionID: number): Promise<string> {
+        return this.sqlQueryExecutionHandler(execute, actionID);
+    }
+
+    public response(response: string): void {
+        this.sqlQueryResponseHandler(response);
+    }
+
+
+    private async sqlQueryExecutionHandler(execute: string, actionID: number): Promise<string> {
         let action = this.actionList[actionID];
         let packet = {
             "action": action,
@@ -39,10 +61,20 @@ export class PIDManager {
         console.log(actionID);
         console.log(packet);
         try {
-            WebCC.Events.fire('executeQuery', JSON.stringify(packet), action);
+            if (actionID <= 20) {
+                WebCC.Events.fire('executeQuery', JSON.stringify(packet), action);
+            }
+            else {
+                WebCC.Events.fire('writePLC', JSON.stringify(packet), action);
+            }
         } catch (error) {
             console.log("Not access to WebCC API: Go Simulation");
-            this.webCCSimulator.executeQuery(execute, action);
+            if (actionID <= 20) {
+                this.webCCSimulator.executeQuery(execute, action);
+            }
+            else {
+                this.webCCSimulator.writePLC(JSON.stringify(packet), action);
+            }
         }
 
         await new Promise<void> ((resolve) => {
@@ -54,6 +86,8 @@ export class PIDManager {
             }, 100);
         });
 
+        console.log(this.instances[actionID][1]);
+
         this.instances[actionID][0] = false;
         let response = this.instances[actionID][1];
         this.instances[actionID][1] = "";
@@ -61,11 +95,7 @@ export class PIDManager {
         return response;
     }
 
-    public response(response: string): void {
-        this.sqlQueryResponseHandler(response);
-    }
-
-    public sqlQueryResponseHandler(response: string): void {
+    private sqlQueryResponseHandler(response: string): void {
         let packet = JSON.parse(response);
         this.actionList.forEach((item: string, index: number) => {
             if (item == packet.action) {

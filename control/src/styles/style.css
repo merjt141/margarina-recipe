@@ -32,19 +32,19 @@ body {
     overflow-y: auto;
 }
 
-table {
+#main-content table {
     width: 100%;
     border-collapse: collapse;
     margin-bottom: 0px;
 }
 
-table, td {
+#main-content table, #main-content td {
     border: 0px solid #ccc;
     text-align: left;
     padding: 2px 5px;
 }
 
-table, th {
+#main-content table, #main-content th {
     border: 0px solid #ccc;
     text-align: center;
     vertical-align: middle;

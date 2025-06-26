@@ -48,13 +48,9 @@ export interface RecipeTable {
     x_receta: string,
 }
 
-export interface PLCObject {
-    plcAgent: PLCAgent;
-    plcWriteResponseHandler: (response: string) => void;
-}
-
 export interface PopupOptions {
   title?: string;
+  id?: string,
   width?: number;
   height?: number;
   left?: number;
@@ -103,38 +99,25 @@ export class ComboBoxRecipe {
     }
 
     /**
-     * Select element from combo box
+     * Selecciona un elemento del combobox y carga la receta en el formulario
      */
-    async select() {
+    async select(): Promise<void> {
+        // Extrae código de receta seleccionado
         this.selectedIndex = this.domObject().value;
+        
+        // Extrae texto de receta seleccionado
         this.text = this.domObject().options[this.domObject().selectedIndex].text;
-        let queryString = `Use ENV_MARG; select r.c_receta, r.x_receta, d.n_valor, d.x_comen1, d.x_comen2, i.c_ingred, i.x_ingred, i.x_unidad, i.t_ingred `;
-        queryString += `from RECETA r inner join DETALLE_RECETA d on r.c_receta = d.c_receta inner join INGREDIENTES i on d.c_ingred = i.c_ingred `;
-        queryString += `where r.c_receta = '${this.selectedIndex}' order by c_ingred;`;
+        
+        // Coonstrucción de consulta para base de datos
+        let queryString = `Use ENV_MARG; select r.c_receta, r.x_receta, d.n_valor, d.x_comen1, d.x_comen2, i.c_ingred, i.x_ingred, i.x_unidad, i.t_ingred 
+        from RECETA r inner join DETALLE_RECETA d on r.c_receta = d.c_receta inner join INGREDIENTES i on d.c_ingred = i.c_ingred 
+        where r.c_receta = '${this.selectedIndex}' order by c_ingred;`;
 
+        // Espera respuesta de base de datos por la receta seleccionada
         let response = await this.manager.pidManager.execute(queryString, 1);
 
+        // Escribir la receta en el formulario
         this.object.writeRecipeData(response);
-    }
-}
-
-export class PLCAgent {
-    constructor() {
-
-    }
-
-    write(object:PLCObject, writeCommand: string, action: string) {
-        console.log(writeCommand);
-
-        try {
-            WebCC.Events.fire('writePLC', writeCommand, action);
-        } catch (error) {
-            console.log("Not access to WebCC API");
-        }
-    }
-
-    response(object: PLCObject, response: string) {
-        object.plcWriteResponseHandler(response);
     }
 }
 
@@ -158,20 +141,22 @@ let MemoryData: RecipeData[] = [JSON.parse(JSON.stringify(DataTable)),
 let MenorCodigo: number = 1;
 
 /**
- * Validate values in input fields
- * @param elementArray Array of HTMLInputElement to validate data
+ * Valida los valores de los campos de entrada
+ * @param inputElementArray Lista de HTMLInputElement para validar valores
  */
-export function validateInputElements(elementArray: HTMLInputElement[]): boolean {
-    elementArray.forEach((item: HTMLInputElement, i: number) => {
+export function validateInputElements(inputElementArray: HTMLInputElement[]): boolean {
+    inputElementArray.forEach((item: HTMLInputElement, i: number) => {
         if (isNaN(Number(item.value))) {
             alert("Los valores no son correctos");
             return false;
         }
+
         if (Number(item.value) < 0) {
             alert("Los valores no pueden ser negativos");
             return false;
         } 
     })
+    
     return true;
 }
 
@@ -183,6 +168,7 @@ export function validateInputElements(elementArray: HTMLInputElement[]): boolean
 export function createFloatingPopup(options: PopupOptions = {}): HTMLDivElement {
     const {
         title = "Título del Popup",
+        id = "popup",
         width = 300,
         height = 200,
         left = 100,
@@ -192,6 +178,7 @@ export function createFloatingPopup(options: PopupOptions = {}): HTMLDivElement 
     } = options;
 
     const popup = document.createElement("div");
+    popup.id = id;
     popup.className = "floating-popup";
     popup.style.width = `${width}px`;
     popup.style.height = `${height}px`;
@@ -262,23 +249,27 @@ export function createFloatingPopup(options: PopupOptions = {}): HTMLDivElement 
 }
 
 /**
- * Get HTMLInputElement from id
- * @param object Id of HTMLInputElement
- * @returns DOM object
+ * Obtener el campo de entrada mediante el Id
+ * @param id Id del HTMLInputElement
+ * @returns Objeto DOM
  */
-export function getInputElement(object: string): HTMLInputElement {
-    return document.getElementById(object) as HTMLInputElement;
+export function getInputElement(id: string): HTMLInputElement {
+    return document.getElementById(id) as HTMLInputElement;
 }
 
 /**
- * Update the total value
+ * Actualiza el valor de totalizado del formulario
  * @param object Custom Web Control Abrir
  */
-export function refrescoSuma(object: CWCAbrir) {
+export function refrescoSuma(object: CWCAbrir): void {
+    // Inicializar los valores de suma
     let sumaTMG: number = 0;
     let sumaBalanza: number = 0;
 
+    // Validación de valores en los campos de entrada
     validateInputElements(object.ingredientsDOM[0])
+
+    // Sumar emulsificantes fríos y calientes
     object.ingredientsDOM[0].forEach((item: HTMLInputElement, i: number) => {
         sumaTMG += Number(item.value);
     });
@@ -286,17 +277,23 @@ export function refrescoSuma(object: CWCAbrir) {
     // Corregir imprecisiones de punto flotante en suma
     sumaTMG = Number(sumaTMG.toFixed(6));
 
+    // Escribir en totalizado de emulsificantes y TMG
     getInputElement(object.recipeInputList.resume[0][1]).value = sumaTMG.toString();
     getInputElement(object.recipeInputList.resume[1][1]).value = sumaTMG.toString();
 
+    // Validación de los campos de entrada
     validateInputElements(object.ingredientsDOM[1])
+
+    // Sumar ingredientes de balanza
     object.ingredientsDOM[1].forEach((item: HTMLInputElement, i: number) => {
         sumaBalanza += Number(item.value);
     });
 
     // Corregir imprecisiones de punto flotante en suma
-    sumaBalanza += sumaBalanza + sumaTMG;
+    sumaBalanza += sumaTMG;
     sumaBalanza = Number(sumaBalanza.toFixed(6));
+
+    // Escribitir en totalizado de ingredientes balanza
     getInputElement(object.recipeInputList.resume[1][4]).value = sumaBalanza.toString();
 }
 
@@ -386,13 +383,23 @@ export function valoresOk(object: CWCAbrir): boolean {
     return true;
 }
 
-export async function listaCodigos(planta: boolean, object: App) {
+/**
+ * Consulta a la base de datos por el listado de recetas y actualiza el combobox
+ * @param planta 1: COPSA o 0: IPSA
+ * @param object Referencia a la aplicación
+ */
+export async function listaCodigos(planta: boolean, object: App): Promise<void> {
+    // Consulta para listado de recetas
     let queryString: string = `Use ENV_MARG; select x_receta, c_receta from RECETA where left(c_receta, 1) = '${planta ? 'C' : 'P'}' order by c_receta;`;
+    
+    // Espera respuesta de WinCC/Base de Datos
     let response = await object.pidManager.execute(queryString, 0);
+
+    // Actualiza combobox
     object.formAbrir?.recipeComboBox.update(response);
 }
 
-export async function buscaNuevoCodigo(planta: boolean, object: App, pid: any[]) {
+export async function buscaNuevoCodigo(planta: boolean, object: App) {
     let queryString: string = `Use ENV_MARG; select top(1) x_receta, c_receta from RECETA where left(c_receta, 1) = '${planta ? 'C' : 'P'}' order by c_receta desc;`;
     
     let response = await object.pidManager.execute(queryString, 4);
@@ -405,7 +412,7 @@ export async function buscaNuevoCodigo(planta: boolean, object: App, pid: any[])
     return MenorCodigo;
 }
 
-export async function nombreDuplicado(planta: boolean, name: string, object: App, pid: any[]) {
+export async function nombreDuplicado(planta: boolean, name: string, object: App) {
     let queryString: string = `Use ENV_MARG; select * from RECETA where left(c_receta, 1) = '${planta ? 'C' : 'P'}' and x_receta = '${name}' order by c_receta;`;
     let response = await object.pidManager.execute(queryString, 3);
     let dataJson = JSON.parse(response);

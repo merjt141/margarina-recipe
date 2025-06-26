@@ -1,0 +1,133 @@
+<div class="transfer-container">
+  <table
+    style="
+      width: 560px;
+      border-spacing: 0px;
+      margin-bottom: 10px;
+      padding-top: 5px;
+    "
+  >
+    <tbody style="padding: 0px">
+      <tr>
+        <td style="width: 440px; border-color: black; padding: 0px">
+          <table>
+            <tbody>
+              <tr>
+                <div
+                  style="
+                    text-align: center;
+                    height: 30px;
+                    align-content: center;
+                    font-style: italic;
+                  "
+                >
+                  <label id="lblEtiqueta" style="font-weight: bold"
+                    >Transferencia a Planta IPSA</label
+                  >
+                </div>
+              </tr>
+              <tr style="align-items: center">
+                <div style="text-align: center; height: 30px">
+                  <input
+                    type="text"
+                    id="recipeCode"
+                    disabled
+                    value="P. HOJAL 2 Kg."
+                    style="width: calc(100% - 20px)"
+                  />
+                </div>
+              </tr>
+            </tbody>
+          </table>
+        </td>
+        <td
+          class="transfer-content"
+          style="flex-direction: row; display: flex; margin-left: 8px"
+        >
+          <button id="transfer-cerrar">
+            <img
+              src="./src/assets/images/cancel-svgrepo-com.png"
+              alt="Icon"
+              class="button-transfer"
+            />
+            Cerrar
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <table style="width: 560px; border-spacing: 0px">
+    <tbody>
+      <tr class="transfer-content" style="flex-direction: row">
+        <td>
+          <button id="linea1" onclick="app.formAbrir.cmdTransferirAction(1)">
+            <img
+              src="./src/assets/images/computer.png"
+              alt="Icon"
+              class="button-transfer"
+            />
+            Transferir L1
+          </button>
+        </td>
+        <td>
+          <button id="linea5" onclick="app.formAbrir.cmdTransferirAction(5)">
+            <img
+              src="./src/assets/images/computer.png"
+              alt="Icon"
+              class="button-transfer"
+            />
+            Transferir L2
+          </button>
+        </td>
+        <td>
+          <button id="linea3" onclick="app.formAbrir.cmdTransferirAction(3)">
+            <img
+              src="./src/assets/images/computer.png"
+              alt="Icon"
+              class="button-transfer"
+            />
+            Transferir L3
+          </button>
+        </td>
+        <td>
+          <button id="linea4" onclick="app.formAbrir.cmdTransferirAction(4)">
+            <img
+              src="./src/assets/images/computer.png"
+              alt="Icon"
+              class="button-transfer"
+            />
+            Transferir L4
+          </button>
+        </td>
+        <td>
+          <button id="linea2" onclick="app.formAbrir.cmdTransferirAction(2)">
+            <img
+              src="./src/assets/images/computer.png"
+              alt="Icon"
+              class="button-transfer"
+            />
+            Transferir L5
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <table style="width: 560px; border-spacing: 0px; margin-top: 10px">
+    <tbody>
+      <tr>
+        <td style="text-align: center;">
+          <progress id="transferProgress" value="0" max="100" style="width: 540px; height: 25px; display: none; margin: 0 auto;">
+        </progress>
+        </td>
+      </tr>
+      <tr>
+        <td style="text-align: center; font-weight: bold;">
+          <span id="transferMsg" style="display: none; padding-top: 5px;">
+            Receta transferida al PLC en 0.102 segundos
+          </span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
