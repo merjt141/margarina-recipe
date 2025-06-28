@@ -44,21 +44,19 @@
 }
 
 .ingr-list li {
-    padding: 5px;
-    cursor: pointer;
-}
-
-.ingr-list li {
+    font-weight: bold;
     padding: 5px;
     cursor: pointer;
 }
 
 .ingr-list li:hover {
-    background-color: #bff3fa;
+    background-color: rgba(125, 204, 246, 1);
+    color: white;
 }
 
 .li-selected {
-    background-color: lightblue;
+    background-color: rgba(125, 204, 246, 1);
+    color: white;
 }
 
 .list-title {
@@ -90,4 +88,54 @@
     width: 35px;
     height: 35px;
     margin-right: 0px;
+}
+
+.ingr-data {
+    border: 1px solid #ccc;
+    background: #fff;
+    height: 400px;
+    list-style-type: none;
+    padding: 0px;
+    margin: 5px 0px;
+    overflow-y: auto;
+}
+
+.ingredientes .ingr-data li {
+    display: flex;
+    border-bottom: 1px solid #ccc;
+    height: 25px;
+}
+
+.ingredientes .ingr-data div {
+    margin: 0px;
+    padding: 0px 8px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border-right: 1px solid #ccc;
+    border-left: 1px solid transparent;
+    box-sizing: border-box;
+    font-size: 10pt;
+}
+
+.ingredientes .ingr-data li:first-child {
+    font-weight: bold;
+    background-color: rgba(224, 224, 224);
+}
+
+.ingredientes .ingr-data li div:nth-child(1) {
+  flex: 2;
+}
+.ingredientes .ingr-data li div:nth-child(2) {
+  flex: 5;
+}
+.ingredientes .ingr-data li div:nth-child(3) {
+  flex: 5;
+}
+.ingredientes .ingr-data li div:nth-child(4) {
+  flex: 1;
+}
+
+input[type="radio"] {
+  accent-color: black;
 }

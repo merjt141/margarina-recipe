@@ -199,7 +199,7 @@ export class WebCCSimulator {
     executeQuery(jsonString: string, action: string) {
         switch(action) {
             case "selectTable":
-                let a = jsonString.slice(269,272);
+                let a = jsonString.slice(287,290);
                 let sendString: string = "";
                 switch(a) {
                     case "P01":
@@ -260,6 +260,36 @@ export class WebCCSimulator {
                 this.object.response(responseComboPeek);
                 break;
 
+            case "insertReceta":
+                let responseIR = JSON.stringify({
+                    action: "insertReceta",
+                    data: JSON.stringify(
+                        [
+                        ])
+                });
+                this.object.response(responseIR);
+                break;
+            
+            case "insertDetalle":
+            let responseID = JSON.stringify({
+                action: "insertDetalle",
+                data: JSON.stringify(
+                    [
+                    ])
+            });
+            this.object.response(responseID);
+            break;
+
+            case "deleteRecipe":
+            let responseDR = JSON.stringify({
+                action: "deleteRecipe",
+                data: JSON.stringify(
+                    [
+                    ])
+            });
+            this.object.response(responseDR);
+            break;
+
             
             case "selectIngr":
                 let response = JSON.stringify({
@@ -274,9 +304,49 @@ export class WebCCSimulator {
                         {c_ingred:"P03",x_ingred:"Emulsif. Caliente2 TMG"},
                         {c_ingred:"P04",x_ingred:"Emulsif. Caliente3 TMG"},
                         {c_ingred:"P05",x_ingred:"Agua"},
+                        {c_ingred:"P19",x_ingred:"Agua"},
+                        {c_ingred:"P06",x_ingred:"Agua"},
+                        {c_ingred:"P07",x_ingred:"Agua"},
+                        {c_ingred:"P08",x_ingred:"Agua"},
+                        {c_ingred:"P09",x_ingred:"Agua"},
+                        {c_ingred:"P10",x_ingred:"Agua"},
+                        {c_ingred:"P11",x_ingred:"Agua"},
+                        {c_ingred:"P12",x_ingred:"Agua"},
+                        {c_ingred:"P13",x_ingred:"Agua"},
+                        {c_ingred:"P14",x_ingred:"Agua"},
+                        {c_ingred:"P15",x_ingred:"Agua"},
+                        {c_ingred:"P16",x_ingred:"Agua"},
+                        {c_ingred:"P17",x_ingred:"Agua"},
+                        {c_ingred:"P18",x_ingred:"Agua"},
                     ])
                 });
                 this.object.response(response);
+                break;
+
+                case "ingrList":
+                let responseIGR = JSON.stringify({
+                    action: "ingrList",
+                    data: JSON.stringify([
+                        {c_receta:"P01",x_receta:"RECETA PACOCHA", x_comen1: "INGR1", x_unidad: "%"},
+                        {c_receta:"P02",x_receta:"RECETA PACOCHA", x_comen1: "INGR1", x_unidad: "%"},
+                        {c_receta:"P03",x_receta:"\"NUEVA\" DANESA TROPICAL x 10 Kg. BALDES.", x_comen1: "BETACAROTENO,VITAMINAS,EMULSIONANTES", x_unidad: "%"},
+                        {c_receta:"P01",x_receta:"RECETA PACOCHA", x_comen1: "INGR1", x_unidad: "%"},
+                        {c_receta:"P02",x_receta:"RECETA PACOCHA", x_comen1: "INGR2", x_unidad: "%"},
+                        {c_receta:"P03",x_receta:"RECETA PACOCHA", x_comen1: "INGR1", x_unidad: "%"},
+                        {c_receta:"P01",x_receta:"RECETA PACOCHA", x_comen1: "INGR1", x_unidad: "%"},
+                        {c_receta:"P01",x_receta:"RECETA PACOCHA", x_comen1: "INGR1", x_unidad: "L"},
+                        {c_receta:"P31",x_receta:"RECETA PACOCHA", x_comen1: "INGR1", x_unidad: "%"},
+                        {c_receta:"P01",x_receta:"RECETA PACOCHA", x_comen1: "INGR1", x_unidad: "%"},
+                        {c_receta:"P01",x_receta:"RECETA PACOCHA", x_comen1: "INGR1", x_unidad: "%"},
+                        {c_receta:"P01",x_receta:"RECETA PACOCHA", x_comen1: "INGR1", x_unidad: "%"},
+                        {c_receta:"P21",x_receta:"RECETA PACOCHA", x_comen1: "INGR1", x_unidad: "%"},
+                        {c_receta:"P01",x_receta:"RECETA PACOCHA", x_comen1: "INGR1", x_unidad: "%"},
+                        {c_receta:"P01",x_receta:"RECETA PACOCHA", x_comen1: "INGR1", x_unidad: "%"},
+                        {c_receta:"P01",x_receta:"RECETA PACOCHA", x_comen1: "INGR1", x_unidad: "%"},
+                        
+                    ])
+                });
+                this.object.response(responseIGR);
                 break;
         }
     }

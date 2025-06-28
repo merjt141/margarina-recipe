@@ -1,0 +1,72 @@
+<div class="container ingredientes">
+  <div class="top-bar" style="height: auto">
+    <table>
+      <tbody>
+        <tr
+          class="transfer-content"
+          style="flex-direction: row; align-items: center"
+        >
+          <td style="flex-direction: column; align-items: start">
+            <div style="font-weight: bold; width: 220px; margin-bottom: 10px">
+              Listado de Ingredientes
+            </div>
+            <div
+              style="
+                border-radius: 8px;
+                background-color: #f2f2f2;
+                align-items: start;
+                margin: 0px;
+              "
+            >
+              <label style="cursor: pointer;">
+                <input
+                  type="radio"
+                  name="option"
+                  value="C"
+                  style="width: 20px"
+                  onchange="app.formIngredientes.cmdLoadClick(event)"
+                />
+                COPSA
+              </label>
+              <span style="width: 10px"></span>
+              <label style="cursor: pointer;">
+                <input
+                  type="radio"
+                  name="option"
+                  value="P"
+                  style="width: 20px"
+                  onchange="app.formIngredientes.cmdLoadClick(event)"
+                />
+                PACOCHA
+              </label>
+            </div>
+          </td>
+          <td style="align-items: end;">
+            <button id="transfer-cerrar" style="margin-left: auto;" onclick="app.unload()">
+              <img
+                src="./src/assets/images/icons8-exit-door-64.png"
+                alt="Icon"
+                class="button-transfer"
+              />
+              Cerrar
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="central-content">
+    <div>
+      <table class="element-list">
+        <tbody>
+          <tr>
+            <td>
+              <ul id="ingr-list" class="ingr-data" style="height: 500px; display: none;">
+              </ul>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

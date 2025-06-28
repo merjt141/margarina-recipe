@@ -48,6 +48,17 @@ export interface RecipeTable {
     x_receta: string,
 }
 
+/**
+ * Tipo de ingrediente de la receta en base de datos
+ */
+export enum IngrType{
+    Caliente,
+    Frio,
+    Balanza,
+    IPSA,
+    Copsa
+}
+
 export interface PopupOptions {
   title?: string;
   id?: string,
@@ -156,7 +167,7 @@ export function validateInputElements(inputElementArray: HTMLInputElement[]): bo
             return false;
         } 
     })
-    
+
     return true;
 }
 
@@ -333,53 +344,72 @@ export function sonIguales() {
 }
 
 /**
- * Check parameters value
- * @returns Parameters value are ok
+ * Vlida los parámetros IPSA
+ * @returns Parametros IPSA OK
  */
 export function parametrosTanquesOk(): boolean {
+    // Valida parámetros obligatorios
     for (let i = 1; i <= 8; i++) {
         let value = getInputElement(`ipsa${i}`).value;
+
+        // Validar que el valor existe
         if (isNaN(Number(value)) || value == "") {
             alert("El valor de los parámetros marcados con \"*\" deben ser numéricos mayor a cero");
             return false;
         }
+
+        // Validar que no es 0 o negativo
         if (Number(value) <= 0) {
             alert("El valor de los parámetros marcados con \"*\" deben ser mayor a cero");
             return false;
         }
     }
+
+    // Valida parámetros opcionales
     for (let i = 9; i <= 30; i++) {
         let value = getInputElement(`ipsa${i}`).value;
+
+        // Validar que el valor existe
         if (isNaN(Number(value)) ) {
             alert("El valor de los parámetros marcados con \"*\" deben ser numéricos mayor a cero");
             return false;
         }
+
+        // Validar que no es negativo
         if (Number(value) < 0) {
-            alert("El valor de los parámetros marcados con \"*\" deben ser mayor a cero");
+            alert("El valor de los parámetros marcados con \"*\" deben ser mayor o igual a cero");
             return false;
         }
     }
+
     return true;
 }
 
 /**
- * Check if values of Ingreidents are ok
- * @param object Custom Web Control Abrir
+ * Valida los valores de los ingredientes
+ * @param object Formulario abrir
  */
 export function valoresOk(object: CWCAbrir): boolean {
+
+    // Ingredientes de balanza
     object.ingredientsDOM[1].forEach((item: HTMLInputElement, index: number) => {
         let value = item.value;
+
+        // Validar que es un número
         if (isNaN(Number(value)) || value == "") {
             let ingredient = getInputElement(`i${index + 1}1`).value;
             console.log(`El valor del ingrediente ${ingredient} debe ser numérico`);
             return false;
         }
+
+        // Validar que no es menor a 0
         if (Number(value) <= 0) {
             let ingredient = getInputElement(`i${index + 1}1`).value;
             console.log(`El valor del ingrediente ${ingredient} debe ser mayor a cero`);
             return false;
         }
     });
+
     return true;
 }
 
@@ -398,27 +428,55 @@ export async function listaCodigos(planta: boolean, object: App): Promise<void> 
     // Actualiza combobox
     object.formAbrir?.recipeComboBox.update(response);
 }
-
-export async function buscaNuevoCodigo(planta: boolean, object: App) {
+/**
+ * Retorna un nuevo código disponible de la base de datos para nueva receta
+ * @param planta 1: COPSA, 0: IPSA
+ * @param object Formulario Abrir
+ * @returns Nuevo código para receta
+ */
+export async function buscaNuevoCodigo(planta: boolean, object: App): Promise<number> {
+    // Consulta el máximo valor de los códigos guardados
     let queryString: string = `Use ENV_MARG; select top(1) x_receta, c_receta from RECETA where left(c_receta, 1) = '${planta ? 'C' : 'P'}' order by c_receta desc;`;
     
+    // Espera respuesta de WinCC/SQL
     let response = await object.pidManager.execute(queryString, 4);
 
+    // Estructura la respuesta en JSON
     let dataJson = JSON.parse(response);
+
+    // Si existe al menos un elemento ejecutar
     if (Boolean(dataJson[0])) {
+        // Aumenta el código en 1 y retorna
         let code = dataJson[0].c_receta;
         return Number(code.slice(1,3)) + 1;
     }
+
+    // Si base de datos vacía retorna el menor código permitido (1)
     return MenorCodigo;
 }
 
-export async function nombreDuplicado(planta: boolean, name: string, object: App) {
+/**
+ * Validar con la base de datos si existe el nombre ingresado
+ * @param planta 1: COPSA / 0: IPSA
+ * @param name NOmbre de receta buscado
+ * @param object Formulario Abrir
+ * @returns 
+ */
+export async function nombreDuplicado(planta: boolean, name: string, object: App): Promise<boolean> {
+    // Consulta de busqueda por duplicidad
     let queryString: string = `Use ENV_MARG; select * from RECETA where left(c_receta, 1) = '${planta ? 'C' : 'P'}' and x_receta = '${name}' order by c_receta;`;
+    
+    // Esperar respuesta
     let response = await object.pidManager.execute(queryString, 3);
+    
+    // Validar si existe coincidencia con una o más filas
     let dataJson = JSON.parse(response);
     if (Boolean(dataJson[0])) {
+        // Retorna true si encuentra duplicidad
         return true;
     }
+
+    // Retorna false si no existe duplicidad
     return false;
 }
 

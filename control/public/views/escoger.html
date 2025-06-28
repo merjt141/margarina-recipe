@@ -4,8 +4,8 @@
             <tbody>
                 <tr>
                     <td class="recipe-nombre">
-                        <label for="nombreNuevaReceta">Nombre de Nueva Receta: </label>
-                        <input type="text" name="nombre-nueva-receta" id="nombreNuevaReceta" required>
+                        <label for="nombre-nueva-receta" style="font-weight: bold; width: 220px;">Nombre de Nueva Receta: </label>
+                        <input type="text" name="nombre-nueva-receta" id="nombre-nueva-receta" required style="height: 20px; width: 350px;">
                     </td>
                     <td class="right-title">
                         <label id="esc-title">#</label>
@@ -39,11 +39,11 @@
         </div>
         <div class="esc-bottom">
             <button onclick="app.formEscoger.cmdAceptarClick()">
-                <img src="./src/assets/images/icons8-save-as-50.png" alt="Icon">
+                <img src="./src/assets/images/icons8-save-as-50.png" alt="Aceptar">
                 Aceptar
             </button>
-            <button>
-                <img src="./src/assets/images/icons8-exit-door-64.png" alt="Icon">
+            <button onclick="app.unload()">
+                <img src="./src/assets/images/icons8-exit-door-64.png" alt="Salir" class="button-right">
                 Salir
             </button>
         </div>

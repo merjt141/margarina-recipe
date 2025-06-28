@@ -1,4 +1,3 @@
-import { WebCCSimulator } from '../simulation/simulation';
 import * as Library from '../../modules/utilities';
 import { App } from '../../modules/manager';
 
@@ -55,6 +54,20 @@ export class CWCAbrir {
         this.formSaveAs = null;
 
         this.buildInputListAndInitializeComboBox();
+    }
+
+    /**
+     * Navegación entre TABs del formulario
+     * @param {string} tabId - Id del TAB a mosrtrar
+     */
+    cmdShowTabClick(tabId: string) {
+        // Ocultar todos los TABS
+        document.querySelectorAll('.tab-content').forEach(tab => {
+            tab.classList.remove('active');
+        });
+    
+        // Mostrar el TAB seleccionado
+        document.getElementById(tabId)?.classList.add('active');
     }
 
     /**
@@ -156,7 +169,7 @@ export class CWCAbrir {
      * Escribe todos los valores de los ingredientes en el formulario de receta
      * @param jsonString Listado de ingredientes de la receta en formato IngredientTable[]
      */
-    writeRecipeData(jsonString: string): void {
+    public writeRecipeData(jsonString: string): void {
 
         // Inicialización de variable de memoria local de receta
         this.recipeJsonData = [[],[],[],[],[]];
@@ -253,16 +266,23 @@ export class CWCAbrir {
         Library.refrescoSuma(this);
 
         // Guardar valores en memoria temporal
-        Library.saveTemporalData(1);
+        Library.saveTemporalData(1);            // 1: Datos iniciales
+    }
+
+    /**
+     * Evento del botón guardar del formulario
+     */
+    public cmdGuardarClick(): void {
+        this.cmdGuardarClickEvent();
     }
 
     /**
      * Realiza el guardado de los cambios de la receta en la base de datos
      * @returns Salida de la función
      */
-    async cmdGuardarClickEvent(): Promise<void> {
+    private async cmdGuardarClickEvent(): Promise<void> {
         // Extraer ID actual de receta
-        let recipeId = this.recipeComboBox.selectedIndex;
+        let recipeId: string = this.recipeComboBox.selectedIndex;
 
         // Cancelar si no se seleccionó receta
         if (!recipeId) {
@@ -270,145 +290,159 @@ export class CWCAbrir {
             return;
         }
         
-        // 
-        if (!Library.validateInputElements(this.ingredientsDOM[0])) {
-            return;
-        }
-        if (!Library.validateInputElements(this.ingredientsDOM[1])) {
-            return;
-        }
-        if (!Library.validateInputElements(this.parametersDOM)) {
-            return;
-        }
-    
-        let originalData = this.recipeJsonData;
-
-        let hSize = originalData[0] as Library.IngredientTable[];
-
-        // Creación de consulta UPDATE SQL
-        let queryString = "Use ENV_MARG; update dr set dr.n_valor = v.n_valor, dr.x_comen1 = v.x_comen1, dr.x_comen2 = v.x_comen2 from DETALLE_RECETA dr join ( values ";
-
-        for (let i = 0; i < hSize.length; i++) {
-            let n_value = document.getElementById(`h${i + 1}2`) as HTMLInputElement;
-            let x_comen1 = document.getElementById(`h${i + 1}4`) as HTMLInputElement;
-            let x_comen2 = document.getElementById(`h${i + 1}5`) as HTMLInputElement;
-            //let queryString = `Use ENV_MARG; update DETALLE_RECETA set n_valor = ${n_value.value}, x_comen1 = '${x_comen1.value}', x_comen2 = '${x_comen2.value}' where c_receta = '${recipeId}' and c_ingred = '${hSize[i]["c_ingred"]}';`
-            
-            queryString += `('${recipeId}', '${hSize[i]["c_ingred"]}', ${n_value.value}, '${x_comen1.value}', '${x_comen2.value}'),`
-            
-            //this.app.pidManager.execute(queryString, 2);
-        }
-
-        let cSize = originalData[1] as Library.IngredientTable[];
+        // Validar emulsificantes calientes y fríos
+        if (!Library.validateInputElements(this.ingredientsDOM[0])) return;
         
-        for (let i = 0; i < cSize.length; i++) {
-            let n_value = document.getElementById(`c${i + 1}2`) as HTMLInputElement;
-            let x_comen1 = document.getElementById(`c${i + 1}4`) as HTMLInputElement;
-            let x_comen2 = document.getElementById(`c${i + 1}5`) as HTMLInputElement;
-            //let queryString = `Use ENV_MARG; update DETALLE_RECETA set n_valor = ${n_value.value}, x_comen1 = '${x_comen1.value}', x_comen2 = '${x_comen2.value}' where c_receta = '${recipeId}' and c_ingred = '${cSize[i]["c_ingred"]}';`
+        // Validar ingredientes balanza
+        if (!Library.validateInputElements(this.ingredientsDOM[1])) return;
+        
+        // Validar parámetros IPSA
+        if (!Library.validateInputElements(this.parametersDOM)) return;
+        
+        // Hacer una copia referenciada de los datos
+        let recipeOriginalData = this.recipeJsonData;
+
+        // Extraer listado de emulsificantes calientes
+        let emulsificantesCalientes: Library.IngredientTable[] = recipeOriginalData[Library.IngrType.Caliente] as Library.IngredientTable[];
+
+        // Creación de consulta UPDATE SQL de cambios en la receta
+        let queryString = `Use ENV_MARG; update dr set dr.n_valor = v.n_valor, dr.x_comen1 = v.x_comen1, 
+        dr.x_comen2 = v.x_comen2 from DETALLE_RECETA dr join ( values `;
+
+        // Emulsificantes calientes
+        for (let row = 0; row < emulsificantesCalientes.length; row++) {
+            let n_value = document.getElementById(`h${row + 1}2`) as HTMLInputElement;        // Nombre de ingrediente
+            let x_comen1 = document.getElementById(`h${row + 1}4`) as HTMLInputElement;       // Cantidad de ingrediente
+            let x_comen2 = document.getElementById(`h${row + 1}5`) as HTMLInputElement;       // Comentario de ingrediente
             
-            queryString += `('${recipeId}', '${cSize[i]["c_ingred"]}', ${n_value.value}, '${x_comen1.value}', '${x_comen2.value}'),`
-            
-            //this.app.pidManager.execute(queryString, 2);
+            // Actualizar consulta
+            queryString += `('${recipeId}', '${emulsificantesCalientes[row]["c_ingred"]}', ${n_value.value}, 
+            '${x_comen1.value}', '${x_comen2.value}'),`
         }
 
-        let iSize = originalData[2] as Library.IngredientTable[];
+
+        // Extraer listado de emulsificantes fríos
+        let emulsificantesFrios: Library.IngredientTable[] = recipeOriginalData[Library.IngrType.Frio] as Library.IngredientTable[];
         
-        for (let i = 0; i < iSize.length; i++) {
-            let n_value = document.getElementById(`i${i + 1}2`) as HTMLInputElement;
-            let x_comen1 = document.getElementById(`i${i + 1}4`) as HTMLInputElement;
-            let x_comen2 = document.getElementById(`i${i + 1}5`) as HTMLInputElement;
-            //let queryString = `Use ENV_MARG; update DETALLE_RECETA set n_valor = ${n_value.value}, x_comen1 = '${x_comen1.value}', x_comen2 = '${x_comen2.value}' where c_receta = '${recipeId}' and c_ingred = '${iSize[i]["c_ingred"]}';`
+        // Emulsificantes fríos
+        for (let row = 0; row < emulsificantesFrios.length; row++) {
+            let n_value = document.getElementById(`c${row + 1}2`) as HTMLInputElement;        // Nombre de ingrediente
+            let x_comen1 = document.getElementById(`c${row + 1}4`) as HTMLInputElement;       // Cantidad de ingrediente
+            let x_comen2 = document.getElementById(`c${row + 1}5`) as HTMLInputElement;       // Comentario de ingrediente
             
-            queryString += `('${recipeId}', '${iSize[i]["c_ingred"]}', ${n_value.value}, '${x_comen1.value}', '${x_comen2.value}'),`
-            
-            //this.app.pidManager.execute(queryString, 2);
+            // Actualizar consulta
+            queryString += `('${recipeId}', '${emulsificantesFrios[row]["c_ingred"]}', ${n_value.value}, 
+            '${x_comen1.value}', '${x_comen2.value}'),`
         }
 
-        let ipsaSize = originalData[3] as Library.IngredientTable[];
+        // Extraer listado de ingredientes balanza
+        let ingredientesBalanza: Library.IngredientTable[] = recipeOriginalData[Library.IngrType.Balanza] as Library.IngredientTable[];
         
-        for (let i = 0; i < ipsaSize.length; i++) {
-            let n_value = document.getElementById(`ipsa${i + 1}`) as HTMLInputElement;
+        // Ingredientes balanza
+        for (let row = 0; row < ingredientesBalanza.length; row++) {
+            let n_value = document.getElementById(`i${row + 1}2`) as HTMLInputElement;        // Nombre de ingrediente
+            let x_comen1 = document.getElementById(`i${row + 1}4`) as HTMLInputElement;       // Cantidad de ingrediente
+            let x_comen2 = document.getElementById(`i${row + 1}5`) as HTMLInputElement;       // Comentario de ingrediente
+            
+            // Actualizar consulta
+            queryString += `('${recipeId}', '${ingredientesBalanza[row]["c_ingred"]}', ${n_value.value}, 
+            '${x_comen1.value}', '${x_comen2.value}'),`
+        }
+
+        // Extraer listado de parámetros IPSA
+        let parametrosIPSA: Library.IngredientTable[] = recipeOriginalData[Library.IngrType.IPSA] as Library.IngredientTable[];
+        
+        // Parametros ISPA
+        for (let row = 0; row < parametrosIPSA.length; row++) {
+            
+            let n_value = document.getElementById(`ipsa${row + 1}`) as HTMLInputElement;      // Valor de parámetro
+
+            // Extraer valores de los campos de entrada
             let value: any;
             ((n_value.value == "0") || (n_value.value == "")) ? value = null : value = n_value.value;
-            //let queryString = `Use ENV_MARG; update DETALLE_RECETA set n_valor = ${value} where c_receta = '${recipeId}' and c_ingred = '${ipsaSize[i]["c_ingred"]}';`
             
-            queryString += `('${recipeId}', '${ipsaSize[i]["c_ingred"]}', ${value}, '', ''),`
-            
-            //this.app.pidManager.execute(queryString, 2);
+            // Actualizar consulta
+            queryString += `('${recipeId}', '${parametrosIPSA[row]["c_ingred"]}', ${value}, '', ''),`
         }
 
+        // Borrar la última coma agregada
         queryString = queryString.slice(0, -1);
-        queryString += `) as v(c_receta, c_ingred, n_valor, x_comen1, x_comen2) on dr.c_receta = v.c_receta and dr.c_ingred = v.c_ingred;`;
 
-        this.app.pidManager.execute(queryString, 2);
+        // Finalizar consulta
+        queryString += `) as v(c_receta, c_ingred, n_valor, x_comen1, x_comen2) 
+        on dr.c_receta = v.c_receta and dr.c_ingred = v.c_ingred;`;
+
+        // Invocar API para excribir en base de datos
+        let response: string = await this.app.pidManager.execute(queryString, 2);
+
+        // Aviso al operador que los cambios fueron guardados exitosamente
+        // Se mejorará si hay tiempo
+        alert("Se han guardando los cambios a la receta");
+
     }
 
     /**
-     * Change visible tab on recipe control
-     * @param {string} tabId - Tab to show on screen
+     * Modificar estado de edición de elementos
      */
-    cmdShowTabClick(tabId: string) {
-        document.querySelectorAll('.tab-content').forEach(tab => {
-            tab.classList.remove('active');
-        });
-    
-        document.getElementById(tabId)?.classList.add('active');
-    }
-
-    cmdModificarClick() {
+    public cmdModificarClick(): void {
+        // Modificar variable local
         this.editionDisabled = !this.editionDisabled;
-        this.enableInputs(this.editionDisabled);
 
+        // Deshabilitar los campos de entrada
+        this.enableInputs(this.editionDisabled);
     }
 
-    cmdActualizarClick() {
+    /**
+     * Recargar receta de Id seleccionado en combobox
+     */
+    public cmdActualizarClick(): void {
+        // Refrescar valores de receta desde base de datos
         this.recipeComboBox.select();
     }
 
-    cmdGuardarClick() {
-        this.cmdGuardarClickEvent();
-    }
-
-    cmdComoClick() {
-        let recipe = this.recipeComboBox.selectedIndex;
-
-        if (recipe = "") {
-            alert("Seleccione una receta para guardar");
-            return;
-        }
-        if (!Library.valoresOk(this)) {
-            return;
-        }
-        if (!this.copsa) {
-            if (!Library.parametrosTanquesOk()) {
-                return;
-            }
-        }
-        this.formSaveAs = window.open("./public/modules/saveas.html", "PopopWindow", "width=600,height=240,scrollbars=no,resizable=no");
-    }
-
-    async cmdEliminarClick() {
+    /**
+     * Botón de formulatio para eliominar una receta
+     * @returns Salida de función
+     */
+    async cmdEliminarClick(): Promise<void> {
+        // Extraer Id de receta
         let value = this.recipeComboBox.domObject().value;
+        
+        // Validación de receta cargada
         if (value == "") {
             alert("Seleccione la receta a eliminar");
             return;
         }
-        let userConfirmation = confirm("¿Está seguro de eliminar la receta?");
-        let queryString: string;
-        if (userConfirmation) {
-            queryString = `Use ENV_MARG; delete from DETALLE_RECETA where c_receta = '${value}';`;
-            
-            await this.app.pidManager.execute(queryString, 7);
-            
-            queryString = `Use ENV_MARG; delete from RECETA where c_receta = '${value}';`;
-            this.app.pidManager.execute(queryString, 7);
 
-            console.log("Receta eliminada con éxito");
-            this.clearInputFields();
-            await Library.listaCodigos(this.copsa, this.app);
-            this.recipeComboBox.select();
-        }
+        // Solicitar confirmación del operador
+        let userConfirmation = confirm("¿Está seguro de eliminar la receta?");
+
+        if (!userConfirmation) return;
+
+        // Creación de consulta para eliminar registro de DETALLE_RECETA
+        let queryString: string;
+        queryString = `Use ENV_MARG; delete from DETALLE_RECETA where c_receta = '${value}';`;
+        
+        // Esperar respuesta de WinCC/SQL
+        await this.app.pidManager.execute(queryString, 7);
+        
+        // Creación de consulta para eliminar registro de listado RECETA        
+        queryString = `Use ENV_MARG; delete from RECETA where c_receta = '${value}';`;
+
+        // Esperear respuesta de WinCC/SQL
+        this.app.pidManager.execute(queryString, 7);
+
+        // Informar al operador del borrado de receta
+        alert("Receta eliminada con éxito");
+
+        // Limpiar campos de entrada
+        this.clearInputFields();
+
+        // Refrescar el listado de códigos
+        await Library.listaCodigos(this.copsa, this.app);
+
+        // Actualizar valores de formulario
+        this.recipeComboBox.select();
     }
     
     /**
@@ -428,6 +462,7 @@ export class CWCAbrir {
         // Creación de popup de transfer.html con contenido cargado
         let transferPopup : HTMLDivElement = document.getElementById("transfer-popup") as HTMLDivElement;
 
+        // Validar existencia única del modal
         if (!transferPopup) {
             transferPopup = Library.createFloatingPopup({
                 title: "Transferencia de Recetas",
@@ -460,14 +495,6 @@ export class CWCAbrir {
         (document.getElementById("transfer-cerrar") as HTMLButtonElement).addEventListener("click", () => {
             transferPopup.remove();
         });
-    }
-
-    cmdImprimirClick() {
-
-    }
-
-    cmdSalirClick() {
-
     }
 
     /**
@@ -648,68 +675,194 @@ export class CWCAbrir {
         transferMsg.innerText = `Receta transferida al PLC en ${((end - start)/1000).toFixed(3)} segundos`;
     }
 
-    async cmdComoAction(name:string) {
+    /**
+     * Botón de formulario para guardar receta con nuevo nombre
+     * @returns Salida de función
+     */
+    public async cmdComoClick(): Promise<void> {
+        // Extraer id de receta
+        let recipe = this.recipeComboBox.selectedIndex;
+
+        // Validar receta seleccionada
+        if (recipe = "") {
+            alert("Seleccione una receta para guardar");
+            return;
+        }
+
+        // Validar valores de ingredientes
+        if (!Library.valoresOk(this)) {
+            alert("Valores de los ingredientes son incorrectos");
+            return;
+        }
+
+        // Tipo de línea / COPSA|IPSA
+        if (!this.copsa) {
+            // Validar parámetros IPSA
+            if (!Library.parametrosTanquesOk()) {
+                return;
+            }
+        }
+
+        // Extraer contenido de archivo saveas.html para popup
+        let content: string = "";
+        await fetch('./public/modules/saveas.html')
+            .then(response => response.text())
+            .then(html => {
+                content = html;
+            })
+            .catch(error => console.error("Error cargando el popup"));
+
+        // Creación de popup de saveas.html con contenido cargado
+        let transferPopup : HTMLDivElement = document.getElementById("save-as-popup") as HTMLDivElement;
+
+        // Validar existencia única del modal
+        if (!transferPopup) {
+            transferPopup = Library.createFloatingPopup({
+                title: "Guardar Como",
+                id: "save-as-popup",
+                width: 680,
+                height: 130,
+                left: 300,
+                top: 200,
+                content: content,
+                onClose: () => { console.log("Popup cerrado"); },
+            });
+        } else {
+            console.log("Ya hay un popup abierto con ese ID.");
+        }
+
+        // Dar focus al campo de entrada del nuevo nombre
+        (document.getElementById("save-as-recipe-name") as HTMLInputElement)?.focus();
+
+        // Agregar evento de cierre de popup a boton cancelar
+        (document.getElementById("transfer-cerrar") as HTMLButtonElement).addEventListener("click", () => {
+            transferPopup.remove();
+        });
+    }
+
+    /**
+     * Guardar receta con un nombre nuevo
+     * @returns Salida de función
+     */
+    public async cmdComoAction(): Promise<void> {
+        // Campo de entrada que contiene el nombre
+        const newRecipeName = document.getElementById("save-as-recipe-name") as HTMLInputElement;
+        let name: string = newRecipeName.value.toString();
+
+        // Validar que el nombre de la receta no esté vacío
         if (name == "") {
             alert("Ingrese el nombre de la nueva receta");
             return;
         }
 
+        // Validar que el nombre no sea repetido en la base de datos
         let isRepeated = await Library.nombreDuplicado(this.copsa, name, this.app);
         if (isRepeated) {
             alert("El nombre ingresado ya existe");
+            newRecipeName.value = "";
+            newRecipeName.focus();
+            return;
         }
+
+        // Identificar si la planta es IPSA o COPSA
         let field = this.copsa ? "C" : "P";
+
+        // Buscar un código disponible y secuencial en la base de datos
         let value = await Library.buscaNuevoCodigo(this.copsa, this.app);
         
-        if (value < 10) {
-            field += "0";
-        }
+        // Dar formato de string
+        if (value < 10) field += "0";
 
+        // Crea código de receta
         let c_receta: string = field + value.toString();
         
+        // Consulta para guardar nueva receta
         let queryString = `Use ENV_MARG; insert into RECETA(c_receta, x_receta) values('${c_receta}', '${name}');`;
         
-        this.app.pidManager.execute(queryString, 5);
+        // Espera respuesta de WinCC/SQL
+        await this.app.pidManager.execute(queryString, 5);
 
+        // Consulta para guardar ingredientes y preparación de nueva receta
         let insertString = `Use ENV_MARG; insert into DETALLE_RECETA(c_receta, c_ingred, n_valor, x_comen1, x_comen2) values `;
-        this.recipeJsonData[0].forEach((item: Library.IngredientTable, index: number) => {
-            let c_ingred = item.c_ingred;
-            let n_valor = Library.getInputElement(`h${index + 1}2`).value;
-            let x_comen1 = Library.getInputElement(`h${index + 1}4`).value;
-            let x_comen2 = Library.getInputElement(`h${index + 1}5`).value;
-            insertString += `('${c_receta}', '${c_ingred}', '${n_valor}', '${x_comen1}','${x_comen2}'), `;
-        });
-        this.recipeJsonData[1].forEach((item: Library.IngredientTable, index: number) => {
-            let c_ingred = item.c_ingred;
-            let n_valor = Library.getInputElement(`c${index + 1}2`).value;
-            let x_comen1 = Library.getInputElement(`c${index + 1}4`).value;
-            let x_comen2 = Library.getInputElement(`c${index + 1}5`).value;
-            insertString += `('${c_receta}', '${c_ingred}', '${n_valor}', '${x_comen1}','${x_comen2}'), `;
-        });
-        this.recipeJsonData[2].forEach((item: Library.IngredientTable, index: number) => {
-            let c_ingred = item.c_ingred;
-            let n_valor = Library.getInputElement(`i${index + 1}2`).value;
-            let x_comen1 = Library.getInputElement(`i${index + 1}4`).value;
-            let x_comen2 = Library.getInputElement(`i${index + 1}5`).value;
+
+        // Ingredientes calientes
+        this.recipeJsonData[Library.IngrType.Caliente].forEach((item: Library.IngredientTable, index: number) => {
+            let c_ingred = item.c_ingred;                                           // Código de ingrediente
+            let n_valor = Library.getInputElement(`h${index + 1}2`).value;          // Valor de ingrediente
+            let x_comen1 = Library.getInputElement(`h${index + 1}4`).value;         // Nombre de ingrediente
+            let x_comen2 = Library.getInputElement(`h${index + 1}5`).value;         // Comentario de ingrediente
+
+            // Actualizar consulta
             insertString += `('${c_receta}', '${c_ingred}', '${n_valor}', '${x_comen1}','${x_comen2}'), `;
         });
 
+        // Ingredientes fríos
+        this.recipeJsonData[Library.IngrType.Frio].forEach((item: Library.IngredientTable, index: number) => {
+            let c_ingred = item.c_ingred;                                           // Código de ingrediente
+            let n_valor = Library.getInputElement(`c${index + 1}2`).value;          // Valor de ingrediente
+            let x_comen1 = Library.getInputElement(`c${index + 1}4`).value;         // Nombre de ingrediente
+            let x_comen2 = Library.getInputElement(`c${index + 1}5`).value;         // Comentario de ingrediente
+
+            // Actualizar consulta
+            insertString += `('${c_receta}', '${c_ingred}', '${n_valor}', '${x_comen1}','${x_comen2}'), `;
+        });
+
+        // Ingredientes de balanza
+        this.recipeJsonData[Library.IngrType.Balanza].forEach((item: Library.IngredientTable, index: number) => {
+            let c_ingred = item.c_ingred;                                           // Código de ingrediente
+            let n_valor = Library.getInputElement(`i${index + 1}2`).value;          // Valor de ingrediente
+            let x_comen1 = Library.getInputElement(`i${index + 1}4`).value;         // Nombre de ingrediente
+            let x_comen2 = Library.getInputElement(`i${index + 1}5`).value;         // Comentario de ingrediente
+
+            // Actualizar consulta
+            insertString += `('${c_receta}', '${c_ingred}', '${n_valor}', '${x_comen1}','${x_comen2}'), `;
+        });
+
+        // Si la planta es IPSA ingresar también los parámetros
         if (!this.copsa) {
+            // Iterar por los 30 parámetros
             for (let i = 1; i <= 30; i++) {
+                // Dar formato al código de ingrediente
                 let c_ingred =  i < 10 ? `R0${i}` : `R${i}`;
+                
+                // Obtener el valor del ingrediente
                 let n_valor = Library.getInputElement(`ipsa${i}`).value;
+
+                // Actualizar consulta
                 insertString += `('${c_receta}', '${c_ingred}', '${n_valor}', '', ''), `;
             }
         }
 
-        insertString = insertString.slice(0, -2);
-        insertString += `;`;
-        this.app.pidManager.execute(insertString, 6);
+        // Borrar la coma, espacio del final y cerrar punto y coma
+        insertString = insertString.slice(0, -2) + ";";
+        
+        // ESperar respuesta de WinCC/SQL
+        await this.app.pidManager.execute(insertString, 6);
 
-        console.log("Receta guardada con éxito");
+        // Informar al operador del guardado exitoso
+        alert(`La receta "${name}" se guardó satisfactoriamente`);
+
+        // Cerrar popup luego de confirmación
+        (document.getElementById("save-as-popup") as HTMLDivElement).remove();
+
+        // Limpiar los campos de entrada
         this.clearInputFields();
+
+        // Extraer listado de códigos y llenar el combobox
         await Library.listaCodigos(this.copsa, this.app);
+
+        // Actualizar valor del combobox a la nueva receta
         this.recipeComboBox.domObject().value = c_receta;
+
+        // Referescar formulario con receta seleccionada
         this.recipeComboBox.select();
+    }
+
+    cmdImprimirClick() {
+
+    }
+
+    cmdSalirClick() {
+
     }
 }

@@ -7,7 +7,6 @@
     <link rel="icon" href="./favicon.ico" type="image/x-icon">
 	<script src='./dist/webcc.min.js' type="text/javascript"></script>
 	<script src="./dist/jquery-3.6.3.js" type="text/javascript"></script>
-    <!--<script src="./dist/scripts/app.js" type="module"></script>-->
     <script src="./dist/jys-recipe-app.js" type="text/javascript"></script>
     <link rel="stylesheet" href="./src/styles/style.css">
     <link rel="stylesheet" href="./src/styles/header-style.css">
@@ -21,10 +20,30 @@
 
 <body class="bg-light">
     <header>
-        <button class="layout-button" onclick="app.loadContent('formAbrir')">Abrir</button>
-        <button class="layout-button" onclick="app.loadContent('formEscoger')">Escoger</button>
+        <div style="font-size: 9pt; display: flex;" class="top-content">
+            <button class="layout-button" onclick="app.loadContent('formEscoger')" style="width: 190px;">
+                <img src="./src/assets/images/icons8-write-64.png" alt="Icon" class="button-top">
+                Nueva Receta L1 L3 LKombin
+            </button>
+            <button class="layout-button" onclick="app.loadContent('formAbrir')" style="width: 190px;">
+                <img src="./src/assets/images/folder-files-and-folders-svgrepo-com.png" alt="Icon" class="button-top">
+                Abrir Receta L1 L3 LKombin
+            </button>
+            <button class="layout-button" onclick="app.loadContent('formIngredientes')" style="width: 190px;">
+                <img src="./src/assets/images/books-svgrepo-com.png" alt="Icon" class="button-top">
+                Ingredientes
+            </button>
+            <button class="layout-button" style="margin-left: auto;" onclick="app.loadPopup('formAbrir')">
+                <img src="./src/assets/images/OIP.png" alt="Icon" class="button-top">
+                Versión
+            </button>
+            <button class="layout-button" onclick=""disabled>
+                <img src="./src/assets/images/icons8-exit-door-64.png" alt="Icon" class="button-top">
+                Salir
+            </button>
+        </div>
     </header>
-    <main id="main-content">    
+    <main id="main-content" class="main-content" style="width: 1000px;">    
     </main>
 </body>
 </html>

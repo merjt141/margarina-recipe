@@ -1,28 +1,57 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Transferir Receta a Controlador</title>
-    <link rel="stylesheet" href="../../src/styles/saveas/transfer-style.css">
-</head>
-<body>
-    <p>Nueva Receta</p>
-    <label for="save-as">Guardar Como:</label>
-    <input type="text" id="save-as" name="save-as-form">
-    <button onclick="cmdComoClick()">
-        <img src="../../src/assets/images/icons8-save-50.png" alt="Icon">
-        Aceptar
-    </button>
-    <button>
-        <img src="../../src/assets/images/icons8-exit-door-64.png" alt="Icon">
-        Cancelar
-    </button>
-</body>
-<script>
-    function cmdComoClick() {
-        let saveName = document.getElementById("save-as").value.trim();
-        window.opener.app.formAbrir.cmdComoAction(saveName);
-    }
-</script>
-</html>
+<div class="transfer-container">
+  <table style="width: 100%; border-spacing: 0px; padding: 10px 10px 0px 10px">
+    <tbody>
+      <tr>
+        <td style="font-weight: bold">Nueva Receta</td>
+      </tr>
+    </tbody>
+  </table>
+  <table
+    style="
+      width: 100%;
+      border-spacing: 0px;
+      margin-bottom: 0px;
+      padding: 0px 0px 0px 10px;
+    "
+  >
+    <tbody>
+      <tr
+        class="transfer-content"
+        style="flex-direction: row; align-items: center"
+      >
+        <td style="width: 120px">
+          <label for="save-as-recipe-name" style="font-weight: bold"
+            >Guardar Como:</label
+          >
+        </td>
+        <td>
+          <input
+            type="text"
+            id="save-as-recipe-name"
+            style="height: 20px; width: 310px"
+          />
+        </td>
+        <td>
+          <button id="linea1" onclick="app.formAbrir.cmdComoAction()">
+            <img
+              src="./src/assets/images/check-svgrepo-com.png"
+              alt="Icon"
+              class="button-transfer"
+            />
+            Aceptar
+          </button>
+        </td>
+        <td>
+          <button id="transfer-cerrar">
+            <img
+              src="./src/assets/images/cancel-svgrepo-com.png"
+              alt="Icon"
+              class="button-transfer"
+            />
+            Cerrar
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

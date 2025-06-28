@@ -28,3 +28,30 @@
     height: 35px;
     margin-right: 10px;
 }
+
+.top-content button {
+    height: 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-width: 70px;
+}
+
+.button-top {
+    width: 35px;
+    height: 35px;
+    margin-bottom: 4px;
+}
+
+button:disabled .button-top {
+    opacity: 0.5;
+}
+
+button:disabled {
+    cursor: default;
+}
+
+button:disabled .button-right {
+    opacity: 0.5;
+}

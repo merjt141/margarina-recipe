@@ -15,8 +15,8 @@
 
       #popup {
         background-color: rgba(145, 147, 154, 1);
-        width: 560px;
-        height: 240px;
+        width: 680px;
+        height: 130px;
         border-radius: 5px;
         position: fixed;
         padding: 2px;
@@ -50,54 +50,56 @@
         font-family: Arial;
       }
 
-          
-    .barra-container {
-      width: 300px;
-      height: 30px;
-      background-color: #00bfff; /* celeste */
-      border: none;
-      position: relative;
-      overflow: hidden;
-    }
+      .barra-container {
+        width: 300px;
+        height: 30px;
+        background-color: #00bfff; /* celeste */
+        border: none;
+        position: relative;
+        overflow: hidden;
+      }
 
-    .barra-fill {
-      height: 100%;
-      width: 0%;
-      display: flex;
-      flex-direction: row;
-      transition: width 0.2s ease-in-out;
-    }
+      .barra-fill {
+        height: 100%;
+        width: 0%;
+        display: flex;
+        flex-direction: row;
+        transition: width 0.2s ease-in-out;
+      }
 
-    .barra-fill span {
-      flex: 1;
-      background-color: rgba(255, 255, 255, 0.3); /* segmento transparente */
-      border-right: 1px solid white;
-    }
+      .barra-fill span {
+        flex: 1;
+        background-color: rgba(255, 255, 255, 0.3); /* segmento transparente */
+        border-right: 1px solid white;
+      }
 
-    .barra-fill span:last-child {
-      border-right: none;
-    }
+      .barra-fill span:last-child {
+        border-right: none;
+      }
 
+      progress {
+        -webkit-appearance: none;
+        appearance: none;
+        border: 1px solid black; /* Borde negro */
+        border-radius: 0;
+        background-color: transparent;
+      }
 
-    progress {
-  -webkit-appearance: none;
-  appearance: none;
-  border: 1px solid black; /* Borde negro */
-  border-radius: 0;
-  background-color: transparent;
-}
+      progress::-webkit-progress-bar {
+        background-color: rgba(
+          245,
+          245,
+          245,
+          1
+        ); /* color de fondo celeste claro */
+        border-radius: 0;
+        border: none;
+      }
 
-progress::-webkit-progress-bar {
-  background-color: rgba(245, 245, 245, 1); /* color de fondo celeste claro */
-  border-radius: 0;
-  border: none;
-}
-
-progress::-webkit-progress-value {
-  background-color: rgba(125, 204, 246, 1); /* celeste más fuerte */
-  border-radius: 0;
-}
-
+      progress::-webkit-progress-value {
+        background-color: rgba(125, 204, 246, 1); /* celeste más fuerte */
+        border-radius: 0;
+      }
     </style>
   </head>
   <body>
@@ -106,7 +108,7 @@ progress::-webkit-progress-value {
     <div id="popup">
       <div id="popup-header">
         <span style="margin-left: 10px; font-family: Arial; font-size: 11pt">
-          Transferir Recetas
+          Popup
         </span>
         <div id="cerrar-btn">
           <svg
@@ -144,123 +146,63 @@ progress::-webkit-progress-value {
         "
       >
         <div class="transfer-container">
-          <table style="width: 560px; border-spacing: 0px; margin-bottom: 10px; padding-top: 5px;">
-            <tbody style="padding: 0px;">
+          <table
+            style="
+              width: 100%;
+              border-spacing: 0px;
+              padding: 10px 10px 0px 10px;
+            "
+          >
+            <tbody>
               <tr>
-                <td style="width: 440px; border-color: black; padding: 0px;">
-                  <table>
-                    <tbody>
-                      <tr>
-                        <div
-                          style="
-                            text-align: center;
-                            height: 30px;
-                            align-content: center;
-                            font-style: italic;
-                          "
-                        >
-                          <label id="lblEtiqueta"
-                            ><b>Transferencia a Planta IPSA</b></label
-                          >
-                        </div>
-                      </tr>
-                      <tr style="align-items: center;">
-                        <div style="text-align: center; height: 30px">
-                          <input
-                            type="text"
-                            id="recipeCode"
-                            disabled
-                            value="P. HOJAL 2 Kg."
-                            style="width: calc(100% - 20px);"
-                          />
-                        </div>
-                      </tr>
-                    </tbody>
-                  </table>
-                </td>
-                <td class="transfer-content" style="flex-direction: row; display: flex; margin-left: 8px;">
-                  <button id="linea1">
-                    <img
-                      src="../../src/assets/images/cancel-svgrepo-com.png"
-                      alt="Icon"
-                      class="button-transfer"
-                    />
-                    Cancelar
-                  </button>
-                </td>
+                <td style="font-weight: bold">Nueva Receta</td>
               </tr>
             </tbody>
           </table>
-
-          <table style="width: 560px; border-spacing: 0px">
+          <table
+            style="
+              width: 100%;
+              border-spacing: 0px;
+              margin-bottom: 10px;
+              padding: 0px 10px 0px 10px;
+            "
+          >
             <tbody>
-              <tr class="transfer-content" style="flex-direction: row;">
+              <tr
+                class="transfer-content"
+                style="flex-direction: row; align-items: center"
+              >
+                <td style="width: 120px">
+                  <label for="save-as-recipe-name" style="font-weight: bold"
+                    >Guardar Como:</label
+                  >
+                </td>
                 <td>
-                  <button id="linea1" onclick="app.formAbrir.cmdTransferirAction(1)">
+                  <input
+                    type="text"
+                    id="save-as-recipe-name"
+                    style="height: 20px; width: 310px"
+                  />
+                </td>
+                <td>
+                  <button id="linea1" onclick="app.formAbrir.cmdComoAction()">
                     <img
-                      src="../../src/assets/images/computer.png"
+                      src="./src/assets/images/check-svgrepo-com.png"
                       alt="Icon"
                       class="button-transfer"
                     />
-                    Linea 1
+                    Aceptar
                   </button>
                 </td>
                 <td>
-                  <button id="linea5" onclick="app.formAbrir.cmdTransferirAction(5)">
+                  <button id="transfer-cerrar">
                     <img
-                      src="../../src/assets/images/computer.png"
+                      src="./src/assets/images/cancel-svgrepo-com.png"
                       alt="Icon"
                       class="button-transfer"
                     />
-                    Linea 2
+                    Cerrar
                   </button>
-                </td>
-                <td>
-                  <button id="linea3" onclick="app.formAbrir.cmdTransferirAction(3)">
-                    <img
-                      src="../../src/assets/images/computer.png"
-                      alt="Icon"
-                      class="button-transfer"
-                    />
-                    Linea 3
-                  </button>
-                </td>
-                <td>
-                  <button id="linea4" onclick="app.formAbrir.cmdTransferirAction(4)">
-                    <img
-                      src="../../src/assets/images/computer.png"
-                      alt="Icon"
-                      class="button-transfer"
-                    />
-                    Linea 4
-                  </button>
-                </td>
-                <td>
-                  <button id="linea2" onclick="app.formAbrir.cmdTransferirAction(2)">
-                    <img
-                      src="../../src/assets/images/computer.png"
-                      alt="Icon"
-                      class="button-transfer"
-                    />
-                    Linea 5
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <table style="width: 560px; border-spacing: 0px; margin-top: 10px;">
-            <tbody>
-              <tr>
-                <td style="text-align: center;">
-                  <progress id="transferProgress" value="0" max="100" style="width: 540px; height: 25px;">
-                </progress>
-                </td>
-              </tr>
-              <tr>
-                <td style="text-align: center; font-weight: bold;">
-                  <span id="transferMsg" style="display: none; padding-top: 5px;">
-                    Receta transferida al PLC en 0.102 segundos
-                  </span>
                 </td>
               </tr>
             </tbody>

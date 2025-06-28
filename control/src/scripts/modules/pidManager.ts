@@ -18,7 +18,7 @@ export class PIDManager {
             "insertDetalle",    //6
             "deleteRecipe",     //7
             "selectIngr",       //8
-            "",
+            "ingrList",         //9
             "",
             "",
             "",
