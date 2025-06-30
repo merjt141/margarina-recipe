@@ -1,6 +1,7 @@
 const path = require('path'); // Add this line to require the path module
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 
 module.exports = {
   entry: './control/src/scripts/main.ts',
@@ -20,13 +21,25 @@ module.exports = {
         },
         exclude: /node_modules/,
       },
+      {
+        test: /\.css$/,
+        use: [MiniCssExtractPlugin.loader, 'css-loader'],
+      },
     ],
   },
   resolve: {
     extensions: ['.ts', '.js'],
     plugins: [new TsconfigPathsPlugin({ configFile: 'tsconfig.json' })],
   },
+  optimization: {
+    minimizer: [
+      `...`,
+      new CssMinimizerPlugin(),
+    ],
+  },
   plugins: [
-    new UglifyJsPlugin(),
+    new MiniCssExtractPlugin({
+      filename: 'jys-recipe-app.css',
+    }),
   ],
 };

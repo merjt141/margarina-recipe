@@ -1,5 +1,5 @@
 import * as Library from '../../modules/utilities';
-import { App } from '../../modules/manager';
+import { App } from '../../manager';
 
 /**
  * Clase para la visualización del listado de ingredientes

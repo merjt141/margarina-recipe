@@ -1,0 +1,221 @@
+/* Estilo de cabecera de formulario abrir */
+.abrir .form-content-header td {
+    border: 0px solid #ccc;
+    text-align: left;
+    padding: 2px 5px;
+}
+
+.abrir .form-content-header .recipe-selector label {
+    margin-right: 10px;
+}
+
+.abrir .form-content-header .recipe-selector select {
+    font-size: 11pt;
+    flex-grow: 1;
+    width: auto;
+}
+
+.abrir .form-content-header .right-title {
+    font-weight: bold;
+    font-style: italic;
+    justify-content: center;
+}
+
+/* Menú de botones laterales derecho de abrir */
+.abrir .right-content {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    background: #f9f9f9;
+    box-sizing: border-box;
+    width: 122px;
+    height: 621px;
+    border: 1px solid #ccc;
+    padding: 10px;
+}
+
+.abrir .right-content button {
+    padding: 0%;
+    margin: 0%; 
+}
+
+.abrir .right-content #div-recipe-code {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 10pt;
+}
+
+.abrir .right-content #div-recipe-code label {
+    width: 120px; 
+    margin-bottom: 5px; 
+    font-weight: bold;
+    text-align: center;
+}
+
+.abrir .right-content #div-recipe-code input {
+    width: 100px;
+    font-weight: bold;
+    text-align: center;
+}
+
+/* Cuerpo central de abrir */
+.abrir .abrir-central-content {
+    width: 870px;
+}
+
+/* Banner de tabs de vistas */
+.abrir .abrir-central-content .tab-buttons td {
+    border: 0px solid #ccc;
+    text-align: left;
+    padding: 2px 5px;
+}
+
+.abrir .abrir-central-content .tab-buttons button {
+    padding: 5px 10px;
+    width: 100%;
+    font-weight: bold;
+}
+
+/* Animacion de tabs */
+.abrir .abrir-central-content .tab-content {
+    display: none;
+}
+.abrir .abrir-central-content .tab-content.active {
+    display: block;
+}
+
+/* Cuerpo de TMG */
+.abrir .abrir-central-content .ingredient-table th {
+    border: 0px solid #ccc;
+    text-align: center;
+    vertical-align: middle;
+    padding: 5px;
+}
+
+.abrir .abrir-central-content .ingredient-table td {
+    border: 0px solid #ccc;
+    text-align: left;
+    padding: 2px 5px;
+}
+
+.abrir .abrir-central-content .ingredient-table th:nth-child(2),
+.abrir .abrir-central-content .ingredient-table td:nth-child(2) {
+    width: 5%;
+}
+
+.abrir .abrir-central-content .ingredient-table th:nth-child(3),
+.abrir .abrir-central-content .ingredient-table td:nth-child(3) {
+    width: 5%;
+}
+
+.abrir .abrir-central-content .ingredient-table tbody input {
+    width: 100%;
+    padding: 2px;
+}
+
+/* Botones inferiores de editar y actualizar */
+.abrir .abrir-central-content .tab-content-button tr {
+    display: flex;
+}
+.abrir .abrir-central-content .tab-content-button td {
+    flex: 1;
+    display: flex;
+    align-items: center;
+}
+.abrir .abrir-central-content .tab-content-button td div {
+    width: 100%;
+    margin: 0px;
+}
+
+.abrir .abrir-central-content .tab-content-button td div label {
+    margin-left: auto; 
+    font-weight: bold
+}
+
+.abrir .abrir-central-content .tab-content-button td div input {
+    margin: 0px 0px 0px 10px;
+}
+
+.abrir .abrir-central-content .parametros-ipsa {
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+}
+
+.abrir .abrir-central-content .parametros-ipsa h3 {
+    margin: 0px;
+    margin-bottom: 5px;
+    background-color: #f4f4f4;
+    padding: 5px 5px 5px 10px;
+    border-bottom: 0px solid #ccc;
+    font-weight: bold;
+    color: blue;
+    font-size: 10pt;
+    font-style: italic;
+}
+
+.abrir .abrir-central-content .parametros-ipsa table {
+    table-layout: fixed;
+    font-size: 8pt;
+}
+.abrir .abrir-central-content .parametros-ipsa table tr {
+    display: flex;
+    align-items: center;
+}
+.abrir .abrir-central-content .parametros-ipsa table th {
+    padding: 0px 8px 0px 8px;
+    text-align: left;
+    flex: 1;
+}
+
+.abrir .abrir-central-content .parametros-ipsa table td {
+    padding: 4px;
+    text-align: left;
+    margin: 0px 10px;
+    flex: 1;
+}
+
+.abrir .abrir-central-content .parametros-ipsa table td div {
+    display: flex;
+    margin-bottom: 5px;
+    align-items: center;
+}
+
+.abrir .abrir-central-content .parametros-ipsa table td div label {
+    font-weight: bold;
+}
+
+.abrir .abrir-central-content .parametros-ipsa table td div label span {
+    color: DarkRed;
+    font-size: 1.1em;
+    font-weight: normal;
+}
+
+.abrir .abrir-central-content .parametros-ipsa table td div input {
+    width: 90px;
+    margin-left: auto;
+}
+
+/* Campos de entrada verticales */
+.abrir .abrir-central-content .parametros-ipsa .vertical-input-group div {
+    flex-direction: column;
+}
+
+.abrir .abrir-central-content .parametros-ipsa .vertical-input-group div label {
+    margin-bottom: 2px;
+}
+
+
+.abrir .abrir-central-content .parametros-ipsa .vertical-input-group div input {
+    margin: auto;
+}
+
+.abrir .abrir-central-content .parametros-ipsa .vertical-input-field td:nth-child(1) {
+    padding: 0px;
+    margin: 0px 10px 0px 0px;
+}
+.abrir .abrir-central-content .parametros-ipsa .vertical-input-field td:nth-child(2) {
+    padding: 0px;
+    margin: 0px 0px 0px 0px;
+}

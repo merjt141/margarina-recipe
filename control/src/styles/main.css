@@ -1,0 +1,144 @@
+/* Estilo general del body de la aplicación */
+body {
+    font-family: Arial, sans-serif;
+    font-size: 11pt;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    height: 700px;
+    width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+/* Estilos generales para los botones */
+button {
+    padding: 10px 20px;
+    font-size: 10pt;
+    margin: 5px;
+    cursor: pointer;
+}
+
+.button-image-top {
+    font-size: 10pt;
+    font-weight: normal;
+    padding: 3px;
+    height: 60px;
+    width: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.button-image-top img {
+    width: 35px;
+    height: 35px;
+    margin-bottom: 4px;
+}
+
+.button-image-left {
+    width: 100%;
+    padding: 2px;
+    margin: 0px;
+    font-size: 10pt;
+    font-weight: bold;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.button-image-left img {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+}
+
+button:disabled {
+    cursor: default;
+}
+
+button:disabled img {
+    opacity: 0.5;
+}
+
+/* Estilo general de round button */
+input[type="radio"] {
+  accent-color: black;
+  width: 20px
+}
+
+/* Estilo general para las tablas */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 0px;
+    border: 0px solid #ccc;
+    text-align: center;
+    vertical-align: middle;
+    padding: 5px;
+}
+
+tr {
+    width: 100%;
+}
+
+/* Banner de botones de formularios */
+.form-select-button {
+    width: 190px;
+    font-size: 9pt;
+}
+
+.banner-option-button {
+    width: 70px;
+    font-size: 9pt;
+}
+
+/* Estilo genérico de los contenedores de formularios */
+.form-container {
+    display: grid;
+    gap: 10px;
+    padding: 10px;
+}
+
+/* Estilo genéricos de las cabeceras de los formularios */
+.form-content-header {
+    grid-column: span 2;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    background: #f1f1f1;
+    border: 1px solid #ccc;
+    width: 980px;
+    height: 20px;
+}
+
+.form-content-header tr {
+    display: flex;
+}
+
+.form-content-header td {
+    width: 50%;
+    padding: 0 10px;
+    display: flex;
+    align-items: center;
+}
+
+/* Estilo de banner inferior de botones */
+.tab-content-button {
+    margin-top: 5px;
+}
+
+/* Estilo general para contenido central */
+.form-container .central-content {
+    width: 1002px;
+    height: 621px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    background: #f1f1f1;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+}

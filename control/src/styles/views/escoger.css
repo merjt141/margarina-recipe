@@ -1,96 +1,45 @@
-.recipe-nombre label {
+/* Cabecera de formulario */
+.escoger .recipe-nombre label {
     margin-right: 10px;
 }
 
-.recipe-nombre input {
+.escoger  .recipe-nombre input {
     font-size: 11pt;
     flex-grow: 1;
     width: auto;
 }
 
-.central-content {
-    width: 1002px;
-    height: 621px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    background: #f1f1f1;
-    display: flex;
-    flex-direction: column;
-    box-sizing: border-box;
-}
-
-.element-list td {
-    padding: 0px;
-}
-
-.element-list td:nth-child(2) {
-    width: 4%;
-}
-.element-list td:nth-child(1) {
-    width: 48%;
-}
-.element-list td:nth-child(3) {
-    width: 48%;
-}
-
-.ingr-list {
-    border: 1px solid #ccc;
-    background: #fff;
-    height: 400px;
-    list-style-type: none;
-    padding: 0px;
-    margin: 5px 0px;
-    overflow-y: auto;
-}
-
-.ingr-list li {
+.escoger .right-title {
     font-weight: bold;
-    padding: 5px;
-    cursor: pointer;
+    justify-content: center;
 }
 
-.ingr-list li:hover {
-    background-color: rgba(125, 204, 246, 1);
-    color: white;
-}
-
-.li-selected {
-    background-color: rgba(125, 204, 246, 1);
-    color: white;
-}
-
-.list-title {
+.escoger .element-list .list-title {
     color: blue;
     font-weight: bold;
     margin: 5px 0px 5px 0px;
+    text-align: left;
 }
 
-.esc-bottom {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.escoger  .element-list td {
+    padding: 0px;
 }
 
-.esc-bottom button {
-    width: 150px;
-    padding: 0%;
-    margin: 5px 10px;
-    font-size: 10pt;
-    width: 100px;
-    height: 60px;
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    justify-content: center; 
+/* Formato de 3 columnas */
+.escoger .element-list td:nth-child(1) {
+    width: 48%;
 }
 
-.esc-bottom img {
-    width: 35px;
-    height: 35px;
-    margin-right: 0px;
+.escoger .element-list td:nth-child(2) {
+    width: 4%;
 }
 
-.ingr-data {
+.escoger .element-list td:nth-child(3) {
+    width: 48%;
+}
+
+/* Estilo de listado de ingredientes */
+.escoger .ingr-list {
     border: 1px solid #ccc;
     background: #fff;
     height: 400px;
@@ -100,42 +49,25 @@
     overflow-y: auto;
 }
 
-.ingredientes .ingr-data li {
-    display: flex;
-    border-bottom: 1px solid #ccc;
-    height: 25px;
-}
-
-.ingredientes .ingr-data div {
-    margin: 0px;
-    padding: 0px 8px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    border-right: 1px solid #ccc;
-    border-left: 1px solid transparent;
-    box-sizing: border-box;
-    font-size: 10pt;
-}
-
-.ingredientes .ingr-data li:first-child {
+.escoger .ingr-list li {
     font-weight: bold;
-    background-color: rgba(224, 224, 224);
+    padding: 5px;
+    cursor: pointer;
+    text-align: left;
 }
 
-.ingredientes .ingr-data li div:nth-child(1) {
-  flex: 2;
-}
-.ingredientes .ingr-data li div:nth-child(2) {
-  flex: 5;
-}
-.ingredientes .ingr-data li div:nth-child(3) {
-  flex: 5;
-}
-.ingredientes .ingr-data li div:nth-child(4) {
-  flex: 1;
+.escoger .ingr-list li:hover {
+    background-color: rgba(125, 204, 246, 1);
+    color: white;
 }
 
-input[type="radio"] {
-  accent-color: black;
+.escoger .li-selected {
+    background-color: rgba(125, 204, 246, 1);
+    color: white;
+}
+
+.escoger .bottom-button-banner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

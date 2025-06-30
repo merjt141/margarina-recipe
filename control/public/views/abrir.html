@@ -1,5 +1,5 @@
-<div class="container">
-    <div class="top-bar">
+<div class="form-container abrir">
+    <div class="form-content-header">
         <table>
             <tbody>
                 <tr>
@@ -16,10 +16,10 @@
          </table>
     </div>
 
-    <div class="left-contnt">
+    <div class="abrir-central-content">
 
         <!-- PANEL DE CONTROL IZQUIERDA -->
-        <div class="tab">
+        <div>
             <div class="tab-buttons">
                 <table>
                     <tr>
@@ -43,35 +43,35 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class="input-row" id="row1">
+                        <tr id="row1">
                             <td><input type="text" id="h11" disabled></td>
                             <td><input type="number" id="h12" disabled></td>
                             <td><input type="text" id="h13" disabled></td>
                             <td><input type="text" id="h14" disabled></td>
                             <td><input type="text" id="h15" disabled></td>
                         </tr>
-                        <tr class="input-row" id="row2">
+                        <tr id="row2">
                             <td><input type="text" id="h21" disabled></td>
                             <td><input type="number" id="h22" disabled></td>
                             <td><input type="text" id="h23" disabled></td>
                             <td><input type="text" id="h24" disabled></td>
                             <td><input type="text" id="h25" disabled></td>
                         </tr>
-                        <tr class="input-row" id="row3">
+                        <tr id="row3">
                             <td><input type="text" id="h31" disabled></td>
                             <td><input type="number" id="h32" disabled></td>
                             <td><input type="text" id="h33" disabled></td>
                             <td><input type="text" id="h34" disabled></td>
                             <td><input type="text" id="h35" disabled></td>
                         </tr>
-                        <tr class="input-row" id="row4">
+                        <tr id="row4">
                             <td><input type="text" id="h41" disabled></td>
                             <td><input type="number" id="h42" disabled></td>
                             <td><input type="text" id="h43" disabled></td>
                             <td><input type="text" id="h44" disabled></td>
                             <td><input type="text" id="h45" disabled></td>
                         </tr>
-                        <tr class="input-row" id="row5">
+                        <tr id="row5">
                             <td><input type="text" id="h51" disabled></td>
                             <td><input type="number" id="h52" disabled></td>
                             <td><input type="text" id="h53" disabled></td>
@@ -92,35 +92,35 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class="input-row" id="row1">
+                        <tr id="row1">
                             <td><input type="text" id="c11" disabled></td>
                             <td><input type="number" id="c12" disabled></td>
                             <td><input type="text" id="c13" disabled></td>
                             <td><input type="text" id="c14" disabled></td>
                             <td><input type="text" id="c15" disabled></td>
                         </tr>
-                        <tr class="input-row" id="row2">
+                        <tr id="row2">
                             <td><input type="text" id="c21" disabled></td>
                             <td><input type="number" id="c22" disabled></td>
                             <td><input type="text" id="c23" disabled></td>
                             <td><input type="text" id="c24" disabled></td>
                             <td><input type="text" id="c25" disabled></td>
                         </tr>
-                        <tr class="input-row" id="row3">
+                        <tr id="row3">
                             <td><input type="text" id="c31" disabled></td>
                             <td><input type="number" id="c32" disabled></td>
                             <td><input type="text" id="c33" disabled></td>
                             <td><input type="text" id="c34" disabled></td>
                             <td><input type="text" id="c35" disabled></td>
                         </tr>
-                        <tr class="input-row" id="row4">
+                        <tr id="row4">
                             <td><input type="text" id="c41" disabled></td>
                             <td><input type="number" id="c42" disabled></td>
                             <td><input type="text" id="c43" disabled></td>
                             <td><input type="text" id="c44" disabled></td>
                             <td><input type="text" id="c45" disabled></td>
                         </tr>
-                        <tr class="input-row" id="row5">
+                        <tr id="row5">
                             <td><input type="text" id="c51" disabled></td>
                             <td><input type="number" id="c52" disabled></td>
                             <td><input type="text" id="c53" disabled></td>
@@ -130,28 +130,26 @@
                     </tbody>
                 </table>
                 <table class="tab-content-button">
-                    <thead>
-                    </thead>
                     <tbody>
                         <tr>
                             <td>
                                 <div>
-                                    <label for="sumatmg" style="margin-left: auto; font-weight: bold">Total</label>
-                                    <input type="text" style="margin: 0px 0px 0px 10px;;" id="sumatmg" disabled>
+                                    <label for="sumatmg">Total</label>
+                                    <input type="text" id="sumatmg" disabled>
                                 </div>
                             </td>
                             <td>
                                 <div>
-                                    <button type="button" onclick="app.formAbrir.cmdModificarClick()" id="button-modify-tmg">
-                                        <img src="./src/assets/images/wrench.png" alt="Icon" class="button-wrench">
+                                    <button class="button-image-left" type="button" onclick="app.formAbrir.cmdModificarClick()" id="button-modify-tmg">
+                                        <img src="./src/assets/images/wrench.png" alt="Icon">
                                         Modificar Receta
                                     </button>
                                 </div>
                             </td>
                             <td>
                                 <div>
-                                    <button type="button" onclick="app.formAbrir.cmdActualizarClick()">
-                                        <img src="./src/assets/images/refresh.png" alt="Icon" class="button-wrench">
+                                    <button class="button-image-left" type="button" onclick="app.formAbrir.cmdActualizarClick()">
+                                        <img src="./src/assets/images/refresh.png" alt="Icon">
                                         Actualizar Receta
                                     </button>                                        
                                 </div>
@@ -174,133 +172,133 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class="input-row" id="row1">
+                        <tr id="row1">
                             <td><input type="text" id="i11" disabled></td>
                             <td><input type="number" id="i12" disabled></td>
                             <td><input type="text" id="i13" disabled></td>
                             <td><input type="text" id="i14" disabled></td>
                             <td><input type="text" id="i15" disabled></td>
                         </tr>
-                        <tr class="input-row" id="row2">
+                        <tr id="row2">
                             <td><input type="text" id="i21" disabled></td>
                             <td><input type="number" id="i22" disabled></td>
                             <td><input type="text" id="i23" disabled></td>
                             <td><input type="text" id="i24" disabled></td>
                             <td><input type="text" id="i25" disabled></td>
                         </tr>
-                        <tr class="input-row" id="row3">
+                        <tr id="row3">
                             <td><input type="text" id="i31" disabled></td>
                             <td><input type="number" id="i32" disabled></td>
                             <td><input type="text" id="i33" disabled></td>
                             <td><input type="text" id="i34" disabled></td>
                             <td><input type="text" id="i35" disabled></td>
                         </tr>
-                        <tr class="input-row" id="row4">
+                        <tr id="row4">
                             <td><input type="text" id="i41" disabled></td>
                             <td><input type="number" id="i42" disabled></td>
                             <td><input type="text" id="i43" disabled></td>
                             <td><input type="text" id="i44" disabled></td>
                             <td><input type="text" id="i45" disabled></td>
                         </tr>
-                        <tr class="input-row" id="row5">
+                        <tr id="row5">
                             <td><input type="text" id="i51" disabled></td>
                             <td><input type="number" id="i52" disabled></td>
                             <td><input type="text" id="i53" disabled></td>
                             <td><input type="text" id="i54" disabled></td>
                             <td><input type="text" id="i55" disabled></td>
                         </tr>
-                        <tr class="input-row" id="row6">
+                        <tr id="row6">
                             <td><input type="text" id="i61" disabled></td>
                             <td><input type="number" id="i62" disabled></td>
                             <td><input type="text" id="i63" disabled></td>
                             <td><input type="text" id="i64" disabled></td>
                             <td><input type="text" id="i65" disabled></td>
                         </tr>
-                        <tr class="input-row" id="row7">
+                        <tr id="row7">
                             <td><input type="text" id="i71" disabled></td>
                             <td><input type="number" id="i72" disabled></td>
                             <td><input type="text" id="i73" disabled></td>
                             <td><input type="text" id="i74" disabled></td>
                             <td><input type="text" id="i75" disabled></td>
                         </tr>
-                        <tr class="input-row" id="row8">
+                        <tr id="row8">
                             <td><input type="text" id="i81" disabled></td>
                             <td><input type="number" id="i82" disabled></td>
                             <td><input type="text" id="i83" disabled></td>
                             <td><input type="text" id="i84" disabled></td>
                             <td><input type="text" id="i85" disabled></td>
                         </tr>
-                        <tr class="input-row" id="row9">
+                        <tr id="row9">
                             <td><input type="text" id="i91" disabled></td>
                             <td><input type="number" id="i92" disabled></td>
                             <td><input type="text" id="i93" disabled></td>
                             <td><input type="text" id="i94" disabled></td>
                             <td><input type="text" id="i95" disabled></td>
                         </tr>
-                        <tr class="input-row" id="row10">
+                        <tr id="row10">
                             <td><input type="text" id="i101" disabled></td>
                             <td><input type="number" id="i102" disabled></td>
                             <td><input type="text" id="i103" disabled></td>
                             <td><input type="text" id="i104" disabled></td>
                             <td><input type="text" id="i105" disabled></td>
                         </tr>
-                        <tr class="input-row" id="row11">
+                        <tr id="row11">
                             <td><input type="text" id="i111" disabled></td>
                             <td><input type="number" id="i112" disabled></td>
                             <td><input type="text" id="i113" disabled></td>
                             <td><input type="text" id="i114" disabled></td>
                             <td><input type="text" id="i115" disabled></td>
                         </tr>
-                        <tr class="input-row" id="row12">
+                        <tr id="row12">
                             <td><input type="text" id="i121" disabled></td>
                             <td><input type="number" id="i122" disabled></td>
                             <td><input type="text" id="i123" disabled></td>
                             <td><input type="text" id="i124" disabled></td>
                             <td><input type="text" id="i125" disabled></td>
                         </tr>
-                        <tr class="input-row" id="row13">
+                        <tr id="row13">
                             <td><input type="text" id="i131" disabled></td>
                             <td><input type="number" id="i132" disabled></td>
                             <td><input type="text" id="i133" disabled></td>
                             <td><input type="text" id="i134" disabled></td>
                             <td><input type="text" id="i135" disabled></td>
                         </tr>
-                        <tr class="input-row" id="row14">
+                        <tr id="row14">
                             <td><input type="text" id="i141" disabled></td>
                             <td><input type="number" id="i142" disabled></td>
                             <td><input type="text" id="i143" disabled></td>
                             <td><input type="text" id="i144" disabled></td>
                             <td><input type="text" id="i145" disabled></td>
                         </tr>
-                        <tr class="input-row" id="row15">
+                        <tr id="row15">
                             <td><input type="text" id="i151" disabled></td>
                             <td><input type="number" id="i152" disabled></td>
                             <td><input type="text" id="i153" disabled></td>
                             <td><input type="text" id="i154" disabled></td>
                             <td><input type="text" id="i155" disabled></td>
                         </tr>
-                        <tr class="input-row" id="row16">
+                        <tr id="row16">
                             <td><input type="text" id="i161" disabled></td>
                             <td><input type="number" id="i162" disabled></td>
                             <td><input type="text" id="i163" disabled></td>
                             <td><input type="text" id="i164" disabled></td>
                             <td><input type="text" id="i165" disabled></td>
                         </tr>
-                        <tr class="input-row" id="row17">
+                        <tr id="row17">
                             <td><input type="text" id="i171" disabled></td>
                             <td><input type="number" id="i172" disabled></td>
                             <td><input type="text" id="i173" disabled></td>
                             <td><input type="text" id="i174" disabled></td>
                             <td><input type="text" id="i175" disabled></td>
                         </tr>
-                        <tr class="input-row" id="row18-extra">
+                        <tr id="row18-extra">
                             <th><label for="itmg" style="font-weight: bold;">TMG</label></th>
                             <th><label for="icantidad" style="font-weight: bold;">Cantidad</label></th>
                             <th><label for="iunidad" style="font-weight: bold;">Unidad</label></th>
                             <th><label for="idescripcion" style="font-weight: bold;">Descripción Ingrediente</label></th>
                             <th></th>
                         </tr>
-                        <tr class="input-row" id="row19-extra">
+                        <tr id="row19-extra">
                             <td><input type="text" id="itmg" disabled></td>
                             <td><input type="number" id="icantidad" disabled></td>
                             <td><input type="text" id="iunidad" disabled></td>
@@ -316,22 +314,22 @@
                         <tr>
                             <td>
                                 <div>
-                                    <label for="sumabalanza" style="margin-left: auto; font-weight: bold">Total</label>
-                                    <input type="text" style="margin: 0px 0px 0px 10px;;" id="sumabalanza" disabled>
+                                    <label for="sumabalanza">Total</label>
+                                    <input type="text" id="sumabalanza" disabled>
                                 </div>                                    
                             </td>
                             <td>
                                 <div>
-                                    <button type="button" onclick="app.formAbrir.cmdModificarClick()" id="button-modify-balanza">
-                                        <img src="./src/assets/images/wrench.png" alt="Icon" class="button-wrench">
+                                    <button class="button-image-left" type="button" onclick="app.formAbrir.cmdModificarClick()" id="button-modify-balanza">
+                                        <img src="./src/assets/images/wrench.png" alt="Icon">
                                         Modificar Receta
                                     </button>
                                 </div>
                             </td>
                             <td>
                                 <div>
-                                    <button type="button" onclick="app.formAbrir.cmdActualizarClick()">
-                                        <img src="./src/assets/images/refresh.png" alt="Icon" class="button-wrench">
+                                    <button class="button-image-left" type="button" onclick="app.formAbrir.cmdActualizarClick()">
+                                        <img src="./src/assets/images/refresh.png" alt="Icon">
                                         Actualizar Receta
                                     </button>                                        
                                 </div>
@@ -346,9 +344,9 @@
                 
                 <form>
                     <!-- Tanque TGD -->
-                    <div class="form-section">
+                    <div class="parametros-ipsa">
                         <h3>Tanque TGD</h3>
-                        <table class="form-table">
+                        <table>
                             <tr>
                                 <th>Controlador de Temperatura</th>
                                 <th>Controlador de Agitador</th>
@@ -357,7 +355,7 @@
                             <tr>
                                 <td>
                                     <div>
-                                        <label for="ipsa6"><span style="color: DarkRed; font-size: 1.1em;">✽</span>Set Point (°C):</label>
+                                        <label for="ipsa6"><span>✽</span>Set Point (°C):</label>
                                         <input type="number" id="ipsa6" name="tgd-temp" disabled>   
                                     </div>
                                     <div>
@@ -381,7 +379,7 @@
                                         <input type="number" id="ipsa23" name="tgd-delay" disabled>
                                     </div>
                                     <div>
-                                        <label for="ipsa7">Tiempo homog:</label>
+                                        <label for="ipsa7"><span>✽</span>Tiempo homog:</label>
                                         <input type="number" id="ipsa7" name="tgd-homogenization" disabled>
                                     </div>
                                 </td>
@@ -390,17 +388,17 @@
                     </div>
             
                     <!-- Tanque TMG -->
-                    <div class="form-section">
+                    <div class="parametros-ipsa">
                         <h3>Tanque TMG</h3>
-                        <table class="form-table">
+                        <table>
                             <tr>
                                 <td>
                                     <div>
-                                        <label for="ipsa1">Set Point Temp Nivel Medio (°C):</label>
+                                        <label for="ipsa1"><span>✽</span>Set Point Temp Nivel Medio (°C):</label>
                                         <input type="number" id="ipsa1" name="tmg-temp-mid" disabled>
                                     </div>
                                     <div>
-                                        <label for="ipsa2">Set Point Temp Nivel Alto (°C):</label>
+                                        <label for="ipsa2"><span>✽</span>Set Point Temp Nivel Alto (°C):</label>
                                         <input type="number" id="ipsa2" name="tmg-temp-high" disabled>                                            
                                     </div>
                                 </td>
@@ -410,17 +408,17 @@
                                         <input type="number" id="ipsa21" name="tmg-low-delay" disabled>                               
                                     </div>
                                     <div>
-                                        <label for="ipsa3">Tiempo homog lecitina (min):</label>
+                                        <label for="ipsa3"><span>✽</span>Tiempo homog lecitina (min):</label>
                                         <input type="number" id="ipsa3" name="tmg-lec-homo" disabled>
                                     </div>
                                 </td>
                                 <td>
                                     <div>
-                                        <label for="ipsa4">Tiempo homog monoglic (min):</label>
+                                        <label for="ipsa4"><span>✽</span>Tiempo homog monoglic (min):</label>
                                         <input type="number" id="ipsa4" name="tmg-mono-homo" disabled>
                                     </div>
                                     <div>
-                                        <label for="ipsa5">Tiempo homog final (min):</label>
+                                        <label for="ipsa5"><span>✽</span>Tiempo homog final (min):</label>
                                         <input type="number" id="ipsa5" name="tmg-final-homo" disabled>
                                     </div>
                                     
@@ -436,11 +434,11 @@
                     </div>
             
                     <!-- Tanque RT -->
-                    <div class="form-section">
+                    <div class="parametros-ipsa">
                         <h3>Tanque RT</h3>
-                        <table class="form-table">
+                        <table>
                             <tr>
-                                <table class="form-table vertical-align">
+                                <table class="vertical-input-group">
                                     <tr>
                                         <td>
                                             <div>
@@ -476,14 +474,14 @@
                                 </table>
                             </tr>
                             <tr>
-                                <table class="form-table">
+                                <table>
                                     <tr>
                                         <th>Agitador 1</th>
                                         <th>Agitador 2 (Válido para Linea 1)</th>
                                     </tr>
                                     <tr>
                                         <td>
-                                            <table class="form-table inner-table">
+                                            <table class="vertical-input-field">
                                                 <tr>
                                                     <td>
                                                         <div>
@@ -501,7 +499,7 @@
                                             </table>
                                         </td>
                                         <td>
-                                            <table class="form-table inner-table">
+                                            <table class="vertical-input-field">
                                                 <tr>
                                                     <td>
                                                         <div>
@@ -525,11 +523,11 @@
                     </div>
             
                     <!-- Tanque TPB -->
-                    <div class="form-section">
+                    <div class="parametros-ipsa">
                         <h3>Tanque TPB</h3>
-                        <table class="form-table">
+                        <table>
                             <tr>
-                                <table class="form-table vertical-align">
+                                <table class="vertical-align">
                                     <tr>
                                         <td>
                                             <div>
@@ -559,14 +557,14 @@
                                 </table>
                             </tr>
                             <tr>
-                                <table class="form-table">
+                                <table>
                                     <tr>
                                         <th>Agitador 1</th>
                                         <th>Agitador 2 (Válido para Linea 1)</th>
                                     </tr>
                                     <tr>
                                         <td>
-                                            <table class="form-table inner-table">
+                                            <table class="vertical-input-field">
                                                 <tr>
                                                     <td>
                                                         <div>
@@ -584,7 +582,7 @@
                                             </table>
                                         </td>
                                         <td>
-                                            <table class="form-table inner-table">
+                                            <table class="vertical-input-field">
                                                 <tr>
                                                     <td>
                                                         <div>
@@ -608,23 +606,21 @@
                     </div>
                 </form>
                 <table class="tab-content-button">
-                    <thead>
-                    </thead>
                     <tbody>
                         <tr>
                             <td></td>
                             <td>
                                 <div>
-                                    <button type="button" onclick="app.formAbrir.cmdModificarClick()" id="button-modify-ipsa">
-                                        <img src="./src/assets/images/wrench.png" alt="Icon" class="button-wrench">
+                                    <button class="button-image-left" type="button" onclick="app.formAbrir.cmdModificarClick()" id="button-modify-ipsa">
+                                        <img src="./src/assets/images/wrench.png" alt="Icon">
                                         Modificar Receta
                                     </button>
                                 </div>
                             </td>
                             <td>
                                 <div>
-                                    <button type="button" onclick="app.formAbrir.cmdActualizarClick()">
-                                        <img src="./src/assets/images/refresh.png" alt="Icon" class="button-wrench">
+                                    <button class="button-image-left" type="button" onclick="app.formAbrir.cmdActualizarClick()">
+                                        <img src="./src/assets/images/refresh.png" alt="Icon">
                                         Actualizar Receta
                                     </button>                                        
                                 </div>
@@ -637,32 +633,32 @@
     </div>
 
     <div class="right-content">
-        <div style="display: flex; flex-direction: column; align-items: center; font-size: 10pt;">
-            <label for="idCodeRecipe" style="width: 120px; text-align: center; margin-bottom: 5px; font-weight: bold;">Código de Receta</label>
-            <input type="text" id="idCodeRecipe" style="width: 100px; font-weight: bold; text-align: center;" name="recipe-code" disabled>
+        <div id="div-recipe-code">
+            <label for="idCodeRecipe">Código de Receta</label>
+            <input type="text" id="idCodeRecipe" name="recipe-code" disabled>
         </div>
-        <button id="b11" onclick="app.formAbrir.cmdGuardarClick()">
-            <img src="./src/assets/images/icons8-save-50.png" alt="Icon" class="button-right">
+        <button id="b11" class="button-image-top" onclick="app.formAbrir.cmdGuardarClick()">
+            <img src="./src/assets/images/icons8-save-50.png" alt="Icon">
             Guardar
         </button>
-        <button id="b12" onclick="app.formAbrir.cmdComoClick()">
-            <img src="./src/assets/images/icons8-save-as-50.png" alt="Icon" class="button-right">
+        <button id="b12" class="button-image-top" onclick="app.formAbrir.cmdComoClick()">
+            <img src="./src/assets/images/icons8-save-as-50.png" alt="Icon">
             Guardar Como
         </button>
-        <button id="b13" onclick="app.formAbrir.cmdEliminarClick()">
-            <img src="./src/assets/images/icons8-delete-50.png" alt="Icon" class="button-right">
+        <button id="b13" class="button-image-top" onclick="app.formAbrir.cmdEliminarClick()">
+            <img src="./src/assets/images/icons8-delete-50.png" alt="Icon">
             Eliminar
         </button>
-        <button id="b14" onclick="app.formAbrir.cmdTransferirClick()">
-            <img src="./src/assets/images/icons8-write-64.png" alt="Icon" class="button-right">
+        <button id="b14" class="button-image-top" onclick="app.formAbrir.cmdTransferirClick()">
+            <img src="./src/assets/images/icons8-write-64.png" alt="Icon">
             Transferir
         </button>
-        <button id="b15" onclick="app.formAbrir.cmdImprimirClick()">
-            <img src="./src/assets/images/icons8-print-50.png" alt="Icon" class="button-right">
+        <button id="b15" class="button-image-top" onclick="app.formAbrir.cmdImprimirClick()">
+            <img src="./src/assets/images/icons8-print-50.png" alt="Icon">
             Imprimir
         </button>
-        <button id="b16" onclick="app.unload()">
-            <img src="./src/assets/images/icons8-exit-door-64.png" alt="Icon" class="button-right">
+        <button id="b16" class="button-image-top" onclick="app.unload()">
+            <img src="./src/assets/images/icons8-exit-door-64.png" alt="Icon">
             Salir
         </button>
     </div>

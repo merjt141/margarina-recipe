@@ -8,37 +8,31 @@
 	<script src='./dist/webcc.min.js' type="text/javascript"></script>
 	<script src="./dist/jquery-3.6.3.js" type="text/javascript"></script>
     <script src="./dist/jys-recipe-app.js" type="text/javascript"></script>
-    <link rel="stylesheet" href="./src/styles/style.css">
-    <link rel="stylesheet" href="./src/styles/header-style.css">
-    <link rel="stylesheet" href="./src/styles/body-style.css">
-    <link rel="stylesheet" href="./src/styles/parametros-ipsa.css">
-    <link rel="stylesheet" href="./src/styles/button-banner.css">
-    <link rel="stylesheet" href="./src/styles/views/escoger.css">
-    <link rel="stylesheet" href="./src/styles/popup/popup.css">
-    <link rel="stylesheet" href="./src/styles/transfer/transfer-style.css">
+    <link rel="stylesheet" href="./dist/jys-recipe-app.css">
 </head>
 
-<body class="bg-light">
+<body>
     <header>
-        <div style="font-size: 9pt; display: flex;" class="top-content">
-            <button class="layout-button" onclick="app.loadContent('formEscoger')" style="width: 190px;">
-                <img src="./src/assets/images/icons8-write-64.png" alt="Icon" class="button-top">
+        <div style="font-size: 9pt; display: flex;">
+            <button class="button-image-top form-select-button" onclick="app.loadContent('formEscoger')">
+                <img src="./src/assets/images/icons8-write-64.png" alt="Icon">
                 Nueva Receta L1 L3 LKombin
             </button>
-            <button class="layout-button" onclick="app.loadContent('formAbrir')" style="width: 190px;">
-                <img src="./src/assets/images/folder-files-and-folders-svgrepo-com.png" alt="Icon" class="button-top">
+            <button class="button-image-top form-select-button" onclick="app.loadContent('formAbrir')">
+                <img src="./src/assets/images/folder-files-and-folders-svgrepo-com.png" alt="Icon">
                 Abrir Receta L1 L3 LKombin
             </button>
-            <button class="layout-button" onclick="app.loadContent('formIngredientes')" style="width: 190px;">
-                <img src="./src/assets/images/books-svgrepo-com.png" alt="Icon" class="button-top">
+            <button class="button-image-top form-select-button" onclick="app.loadContent('formIngredientes')">
+                <img src="./src/assets/images/books-svgrepo-com.png" alt="Icon">
                 Ingredientes
             </button>
-            <button class="layout-button" style="margin-left: auto;" onclick="app.loadPopup('formAbrir')">
-                <img src="./src/assets/images/OIP.png" alt="Icon" class="button-top">
+            <span style="margin-left: auto;"></span>
+            <button class="button-image-top banner-option-button" onclick="app.loadPopup('formAbrir')">
+                <img src="./src/assets/images/OIP.png" alt="Icon">
                 Versión
             </button>
-            <button class="layout-button" onclick=""disabled>
-                <img src="./src/assets/images/icons8-exit-door-64.png" alt="Icon" class="button-top">
+            <button class="button-image-top banner-option-button" onclick=""disabled>
+                <img src="./src/assets/images/icons8-exit-door-64.png" alt="Icon">
                 Salir
             </button>
         </div>

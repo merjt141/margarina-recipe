@@ -1,52 +1,46 @@
-import { App } from './modules/manager';
+// Importar librerías centrales
+import { App } from './manager';
 
+// importar estilos css
+import '../styles/main.css';
+import '../styles/views/abrir.css';
+import '../styles/views/escoger.css';
+import '../styles/views/ingredientes.css';
+import '../styles/popup/popup.css';
+import '../styles/transfer/transfer.css';
+
+// Aplicación web
 let app: App;
 
 /**
- * Initialize web application
+ * Inicializa la aplicación web
  */
 function initializeWebApp() {
     app = new App();
     window.app = app;
-
-    app.loadContent('./public/views/escoger.html');
-
 }
 
-// WebCC of Custom Web Control declaration for WinCC Unified
+// Inicializa el control web - Librería de Siemens
 WebCC.start(function(result: any){
+    // Revisa estatus de conexión con WinCC
     if(result){
         console.log('connected successfully');
     } else {
         console.log('connection failed');
     }
+
+    // Inicializa aplicación
     initializeWebApp();
 },
 {
     methods: {
-        PopulateRecipes: function(jsonString: string) {
-            //cwcAbrir?.recipeComboBox.update(jsonString);
+        QueryResponse: function(response: string) {
+            // Invoca al PIDManager para confirmar respuesta de WinCC
+            app.pidManager.response(response);
         },
-        QueryResponse: function(jsonString: string) {
-            app.pidManager.response(jsonString);
-        },
-        PLCResponse: function(jsonString: string) {
-            //app.pidManager.response(jsonString);
-            //app.formAbrir?.plcAgent.response(app.formAbrir, jsonString);
-        }
     },
-    events: ['NewSelection', 'executeQuery', 'writePLC'],
-    properties: {
-            ComboDatos: " ",
-            ComboIndex: " "
-        }
+    events: ['executeQuery', 'writePLC'],
+    properties: {}
 },
 [],
 10000);
-
-/**
- * Call initializeWebApp to run the project
- */
-$(document).ready(function() {
-    // initializeWebApp();
-});

@@ -4,43 +4,23 @@
 	"control": {
 		"identity": {
 			"name": "RecipeController",
-			"version": "1.0",
-			"displayname": "Recipe Control Web App",
+			"version": "1.0.0",
+			"displayname": "JYS Recipe Control",
 			"icon": "./control/public/favicon.ico",
 			"type": "guid://3A0572C8-1FC9-4181-985E-5512D2AD61F7",
 			"start": "./control/index.html"
 		},
 		"metadata": {
-			"author": "JYSControlAutomation",
+			"author": "Juan Armando Joyo Taype",
+			"contact": "+51 937258780",
+			"company": "JYS Control Automation",
+			"releasedate": "31/07/2025",
 			"keywords": ["Recipe", "WebApplication"]
 		},
 		"contracts": {
 			"api": {
 				"methods": {
-					"PopulateRecipes": {
-						"parameters": {
-							"jsonString": {
-								"type": "string"
-							}
-						},
-						"description": "Build recipe combo box"
-					},
-					"PopulateDetail": {
-						"parameters": {
-							"jsonString": {
-								"type": "string"
-							}
-						},
-						"description": "Populate recipe data"
-					},
 					"QueryResponse": {
-						"parameters": {
-							"jsonString": {
-								"type": "string"
-							}
-						}
-					},
-					"PLCResponse": {
 						"parameters": {
 							"jsonString": {
 								"type": "string"
@@ -49,14 +29,6 @@
 					}
 				},
 				"events": {
-					"NewSelection": {
-						"arguments":{
-							"ComboIndex":{
-								"type":"string"
-							}
-						},
-						"description": "Ejecutar cuando se selecciona nueva opción"
-					},
 					"executeQuery": {
 						"arguments": {
 							"queryString": {

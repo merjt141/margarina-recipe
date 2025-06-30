@@ -1,6 +1,7 @@
+// Declaración de variables para el window
 interface Window {
-    app: any;
-    receiveData: (any) => {}
+    app: any;                       // Hace visible la aplicación en el DOM
 }
 
-declare var WebCC : any;
+declare const WebCC : any;          // Hace que el compilador reconozca WebCC
+                                    // para que no dispare falla

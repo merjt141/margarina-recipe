@@ -1,6 +1,6 @@
 export const ingredientsPropArray = ["x_ingred", "n_valor"];
 import { CWCAbrir } from "../model/abrir/cwcAbrir.js"
-import { App } from "./manager.js";
+import { App } from "../manager.js";
 
 export interface RecipeInputList {
     editable: {

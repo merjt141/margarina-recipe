@@ -1,5 +1,5 @@
 import * as Library from '../../modules/utilities';
-import { App } from '../../modules/manager';
+import { App } from '../../manager';
 
 /**
  * Clase para el control del formulario de creación de nuevas recetas
@@ -15,12 +15,11 @@ export class CWCEscoger {
     copsa: boolean;                                 // Area of production
 
     constructor(app: App) {
-        this.ingredientJsonData = [];
+        this.ingredientJsonData = [];               // Inicializar tabla de ingredientes
+        this.app = app;                             // Aplicación general
+        this.copsa = false;                         // Tipo de planta
 
-        this.app = app;
-
-        this.copsa = false;
-
+        // Inicializar formulario
         this.initialize();
     }
 
@@ -245,7 +244,10 @@ export class CWCEscoger {
         recipeName.value = '';
         ingredientesSeleccionados.innerHTML = '';
 
+        // Volver a cargar formulario
         this.initialize();
+
+        // Hace focus en el campo de nombre de receta
         recipeName.focus();
     }
 }

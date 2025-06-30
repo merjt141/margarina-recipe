@@ -33,24 +33,26 @@
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
     padding: 0px;
+    padding-top: 5px;
+    box-sizing: border-box;
     overflow: auto;
 }
 
 .floating-popup-body progress {
   -webkit-appearance: none;
   appearance: none;
-  border: 1px solid black; /* Borde negro */
+  border: 1px solid black;
   border-radius: 0;
   background-color: transparent;
 }
 
 .floating-popup-body progress::-webkit-progress-bar {
-  background-color: rgba(245, 245, 245, 1); /* color de fondo celeste claro */
+  background-color: rgba(245, 245, 245, 1);
   border-radius: 0;
   border: none;
 }
 
 .floating-popup-body progress::-webkit-progress-value {
-  background-color: rgba(125, 204, 246, 1); /* celeste más fuerte */
+  background-color: rgba(125, 204, 246, 1);
   border-radius: 0;
 }
