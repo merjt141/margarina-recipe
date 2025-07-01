@@ -3,9 +3,9 @@
 	"mver": "1.2.0",
 	"control": {
 		"identity": {
-			"name": "RecipeController",
+			"name": "RecipeControllerIPSA",
 			"version": "1.0.0",
-			"displayname": "JYS Recipe Control",
+			"displayname": "JYS Recipe IPSA",
 			"icon": "./control/public/favicon.ico",
 			"type": "guid://3A0572C8-1FC9-4181-985E-5512D2AD61F7",
 			"start": "./control/index.html"

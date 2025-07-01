@@ -3,6 +3,7 @@ import { CWCEscoger } from './model/escoger/cwcEscoger';
 import { CWCIngredientes } from './model/ingredientes/cwcIngredientes';
 import { PIDManager } from './modules/pidManager';
 import { FDS } from './modules/FDS';
+import { createFloatingPopup } from './modules/utilities';
 
 /**
  * Clase general para la administración de todos los formularios
@@ -62,5 +63,43 @@ export class App {
                 (document.getElementById('main-content') as HTMLElement).innerHTML = html;
             })
             .catch(error => console.error('Error loading the page:', error));
+    }
+
+    /**
+     * Cargar formulario AcercaDe con información de desarrolladores
+     */
+    public async loadAcercaDe(): Promise<void> {
+        // Extraer contenido de archivo acercade.html para popup
+        let content: string = "";
+        await fetch('./public/modules/acercade.html')
+            .then(response => response.text())
+            .then(html => {
+                content = html;
+            })
+            .catch(error => console.error("Error cargando el popup"));
+
+        // Creación de popup de saveas.html con contenido cargado
+        let acercaDePopoup : HTMLDivElement = document.getElementById("save-as-popup") as HTMLDivElement;
+
+        // Validar existencia única del modal
+        if (!acercaDePopoup) {
+            acercaDePopoup = createFloatingPopup({
+                title: "Administración de Reportes Margarina",
+                id: "acerca-de-popup",
+                width: 470,
+                height: 335,
+                left: 300,
+                top: 200,
+                content: content,
+                onClose: () => { console.log("Popup cerrado"); },
+            });
+        } else {
+            console.log("Ya hay un popup abierto con ese ID.");
+        }
+
+        // Agregar evento de cierre de popup a boton aceptar
+        (document.getElementById("acerca-de-cerrar") as HTMLButtonElement).addEventListener("click", () => {
+            acercaDePopoup.remove();
+        });
     }
 }

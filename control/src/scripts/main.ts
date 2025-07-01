@@ -8,6 +8,7 @@ import '../styles/views/escoger.css';
 import '../styles/views/ingredientes.css';
 import '../styles/popup/popup.css';
 import '../styles/transfer/transfer.css';
+import '../styles/transfer/version.css';
 
 // Aplicación web
 let app: App;

@@ -1,0 +1,19 @@
+.save-as-class {
+    padding: 5px;
+    font-size: 11pt;
+    font-family: Arial;
+    display: flex;
+    flex-direction: column;
+}
+
+.save-as-class h1 {
+    text-align: center;
+    font-size: 17pt;
+    margin: 5px;
+}
+
+.save-as-class h2 {
+    text-align: center;
+    font-size: 14pt;
+    margin: 2px;
+}

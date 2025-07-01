@@ -15,8 +15,8 @@
 
       #popup {
         background-color: rgba(145, 147, 154, 1);
-        width: 680px;
-        height: 130px;
+        width: 470px;
+        height: 335px;
         border-radius: 5px;
         position: fixed;
         padding: 2px;
@@ -108,7 +108,7 @@
     <div id="popup">
       <div id="popup-header">
         <span style="margin-left: 10px; font-family: Arial; font-size: 11pt">
-          Popup
+          Administración de Reportes Margarina
         </span>
         <div id="cerrar-btn">
           <svg
@@ -145,68 +145,58 @@
           border-bottom-right-radius: 5px;
         "
       >
-        <div class="transfer-container">
-          <table
-            style="
-              width: 100%;
-              border-spacing: 0px;
-              padding: 10px 10px 0px 10px;
-            "
-          >
-            <tbody>
-              <tr>
-                <td style="font-weight: bold">Nueva Receta</td>
-              </tr>
-            </tbody>
-          </table>
-          <table
-            style="
-              width: 100%;
-              border-spacing: 0px;
-              margin-bottom: 10px;
-              padding: 0px 10px 0px 10px;
-            "
-          >
-            <tbody>
-              <tr
-                class="transfer-content"
-                style="flex-direction: row; align-items: center"
-              >
-                <td style="width: 120px">
-                  <label for="save-as-recipe-name" style="font-weight: bold"
-                    >Guardar Como:</label
-                  >
-                </td>
-                <td>
-                  <input
-                    type="text"
-                    id="save-as-recipe-name"
-                    style="height: 20px; width: 310px"
-                  />
-                </td>
-                <td>
-                  <button id="linea1" onclick="app.formAbrir.cmdComoAction()">
-                    <img
-                      src="./src/assets/images/check-svgrepo-com.png"
-                      alt="Icon"
-                      class="button-transfer"
-                    />
-                    Aceptar
-                  </button>
-                </td>
-                <td>
-                  <button id="transfer-cerrar">
-                    <img
-                      src="./src/assets/images/cancel-svgrepo-com.png"
-                      alt="Icon"
-                      class="button-transfer"
-                    />
-                    Cerrar
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+      <style>
+        .save-as-class {
+          padding: 5px;
+          font-size: 11pt;
+          font-family: Arial;
+          display: flex;
+          flex-direction: column;
+        }
+        
+        .save-as-class h1 {
+          text-align: center;
+          font-size: 17pt;
+          margin: 5px;
+        }
+        
+        .save-as-class h2 {
+          text-align: center;
+          font-size: 14pt;
+          margin: 2px;
+        }
+      </style>
+        <div class="transfer-container save-as-class">
+          <h1>Administración de Recetas</h1>
+          <h2>Versión Receta 2025</h2>
+          <div style="display: flex;">
+            <div style="flex: 1; display: flex; align-items: flex-end;">Realizado por: </div>
+            <div style="flex: 1; display: flex; align-items: center; justify-content: center;">
+              <img style="width: 133.2px; height: 60px;" src="../../src/assets/images/logo-dark.png" alt="JYS">
+            </div>
+            <div style="flex: 1;"><span></span></div>
+          </div>
+          <div style="margin: 10px 0px; display: flex;">
+            <div style="font-weight: bold;">
+              <div>JYS Control Automation E.I.R.L.</div>
+            <div>www.jyscontrol.com/</div>
+            </div>
+            <div style="margin-left: auto;">
+              <div>Av. Caudivilla Mza. a-2 Lote. 1</div>
+              <div>Tel: +51 937-258-780</div>
+            </div>
+          </div>
+          <div>Advertencia: Este programa está protegido por las leyes de 
+            derecho de autor y otros tratados internacionales. La reproducción o 
+            distribución no autorizadas de este programa o de cualquier parte del 
+            mismo, puede dar luar a responsabilidades civiles y criminales, que
+            serán perseguidas.
+            <div style="display: flex;">
+              <button id="acerca-de-cerrar" style="width: 100px; height: 30px; margin-left: auto;">
+                Aceptar
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>

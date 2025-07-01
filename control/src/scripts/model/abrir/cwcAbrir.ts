@@ -182,6 +182,7 @@ export class CWCAbrir {
         // 2: Emulsificantes fríos
         // 3: Ingredientes de balanza
         // 4: Parámetros IPSA
+        // 5: Ingredientes COPSA (en esta aplicación no hay --Juan)
         dataJson.forEach((item: Library.IngredientTable, index: number) => {
             this.recipeJsonData[Number(item.t_ingred)-1].push(item);
         })
@@ -201,7 +202,7 @@ export class CWCAbrir {
 
 
         // Emulsificantes calientes
-        data[0].forEach((item: Library.IngredientTable, i: number) => {
+        data[Library.IngrType.Caliente].forEach((item: Library.IngredientTable, i: number) => {
             // Iterar por la cabezera de datos de los ingrdientes y extraer los valores
             this.ingredientsHeadArray.forEach((element: string, j: number) => {
                 // Convertir string en indice para extraer valor de IngredientTable
@@ -216,7 +217,7 @@ export class CWCAbrir {
         });
 
         // Emulsificantes fríos
-        data[1].forEach((item: Library.IngredientTable, i: number) => {
+        data[Library.IngrType.Frio].forEach((item: Library.IngredientTable, i: number) => {
             // Iterar por la cabezera de datos de los ingrdientes y extraer los valores
             this.ingredientsHeadArray.forEach((element: string, j: number) => {
                 // Convertir string en indice para extraer valor de IngredientTable
@@ -231,7 +232,7 @@ export class CWCAbrir {
         });
 
         // Ingredientes de balanza
-        data[2].forEach((item: Library.IngredientTable, i: number) => {
+        data[Library.IngrType.Balanza].forEach((item: Library.IngredientTable, i: number) => {
             // Iterar por la cabezera de datos de los ingrdientes y extraer los valores
             this.ingredientsHeadArray.forEach((element: string, j: number) => {
                 // Convertir string en indice para extraer valor de IngredientTable
@@ -251,7 +252,7 @@ export class CWCAbrir {
         Library.getInputElement("idescripcion").value = "Emulsif. Calientes y Fríos";
 
         // Parámetros IPSA
-        data[3].forEach((item: Library.IngredientTable, i:number) => {
+        data[Library.IngrType.IPSA].forEach((item: Library.IngredientTable, i:number) => {
             // Extraer objeto del formulario
             const inputLabel = document.getElementById(`ipsa${i + 1}`) as HTMLInputElement;
             
@@ -509,6 +510,7 @@ export class CWCAbrir {
         const transferProgress = document.getElementById("transferProgress") as HTMLProgressElement;
         
         transferMsg.style.display = 'none';
+        transferProgress.style.display = 'none';
         transferProgress.value = 0;
 
         // Falta implementar validación de guardado de receta previa carga si se han hecho modificaciones
@@ -542,7 +544,7 @@ export class CWCAbrir {
         let fdsCopy = JSON.parse(JSON.stringify(this.app.FDS.groups));
 
         // Extraer data de Ingredientes Calientes
-        let hSize = originalData[0] as Library.IngredientTable[];
+        let hSize = originalData[Library.IngrType.Caliente] as Library.IngredientTable[];
 
         // Iterar TAGS de Ingredientes Calientes
         for ( let i = 0; i < hSize.length; i++) {
@@ -561,7 +563,7 @@ export class CWCAbrir {
         transferProgress.value += 5;
 
         // Extraer data de Ingredientes Fríos
-        let cSize = originalData[1] as Library.IngredientTable[];
+        let cSize = originalData[Library.IngrType.Frio] as Library.IngredientTable[];
 
         // Iterar TAGS de Ingredientes Fríos
         for ( let i = 0; i < cSize.length; i++) {
@@ -580,7 +582,7 @@ export class CWCAbrir {
         transferProgress.value += 5;
 
         // Extraer data de Ingredientes Balanza / Emulsión
-        let iSize = originalData[2] as Library.IngredientTable[];
+        let iSize = originalData[Library.IngrType.Balanza] as Library.IngredientTable[];
 
         // Iterar TAGS de Balanza / Emulsión
         for ( let i = 0; i < iSize.length; i++) {
@@ -604,7 +606,7 @@ export class CWCAbrir {
         if (line > 0 && line < 4) {
 
             // Extraer data de Parámetros
-            let ipsaSize = originalData[3] as Library.IngredientTable[];
+            let ipsaSize = originalData[Library.IngrType.IPSA] as Library.IngredientTable[];
 
             for ( let i = 0; i < ipsaSize.length; i++) {
                 // Extraer valor de parámetro
@@ -713,11 +715,11 @@ export class CWCAbrir {
             .catch(error => console.error("Error cargando el popup"));
 
         // Creación de popup de saveas.html con contenido cargado
-        let transferPopup : HTMLDivElement = document.getElementById("save-as-popup") as HTMLDivElement;
+        let guardarComoPopup : HTMLDivElement = document.getElementById("save-as-popup") as HTMLDivElement;
 
         // Validar existencia única del modal
-        if (!transferPopup) {
-            transferPopup = Library.createFloatingPopup({
+        if (!guardarComoPopup) {
+            guardarComoPopup = Library.createFloatingPopup({
                 title: "Guardar Como",
                 id: "save-as-popup",
                 width: 680,
@@ -736,7 +738,7 @@ export class CWCAbrir {
 
         // Agregar evento de cierre de popup a boton cancelar
         (document.getElementById("transfer-cerrar") as HTMLButtonElement).addEventListener("click", () => {
-            transferPopup.remove();
+            guardarComoPopup.remove();
         });
     }
 
