@@ -1,5 +1,6 @@
 import * as Library from '../../modules/utilities';
 import { App } from '../../manager';
+import { event } from 'jquery';
 
 /**
  * Clase para el control de la carga y modificación de recetas
@@ -78,15 +79,33 @@ export class CWCAbrir {
     private async buildInputListAndInitializeComboBox(): Promise<void> {
         // Emulsificantes fríos y calientes
         for (let i = 1; i <= 5; i++) {
-            [2,4,5].forEach((j: number) => {
-                this.recipeInputList.editable.tmg.push(`c${i}${j}`);        //Ingredientes fríos
-                this.recipeInputList.editable.tmg.push(`h${i}${j}`);        // Ingredientes calientes
+            // Agregar evento de autosuma cuando se modifica valor de ingrediente caliente
+            const campoIngredienteCaliente = Library.getInputElement(`h${i}2`);
+            campoIngredienteCaliente.step = "any";
+            campoIngredienteCaliente.addEventListener('change', (event: Event) => {
+                if (!this.editionDisabled) {
+                    Library.refrescoSuma(this);
+                }
+            });
+
+            // Agregar evento de autosuma cuando se modifica valor de ingrediente frío
+            const campoIngredienteFrio = Library.getInputElement(`c${i}2`);
+            campoIngredienteFrio.step = "any";
+            campoIngredienteFrio.addEventListener('change', (event: Event) => {
+                if (!this.editionDisabled) {
+                    Library.refrescoSuma(this);
+                }
             });
         }
         // Ingredientes de balanza
         for (let i = 1; i <= 17; i++) {
-            [2,4,5].forEach((j: number) => {
-                this.recipeInputList.editable.balanza.push(`i${i}${j}`);    // Ingredientes balanza
+            // Agregar evento de autosuma cuando se modifica valor de ingrediente de balanza
+            const campoIngredienteBalanza = Library.getInputElement(`i${i}2`);
+            campoIngredienteBalanza.step = "any";
+            campoIngredienteBalanza.addEventListener('change', (event: Event) => {
+                if (!this.editionDisabled) {
+                    Library.refrescoSuma(this);
+                }
             });
         }
         // Parámetros IPSA
@@ -200,9 +219,16 @@ export class CWCAbrir {
         // Escribir código de receta en formulario
         (document.getElementById("idCodeRecipe") as HTMLInputElement).value = this.recipeComboBox.domObject().value;
 
+        // Listado de filas editables
+        this.recipeInputList.editable.tmg = [];
 
         // Emulsificantes calientes
         data[Library.IngrType.Caliente].forEach((item: Library.IngredientTable, i: number) => {
+            // Almacenar las filas que se pueden editar
+            [2,4,5].forEach((j: number) => {
+                this.recipeInputList.editable.tmg.push(`h${i + 1}${j}`);        // Ingredientes calientes
+            });
+
             // Iterar por la cabezera de datos de los ingrdientes y extraer los valores
             this.ingredientsHeadArray.forEach((element: string, j: number) => {
                 // Convertir string en indice para extraer valor de IngredientTable
@@ -218,6 +244,11 @@ export class CWCAbrir {
 
         // Emulsificantes fríos
         data[Library.IngrType.Frio].forEach((item: Library.IngredientTable, i: number) => {
+            // Almacenar las filas que se pueden editar
+            [2,4,5].forEach((j: number) => {
+                this.recipeInputList.editable.tmg.push(`c${i + 1}${j}`);        //Ingredientes fríos
+            });
+
             // Iterar por la cabezera de datos de los ingrdientes y extraer los valores
             this.ingredientsHeadArray.forEach((element: string, j: number) => {
                 // Convertir string en indice para extraer valor de IngredientTable
@@ -231,8 +262,16 @@ export class CWCAbrir {
             this.ingredientsDOM[0].push(Library.getInputElement(`c${i + 1}2`));
         });
 
+        // Listado de filas editables
+        this.recipeInputList.editable.balanza = [];
+
         // Ingredientes de balanza
         data[Library.IngrType.Balanza].forEach((item: Library.IngredientTable, i: number) => {
+            // Almacenar las filas que se pueden editar
+            [2,4,5].forEach((j: number) => {
+                this.recipeInputList.editable.balanza.push(`i${i + 1}${j}`);    // Ingredientes balanza
+            });
+
             // Iterar por la cabezera de datos de los ingrdientes y extraer los valores
             this.ingredientsHeadArray.forEach((element: string, j: number) => {
                 // Convertir string en indice para extraer valor de IngredientTable

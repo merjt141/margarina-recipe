@@ -2,6 +2,9 @@ export const ingredientsPropArray = ["x_ingred", "n_valor"];
 import { CWCAbrir } from "../model/abrir/cwcAbrir.js"
 import { App } from "../manager.js";
 
+/**
+ * Estructura de listado de ingredientes de recetas
+ */
 export interface RecipeInputList {
     editable: {
         tmg: string[],
@@ -12,6 +15,9 @@ export interface RecipeInputList {
     resume: string[][]
 }
 
+/**
+ * Estructura de listado de datos de receta
+ */
 export interface RecipeData {
     tmg: {
         value: string[],
@@ -26,6 +32,9 @@ export interface RecipeData {
     parameters: string[],
 }
 
+/**
+ * Estructura de tabla consulta DETALLE INGREDIENTES
+ */
 export interface IngredientTable {
     c_receta: string,
     x_receta: string,
@@ -38,11 +47,17 @@ export interface IngredientTable {
     t_ingred: string,
 }
 
+/**
+ * Estructura de tabla INGREDIENTES
+ */
 export interface IngredientList {
     c_ingred: string,
     x_ingred: string,
 }
 
+/**
+ * Estructura de tabla RECETAS
+ */
 export interface RecipeTable {
     c_receta: string,
     x_receta: string,
@@ -59,6 +74,9 @@ export enum IngrType{
     Copsa
 }
 
+/**
+ * Estructura de datos para el listado de opciones del popup
+ */
 export interface PopupOptions {
   title?: string;
   id?: string,
@@ -70,6 +88,9 @@ export interface PopupOptions {
   onClose?: () => void;
 } 
 
+/**
+ * Combobox para el control de las recetas
+ */
 export class ComboBoxRecipe {
     domId: string;
 
@@ -99,12 +120,12 @@ export class ComboBoxRecipe {
      * @param {string} data 
      */
     update(data: string) {
-        const obj = JSON.parse(typeof(data) == "string" ? data : JSON.stringify(data));
+        const RecipeList = JSON.parse(typeof(data) == "string" ? data : JSON.stringify(data));
         this.domObject().textContent = '';
-        for (let i = 0; i < obj.length; i++){
+        for (let i = 0; i < RecipeList.length; i++){
             let option = document.createElement("option") as HTMLOptionElement;
-            option.value = obj[i].c_receta;
-            option.innerHTML = obj[i].x_receta;
+            option.value = RecipeList[i].c_receta;
+            option.innerHTML = `${RecipeList[i].c_receta} - ${RecipeList[i].x_receta}`;
             this.domObject().appendChild(option);
         }
     }
